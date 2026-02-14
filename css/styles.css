@@ -1,0 +1,708 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.coming-soon-section {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.coming-soon-text {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1E3A8A;
+}
+
+/* Animation for the scrolling strip */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.about-video {
+  width: 90%;
+  height: 100%;
+}
+
+.animate-strip {
+  animation: scroll-left 25s linear infinite;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* Pause animation on hover so users can read it */
+.ticker-container:hover .animate-strip {
+  animation-play-state: paused;
+}
+
+.hero-bg {
+  background: linear-gradient(135deg, #0052D4 0%, #4364F7 50%, #6FB1FC 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.buttonclient {
+  /* position: relative; */
+  height: 40px;
+  /* 🔑 SAME height as nav items */
+  padding: 0 22px;
+  /* horizontal only */
+  background-color: #2973eb;
+  color: white;
+  font-weight: 500;
+  border-radius: 9999px;
+  box-shadow: 0 4px 15px rgba(0, 82, 212, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  white-space: nowrap;
+  margin-top: 0px;
+}
+
+/* strips */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 30s linear infinite;
+}
+
+/* strips */
+
+.marquee__content {
+  display: flex;
+  gap: 5rem;
+  padding-right: 5rem;
+  white-space: nowrap;
+}
+
+/* strips */
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* book now free popup */
+.time-slot {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 500;
+  background: white;
+  cursor: pointer;
+}
+
+/* book now free popup */
+.time-slot:hover {
+  background: #eff6ff;
+}
+
+/* book now free popup */
+.time-slot.active {
+  background: #2563eb;
+  color: white;
+}
+
+/* ===== Book Video Consultation ===== */
+
+.date-time-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.date-box,
+.time-box {
+  flex: 1;
+
+}
+
+.date-box label,
+.time-box label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* ===== Time Picker (Single Up / Down) ===== */
+.clock-picker.small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #f9fafb;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.clock-picker.small .arrow {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  font-size: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.clock-picker.small .arrow:hover {
+  background: #1e40af;
+}
+
+#timeDisplay {
+  font-size: 15px;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: center;
+  color: #111827;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 480px) {
+  .date-time-row {
+    flex-direction: column;
+  }
+}
+
+#rightTab {
+  position: fixed;
+  top: 50%;
+  right: -120px;
+  /* ⬅️ pull into edge (IMPORTANT) */
+  transform: translateY(-50%) rotate(-90deg);
+
+  background: #2563eb;
+  color: #fff;
+  padding: 12px 26px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 9999;
+
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, .25);
+}
+
+#rightTab.hide {
+  transform: translateX(120%);
+  opacity: 0;
+  pointer-events: none;
+  /* 👈 important */
+}
+
+.video-icon {
+  font-size: 20px;
+  /* BIG */
+  display: inline-block;
+  transform: rotate(95deg);
+  /* ROTATE */
+}
+
+@media (max-width: 767px) {
+  #rightTab {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    transform: none;
+    border-radius: 12px 12px 0 0;
+    text-align: center;
+    padding: 16px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+  }
+
+  .video-icon {
+    transform: none;
+    margin-left: 8px;
+  }
+}
+
+#closeTab {
+  position: fixed;
+  top: 50%;
+  right: 385px;
+  /* ⬅️ pull into edge (IMPORTANT) */
+  transform: translateY(-50%) rotate(-90deg);
+
+  background: #2563eb;
+  color: #fff;
+  padding: 12px 26px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 9998;
+
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, .25);
+}
+
+#closeTab.hide {
+  transform: translateX(120%);
+  opacity: 0;
+  pointer-events: none;
+  /* 👈 important */
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9998;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.booking-box {
+  width: 95%;
+  /* Responsive width */
+  max-width: 390px;
+  /* Max width */
+  max-height: 620px;
+  /* ⬅️ NOT full height */
+  background: #fff;
+  padding: 15px;
+  border-radius: 14px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, .3);
+  position: relative;
+  overflow-y: auto;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.booking-box h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+.subtitle {
+  color: #555;
+  margin-bottom: 15px;
+}
+
+/* Duration */
+.duration {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.duration button {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #2563eb;
+  background: #fff;
+  color: #2563eb;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.duration button.active {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* Inputs */
+.booking-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* Time Slots */
+.times {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.times button {
+  padding: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.times button.active {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}
+
+/* Book */
+.book-btn {
+  width: 100%;
+  padding: 12px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Close */
+
+
+/* whatsapp floating */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 58px;
+  height: 58px;
+  border-radius: 9999px;
+  background: #25D366;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  z-index: 70;
+  opacity: 0.95;
+}
+
+.whatsapp-float:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+}
+
+.whatsapp-float img {
+  width: 28px;
+  height: 28px;
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 767px) {
+  .whatsapp-float {
+    bottom: 66px;
+    right: 20px;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.buttonclient:hover {
+  background-color: #003ea8;
+  /* transform: translateY(-1px); */
+}
+
+
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 400px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.service-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 82, 212, 0.15);
+  border-color: #0052D4;
+}
+
+.service-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #0052D4, #4364F7);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #0052D4, #4364F7);
+  color: white;
+  padding: 16px 40px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 82, 212, 0.3);
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 82, 212, 0.4);
+}
+
+.secondary-btn {
+  background: white;
+  color: #0052D4;
+  padding: 16px 40px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 16px;
+  border: 2px solid #0052D4;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.secondary-btn:hover {
+  background: #0052D4;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.wave-divider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.wave-divider svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 80px;
+}
+
+/* Top bar announcement centering */
+.topbar-container {
+  position: relative;
+}
+
+.topbar-announcement {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(6, 50, 94, 0.902);
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #ffffff;
+  pointer-events: auto;
+  width: 400px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.announcement-scroll {
+  display: inline-block;
+  animation: scroll-text 20s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes scroll-text {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.announcement-scroll:hover {
+  animation-play-state: paused;
+}
+
+@media (max-width: 767px) {
+  .topbar-announcement {
+    display: none;
+  }
+}
+
+.cta-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+}
+
+.stats-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+/* Client Login button positioning */
+/* a[href="/client-login"] {
+  transition: top 0.2s ease;
+} */
+
+
+/* Logo and company name clickable */
+header a[href="#home"] {
+  transition: opacity 0.2s ease;
+}
+
+header a[href="#home"]:hover {
+  opacity: 0.8;
+}
+
+/* Trusted badge above hero title */
+.trusted-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.18);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeInUp 900ms ease both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Continuous Fading Animation */
+@keyframes loopFade {
+  0% {
+    opacity: 0.2;
+    /* Starts nearly invisible */
+  }
+
+  50% {
+    opacity: 1;
+    /* Fully visible in the middle */
+  }
+
+  100% {
+    opacity: 0.2;
+    /* Fades back out */
+  }
+}
+
+.fade-loop {
+  /* infinite = loop forever */
+  /* ease-in-out = smooth start and end */
+  animation: loopFade 3s infinite ease-in-out;
+}
+
+/* Resident Hero Section (Matching NRI style) */
+.resident-hero {
+  background: linear-gradient(rgba(30, 58, 138, 0.9), rgba(30, 58, 138, 0.8)), url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Responsive Booking Modal */
+@media (max-width: 475px) {
+  #closeTab {
+    display: none !important;
+  }
+
+  .booking-box .close-btn {
+    display: block !important;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 28px;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+  }
+}
+
+@media (min-width: 476px) {
+  .booking-box .close-btn {
+    display: none !important;
+  }
+}

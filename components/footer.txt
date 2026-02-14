@@ -1,0 +1,72 @@
+<footer class="w-full bg-gray-900 py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div class="flex flex-col items-start">
+          <a href="/index.html" class="inline-block">
+            <div class="inline-flex flex-col items-start leading-none">
+
+              <!-- Logo + Name -->
+              <div class="flex items-center space-x-2">
+                <img src="images/TFG_LOGO.png" alt="Tax Filing Guru Logo" class="h-10 w-auto">
+                <h4 class="text-white font-bold text-lg">
+                  Tax Filing <span class="text-blue-500">Guru</span>
+                </h4>
+              </div>
+
+              <!-- Divider -->
+              <span class="h-[2px] bg-white w-full mt-1"></span>
+
+              <!-- Tagline -->
+              <p class="text-xs text-white mt-1 text-center">
+                Smart Taxes Need a Guru.
+              </p>
+
+            </div>
+          </a>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-lg mb-4">Services</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white text-sm transition">ITR Filing</a></li>
+            <li><a href="nri.html" class="text-gray-400 hover:text-white text-sm transition">NRI Services</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white text-sm transition">Consultation</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-lg mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white text-sm transition">Home</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white text-sm transition">Services</a></li>
+            <li><a href="tools.html" class="text-gray-400 hover:text-white text-sm transition">Tools</a></li>
+            <li><a href="about.html" class="text-gray-400 hover:text-white text-sm transition">About Us</a></li>
+            <li><a href="contact.html" class="text-gray-400 hover:text-white text-sm transition">AID</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-lg mb-4">Contact Info</h4>
+          <ul class="space-y-2 text-sm">
+            <li class="text-gray-400">📧 <a href="mailto:info@taxfilingguru.com" class="hover:underline font-medium">
+                info@taxfilingguru.com
+              </a></li>
+            <li class="text-gray-400">📞 <a href="tel:+919811945176" class="hover:underline font-medium"> +91 98119
+                45176
+              </a>
+            </li>
+            <li class="text-gray-400">📍 India</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-6 pt-6">
+        <p class="text-gray-500 text-xs leading-relaxed max-w-5xl mx-auto text-center">
+          <strong>Disclaimer:</strong> We assist in filing income tax returns based on the information provided by the
+          taxpayer.
+          The final legal responsibility for accuracy, completeness, and compliance remains with the taxpayer.
+        </p>
+      </div>
+
+      <div class="border-t border-gray-800 pt-8 text-center">
+        <p id="footer-text" class="text-gray-400 text-sm">© 2026 Tax Filing Guru. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
