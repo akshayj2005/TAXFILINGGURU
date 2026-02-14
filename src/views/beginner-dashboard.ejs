@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started - Tax Filing Guru</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-gray-50">
+    <%- include('partials/header') %>
+        <%- include('partials/elements') %>
+
+            <main class="max-w-7xl mx-auto py-20 px-4">
+                <div class="bg-white rounded-2xl shadow-xl p-10 text-center">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">Welcome to Tax Filing Guru!</h1>
+                    <p class="text-xl text-gray-600 mb-8">Let's get started with your tax filing process.</p>
+
+                    <div class="max-w-md mx-auto space-y-4">
+                        <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl text-left">
+                            <span class="font-bold text-blue-800">Step 1:</span> Complete your profile details.
+                        </div>
+                        <div class="p-6 bg-gray-50 border border-gray-100 rounded-xl text-left">
+                            <span class="font-bold text-gray-800">Step 2:</span> Upload your Form 16/AIS.
+                        </div>
+                        <div class="p-6 bg-gray-50 border border-gray-100 rounded-xl text-left">
+                            <span class="font-bold text-gray-800">Step 3:</span> Schedule a call with a Tax Guru.
+                        </div>
+                    </div>
+
+                    <a href="/contact"
+                        class="mt-10 inline-block px-8 py-4 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition">
+                        Talk to an Expert Now
+                    </a>
+                </div>
+            </main>
+
+            <%- include('partials/footer') %>
+</body>
+
+</html>

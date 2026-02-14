@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regime Comparison - Tax Filing Guru</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="assets/images/favicon/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="assets/images/favicon/favicon.icon" type="image/x-icon">
+  <link rel="apple-touch-icon" href="assets/images/favicon/apple-touch-icon.png">
+  <style>
+    .hero-banner {
+      background-image: url('images/coming-soon-bg.jpg');
+      /* Ensure you have this image or change it */
+      background-size: cover;
+      background-position: center;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .hero-content h1 {
+      font-size: 3rem;
+      font-weight: bold;
+    }
+
+    .coming-soon-section {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .coming-soon-text {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #1E3A8A;
+      /* Tailwind's blue-800 */
+    }
+  </style>
+</head>
+
+<body class="h-full overflow-auto">
+  <!-- Header -->
+  <%- include('partials/header') %>
+  <%- include('partials/elements') %>
+  <section class="w-full hero-bg pt-10 pb-10 px-4 relative">
+    <div class="max-w-7xl mx-auto relative z-10 text-center">
+      <h2 class="font-heading text-5xl md:text-6xl font-extrabold text-white mb-6 tracking-tight drop-shadow-sm">
+        Regime <span class="text-gray-100">Comparison</span>
+      </h2>
+
+      <p class="text-lg text-gray-100 max-w-2xl mx-auto font-light">
+        Simple, transparent pricing. Choose the expert assistance level that fits your life.
+      </p>
+    </div>
+  </section>
+  <main class="w-full py-10 md:py-20 px-4 bg-gray-50">
+    <section class="coming-soon-section">
+      <h2 class="coming-soon-text">Comparison Tool Coming Soon</h2>
+    </section>
+  </main>
+
+  
+  </div>
+
+  <script src="js/script.js"></script>
+  <%- include('partials/footer') %>
+</body>
+
+</html>

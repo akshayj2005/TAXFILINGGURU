@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Tax Filing Guru</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-gray-50">
+    <%- include('partials/header') %>
+        <%- include('partials/elements') %>
+
+            <main class="max-w-7xl mx-auto py-20 px-4">
+                <div class="bg-white rounded-2xl shadow-xl p-10 text-center">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">User Dashboard</h1>
+                    <p class="text-xl text-gray-600 mb-8">Welcome back! This is your personalized tax filing dashboard.
+                    </p>
+                    <div class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg font-bold">
+                        Status: Expert Review in Progress
+                    </div>
+                    <div class="mt-12 grid md:grid-cols-3 gap-6">
+                        <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
+                            <h3 class="font-bold text-lg mb-2">My Documents</h3>
+                            <p class="text-sm text-gray-500">View and manage uploaded tax documents.</p>
+                        </div>
+                        <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
+                            <h3 class="font-bold text-lg mb-2">ITR Status</h3>
+                            <p class="text-sm text-gray-500">Track the progress of your ITR filing.</p>
+                        </div>
+                        <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
+                            <h3 class="font-bold text-lg mb-2">Consultations</h3>
+                            <p class="text-sm text-gray-500">Your upcoming and past video calls.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <%- include('partials/footer') %>
+</body>
+
+</html>

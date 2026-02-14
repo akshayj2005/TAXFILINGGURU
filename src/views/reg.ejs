@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resident Details - Tax Filing Guru</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+
+  <link rel="icon" href="assets/images/favicon/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="assets/images/favicon/favicon.icon" type="image/x-icon">
+  <link rel="apple-touch-icon" href="assets/images/favicon/apple-touch-icon.png">
+</head>
+
+<body class="h-full overflow-auto">
+
+
+
+  <!-- Header -->
+  <!-- Header -->
+  <%- include('partials/header') %>
+  <%- include('partials/elements') %>
+  <!-- Client Login button (desktop) - Fixed position -->
+
+  <!-- Page Heading -->
+  <section class="w-full hero-bg pt-10 pb-10 px-4 relative">
+    <div class="max-w-7xl mx-auto relative z-10 text-center">
+      <h2 id="page-title" class="text-4xl md:text-5xl font-bold text-white mb-4">
+        Resident Details
+      </h2>
+      <p id="page-subtitle" class="text-gray-100">
+        Specialized tax filing for residential income, rtc. <br> Expert handling of national income and Indian
+        tax obligations.
+      </p>
+    </div>
+  </section>
+
+
+  <main class="w-full py-10 md:py-20 px-4 bg-gray-50">
+    <div class="max-w-7xl mx-auto">
+      <!-- Registration Card -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col-reverse md:grid md:grid-cols-2">
+
+        <!-- LEFT IMAGE PAMPHLET -->
+        <div id="selectedPackageCard"
+          class="flex items-center justify-center relative bg-cover bg-center min-h-[300px] md:min-h-[520px]">
+
+        </div>
+
+        <!-- RIGHT FORM -->
+        <div class="p-10">
+
+          <h3 class="text-2xl font-bold text-gray-900 mb-6">
+            Provide Your Details
+          </h3>
+
+          <form id="registrationForm" class="space-y-5">
+
+            <input required type="text" placeholder="Full Name*"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none">
+
+            <input required type="email" placeholder="Email Address*"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none">
+
+            <input required type="tel" placeholder="Phone Number*"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none">
+            <div class="grid grid-cols-1 gap-4">
+              <div>
+                <label class="text-sm text-gray-500 block mb-1">Selected Package</label>
+                <div id="packageName" class="text-lg font-bold text-gray-900"></div>
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 block mb-1">Amount</label>
+                <div id="packageRate" class="text-lg font-bold text-gray-900"></div>
+              </div>
+            </div>
+
+            <label class="flex items-center gap-2 text-sm text-gray-600">
+              <input type="checkbox" required>
+              I agree to the
+              <a href="#" class="text-blue-600 underline">Terms</a> &
+              <a href="#" class="text-blue-600 underline">Privacy Policy</a>
+            </label>
+
+            <button class="w-full py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition"
+              onclick="makePayment()">
+              File Your Tax Now
+            </button>
+
+            <p class="text-center text-sm text-gray-500">
+              Already Registered?
+              <a href="/login" class="text-blue-600 font-semibold">Log in</a>
+            </p>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Dynamic FAQ Section -->
+  <section id="faq" class="relative w-full py-24 px-4 bg-gray-50 overflow-hidden border-t border-gray-100">
+    <div class="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+      <div class="absolute left-[-10%] top-[20%] w-96 h-96 bg-blue-200 rounded-full blur-3xl mix-blend-multiply"></div>
+      <div class="absolute right-[-10%] bottom-[20%] w-96 h-96 bg-purple-200 rounded-full blur-3xl mix-blend-multiply">
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+      <div class="grid lg:grid-cols-12 gap-12 items-start">
+
+        <div class="lg:col-span-5 lg:sticky lg:top-32">
+          <span class="text-blue-600 font-bold tracking-wider uppercase text-sm">Support</span>
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-6 leading-tight">
+            Got Questions? <br> We've Got <span class="text-blue-600">Answers.</span>
+          </h2>
+          <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+            Here are the most common questions related to your selected plan or service.
+          </p>
+
+          <div
+            class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden group">
+            <div
+              class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl transform translate-x-10 -translate-y-10 transition group-hover:scale-110">
+            </div>
+            <div class="relative z-10">
+              <h3 class="text-2xl font-bold mb-2">Still confused?</h3>
+              <p class="text-blue-100 mb-6">Can't find the answer you're looking for? Chat with our friendly team.</p>
+              <a href="/contact"
+                class="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-700 font-bold rounded-lg hover:bg-blue-50 transition shadow-sm">
+                Contact Support
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div id="dynamic-faq-container" class="lg:col-span-7 space-y-4">
+          <!-- FAQs will be injected here via script.js -->
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  
+  </div>
+  <script>document.addEventListener("DOMContentLoaded", () => {
+
+      const type = new URLSearchParams(window.location.search).get("type");
+
+      const heroTitle = document.getElementById("page-title");
+      const heroSubtitle = document.getElementById("page-subtitle");
+
+      // ---------- HERO SECTION ----------
+      if (type === "nri") {
+        heroTitle.innerText = "NRI Details";
+        heroSubtitle.innerText =
+          "Specialized tax filing for foreign income, DTAA & global compliance.\nExpert handling of overseas income and Indian tax obligations.";
+        document.title = "NRI Details - Tax Filing Guru";
+      } else if (type === "TaxNotice") {
+        heroTitle.innerText = "Tax Notice";
+        heroSubtitle.innerText =
+          "Expert assistance in handling income tax notices and drafting responses.\nProtect your rights with our professional support.";
+        document.title = "Tax Notice - Tax Filing Guru";
+      }
+      else if (type === "AdvanceTaxCalculation") {
+        heroTitle.innerText = "Advance Tax Calculation";
+        heroSubtitle.innerText =
+          "Accurate calculation and timely planning of your advance tax liabilities.\nEnsure compliance and avoid penalties with our expert services.";
+        document.title = "Advance Tax Calculation - Tax Filing Guru";
+      }
+      else if (type === "TaxConsultation") {
+        heroTitle.innerText = "Tax Consultation";
+        heroSubtitle.innerText =
+          "Expert tax planning and consultation services for all needs.\nOptimize your tax strategy with personalized advice.";
+        document.title = "Tax Consultation - Tax Filing Guru";
+      }
+      else if (type === "GSTCompliance") {
+        heroTitle.innerText = "GST Compliance";
+        heroSubtitle.innerText =
+          "Hassle-free GST registration, monthly filing, and regulatory compliance. \nExpert support for your business needs.";
+        document.title = "GST Compliance - Tax Filing Guru";
+      }
+      else {
+      }
+
+      // ---------- PACKAGE DETAILS ----------
+      const packageData = JSON.parse(localStorage.getItem("selectedPackage"));
+      const serviceData = JSON.parse(localStorage.getItem("selectedService"));
+      const data = packageData || serviceData;
+      if (!data) return;
+
+      const card = document.getElementById("selectedPackageCard");
+      if (!card) return;
+      document.getElementById("packageName").innerText = data.name;
+      document.getElementById("packageRate").innerText = data.rate;
+      card.innerHTML = `
+    <!-- Full Background Layer -->
+    <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 bg-cover bg-center" 
+             style="background-image: url('assets/images/pamphlet-resident.jpg'); filter: blur(8px); transform: scale(1);">
+        </div>
+        <div class="absolute inset-0 bg-black/10"></div>
+    </div>
+
+    <!-- Centered Content Card (75% width) -->
+    <div class="relative z-10 bg-white rounded-2xl shadow-2xl p-6 md:p-8 w-[90%] md:w-[75%] max-h-[90%] overflow-y-auto custom-scrollbar">
+      
+      ${data.icon ? `
+      <div class="mb-5 flex justify-center md:justify-start">
+         <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center shadow-md">
+            ${data.icon}
+         </div>
+      </div>` : ''}
+              
+      <h1 class="text-2xl md:text-3xl font-bold mb-3 text-gray-900 leading-tight">${data.name}</h1>
+
+      <p class="text-gray-600 text-sm md:text-base mb-6 leading-relaxed border-b border-gray-100 pb-4">${data.description}</p>
+
+      <ul class="space-y-3">
+        ${data.features.map(f => `
+        <li class="flex items-start text-gray-700 text-sm md:text-base font-medium">
+            <svg class="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            ${f}
+        </li>`).join("")}
+      </ul>
+    </div>
+  `;
+      // ---------- FORM SUBMIT ----------
+      document.getElementById("registrationForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          alert("✅ Details Submission Successful! Please proceed for payment.");
+
+          window.location.href =
+            type === "nri"
+              ? "/login?type=nri"
+              : "/login?type=resident";
+        });
+
+      // Render Dynamic FAQs based on Type or Service ID
+      if (typeof renderDynamicFaq === 'function') {
+        // Determine context: Type URL param OR Package Name OR Service ID
+        // Priority: Service > Type > Package
+        let context = type;
+        if (!context && data) {
+          // If data came from localStorage, try to find a matching key in servicesData
+          // But servicesData keys are like "TaxConsultation"
+          // data.name might be "Tax Consultation"
+          // Let's pass the 'type' param if it exists, otherwise pass the name from localStorage
+          // Actually, script.js selectService sets reg.html?type=ServiceId. So type param should be present for services.
+          // For Residents/NRI clicking from menu, type might be undefined or 'nri'.
+          // If type is undefined, default to 'resident'.
+        }
+        renderDynamicFaq(type || 'resident');
+      }
+
+    });
+  </script>
+  <script src="js/script.js"></script>
+  <%- include('partials/footer') %>
+</body>
+
+</html>
