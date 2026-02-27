@@ -1,0 +1,32 @@
+<!-- Custom Alert/Confirm Popup -->
+<div id="tfgPopup" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closePopup()"></div>
+    
+    <!-- Modal -->
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all scale-95 opacity-0 duration-300" id="popupContent">
+        <div class="p-8 text-center">
+            <!-- Icon container -->
+            <div id="popupIcon" class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full text-3xl">
+                <!-- Dynamic Icon -->
+            </div>
+            
+            <h3 id="popupTitle" class="text-xl font-bold text-gray-900 mb-2"></h3>
+            <p id="popupMessage" class="text-gray-600 leading-relaxed"></p>
+        </div>
+        
+        <div class="p-4 bg-gray-50 flex gap-3" id="popupButtons">
+            <button id="popupCancelBtn" onclick="closePopup()" class="hidden flex-1 px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold hover:bg-gray-100 transition-colors">
+                Cancel
+            </button>
+            <button id="popupConfirmBtn" onclick="handlePopupConfirm()" class="flex-1 px-6 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-shadow shadow-lg shadow-blue-500/20">
+                OK
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    #tfgPopup.show { display: flex; }
+    #tfgPopup.show #popupContent { transform: scale(1); opacity: 1; }
+</style>

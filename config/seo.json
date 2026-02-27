@@ -1,0 +1,294 @@
+{
+  "default": {
+    "title": "Tax Filing Guru - Expert Income Tax Filing & Consultation",
+    "description": "Simplify your income tax filing with Tax Filing Guru. Expert assistance for Salaried, Professionals, NRIs, and Traders. Maximize your refunds today.",
+    "keywords": "income tax filing, ITR filing, tax consultant, NRI tax services, tax refund, income tax return",
+    "canonical": "https://taxfilingguru.com",
+    "image": "https://taxfilingguru.com/assets/images/TFG_LOGO.png",
+    "imageAlt": "Tax Filing Guru - Smart Taxes Need a Guru",
+    "type": "website",
+    "headings": {
+      "h1": "Smart Taxes Need a Guru",
+      "h2": "Expert Assisted Tax Filing",
+      "h3": "Simple, Transparent, and Secure"
+    }
+  },
+  "/": {
+    "title": "Tax Filing Guru - India's Trusted Tax Filing Platform",
+    "description": "File your ITR with confidence. Expert-assisted tax filing for individuals, businesses, and NRIs. Get maximum refund and 100% accuracy.",
+    "keywords": "online tax filing, itr filing india, tax experts, income tax return",
+    "headings": {
+      "h1": "File Your Taxes with Confidence",
+      "h2": "Why Choose Tax Filing Guru?",
+      "h3": "Our Services"
+    },
+    "faqs": [
+      { "question": "Will I get a tax notice?", "answer": "Notices are rare because we pre-verify your data with government records (AIS/26AS) before filing. If you do receive one, our support team will handle the response for you." },
+      { "question": "Which regime is best for me?", "answer": "Our system automatically calculates your tax liability under both the New and Old regimes and recommends the one that gives you the highest refund." },
+      { "question": "Why choose Tax Filing Guru?", "answer": "We combine CA expertise with AI accuracy. We specialize in complex NRI cases and ensuring residents get every legal deduction. Your data is secured with AES-256 encryption." },
+      { "question": "Is filing return compulsory?", "answer": "It is mandatory if your income exceeds ₹2.5 Lakh. However, we recommend filing even if you earn less for loan approvals and visa applications." },
+      { "question": "How secure is my data with Tax Filing Guru?", "answer": "We use bank-grade AES-256 encryption to protect your sensitive financial documents. Your data is never shared with third parties and is used strictly for tax filing purposes." }
+    ]
+  },
+  "/refund-maximizer": {
+    "title": "Refund Maximizer - Find Missed Tax Deductions",
+    "description": "Don't leave money on the table. Our smart tool scans 50+ deductions to maximize your income tax refund. Check your eligibility now.",
+    "keywords": "tax refund calculator, income tax deductions, 80c deductions, hra exemption, tax saving",
+    "headings": {
+      "h1": "Maximize Your Tax Refund",
+      "h2": "Did You Miss These Deductions?",
+      "h3": "Commonly Overlooked Sections"
+    },
+    "faqs": [
+      { "question": "What is the Refund Maximizer?", "answer": "It is a smart tool that checks your profile against 50+ income tax deductions to ensure you claim everything you are eligible for." },
+      { "question": "Is this tool free?", "answer": "Yes, the Refund Maximizer is a free utility to help you estimate your potential tax savings." },
+      { "question": "Does it cover the New Tax Regime?", "answer": "Yes, it compares deductions under both Old and New Regimes to find the best option for you." },
+      { "question": "Can I claim 80D for my parents?", "answer": "Yes, you can claim up to ₹25,000 for parents below 60 years and up to ₹50,000 if they are senior citizens, even if they are not dependent on you." },
+      { "question": "What is Section 80GG?", "answer": "If you are a salaried individual not receiving HRA, or a self-employed person, you can claim rent paid under Section 80GG up to ₹60,000 per year." }
+    ]
+  },
+  "/regime-comparison": {
+    "title": "Old vs New Tax Regime Comparison (FY 2025-26)",
+    "description": "Compare your tax liability under the Old Regime vs New Regime (FY 24-25 & 25-26). Find out which regime saves you more tax instantly.",
+    "keywords": "old vs new tax regime, tax calculator 2025, budget 2025 tax slabs, income tax comparison",
+    "headings": {
+      "h1": "Compare Old vs New Tax Regimes",
+      "h2": "Which Regime Saves You More?",
+      "h3": "Detailed Breakdown"
+    },
+    "faqs": [
+      { "question": "Which tax regime is better for 15 Lakh income?", "answer": "It depends on your deductions. Generally, if your deductions (80C, 80D, HRA) exceed ₹4.25 Lakh, the Old Regime might be better; otherwise, the New Regime usually saves more." },
+      { "question": "What is the new standard deduction for 2025-26?", "answer": "The standard deduction has been increased to ₹75,000 for the New Regime in FY 2025-26 (Budget 2025)." },
+      { "question": "What are the New Tax slabs for FY 2025-26?", "answer": "The slabs are: 0-4L (Nil), 4-8L (5%), 8-12L (10%), 12-16L (15%), 16-20L (20%), and above 20L (30%)." },
+      { "question": "What is the Section 87A rebate in the New Regime?", "answer": "For FY 2025-26, if your taxable income is up to ₹12 Lakh under the New Regime, you get a full tax rebate, making your tax liability zero." },
+      { "question": "Can I switch regimes every year?", "answer": "Salaried individuals can switch between Old and New regimes every year at the time of filing. Business owners can only switch once." }
+    ]
+  },
+  "/nri-status": {
+    "title": "NRI Residential Status Calculator - Check Your Status",
+    "description": "Determine your residential status for income tax purposes. Check if you are a Resident, RNOR, or NRI based on your stay in India.",
+    "keywords": "nri tax status, residential status calculator, resident vs nri, income tax nri rules",
+    "headings": {
+      "h1": "Check Your Residential Status",
+      "h2": "Are You an NRI or Resident?",
+      "h3": "Based on Section 6 of IT Act"
+    },
+    "faqs": [
+      { "question": "How is NRI status determined?", "answer": "It is based on the number of days you stay in India during the financial year. Generally, staying less than 182 days makes you an NRI." },
+      { "question": "What is RNOR status?", "answer": "Resident but Not Ordinarily Resident (RNOR) is a transition status where you are a resident in India but your foreign income is still not taxable in India for up to 3 years." },
+      { "question": "What is the 120-day rule for NRIs?", "answer": "If an Indian citizen/PIO has Indian income > ₹15 Lakh, they become a Resident if they stay in India for 120 days or more (instead of 182 days) and 365 days in the past 4 years." },
+      { "question": "Is global income taxable for NRIs?", "answer": "No, for an NRI, only income earned or received in India (like rent or interest) is taxable. Global income earned abroad is exempt from Indian tax." },
+      { "question": "Do I need an Aadhaar card to file as an NRI?", "answer": "No, NRIs are exempt from the mandatory Aadhaar-PAN linking. You can file your ITR using only your PAN card." }
+    ]
+  },
+  "/trader-turnover": {
+    "title": "Trader Turnover Calculator - F&O & Intraday Audit Check",
+    "description": "Calculate your F&O and Intraday turnover correctly to know if you need a Tax Audit. Avoid penalties with our smart calculator.",
+    "keywords": "tax audit calculator, f&o turnover, intraday turnover, section 44ab, trader tax audit",
+    "headings": {
+      "h1": "Trader Turnover Calculator",
+      "h2": "Do You Need a Tax Audit?",
+      "h3": "Calculate Absolute Turnover"
+    },
+    "faqs": [
+      { "question": "How is F&O turnover calculated?", "answer": "F&O turnover is the sum of 'Absolute Profit' and 'Absolute Loss'. For example, if you have a profit of ₹50k and a loss of ₹30k, your turnover is ₹80k." },
+      { "question": "What is the limit for tax audit for traders?", "answer": "If your business turnover exceeds ₹10 Crores (provided 95% of transactions are digital), a tax audit is mandatory under Section 44AB." },
+      { "question": "Is audit mandatory if I have a loss in F&O?", "answer": "Yes, if you have a business loss and your total income exceeds the basic exemption limit (₹2.5L/3L), an audit is mandatory to carry forward the loss." },
+      { "question": "What is Absolute Profit/Loss?", "answer": "Absolute profit or loss means ignoring the negative sign. Both profits and losses are added together to calculate the turnover for tax audit purposes." },
+      { "question": "How is Intraday turnover calculated differently?", "answer": "Similar to F&O, intraday turnover is the sum of absolute differences between buy and sell values of all trades." }
+    ]
+  },
+  "/refund-status": {
+    "title": "Track Income Tax Refund Status - Live Check",
+    "description": "Check the live status of your income tax refund. Track simply with your PAN and Assessment Year.",
+    "keywords": "income tax refund status, check refund, nsdl refund track, refund delay reasons",
+    "headings": {
+      "h1": "Track Your Refund Status",
+      "h2": "Where is Your Refund?",
+      "h3": "Live Status Check"
+    },
+    "faqs": [
+      { "question": "How long does a refund take?", "answer": "Usually 2-4 weeks after processing, but it can vary based on bank validation status and the complexity of the return." },
+      { "question": "What is a 'Refund Reissue' request?", "answer": "If your refund fails due to incorrect bank details or PAN-Aadhaar mismatch, you must raise a Refund Reissue request on the e-filing portal." },
+      { "question": "Why is my refund 'Adjusted against outstanding demand'?", "answer": "The Income Tax Department can use your current refund to pay off unpaid tax demands from previous years under Section 245." },
+      { "question": "How do I check my refund status?", "answer": "You can check it on the NSDL website or the e-filing portal using your PAN and the relevant Assessment Year." },
+      { "question": "Does the department pay interest on delayed refunds?", "answer": "Yes, if the refund is more than 10% of the tax paid, you are entitled to interest at 0.5% per month under Section 244A." }
+    ]
+  },
+  "/tools": {
+    "title": "Tax Tools & Calculators - Tax Filing Guru",
+    "description": "Access our suite of free tax tools: Refund Maximizer, Regime Comparator, NRI Status Checker, and more.",
+    "keywords": "free tax tools, income tax calculators, tax planning tools",
+    "headings": {
+      "h1": "Free Tax Tools & Calculators",
+      "h2": "Everything You Need for Smart Filing",
+      "h3": "Our Tool Suite"
+    },
+    "faqs": [
+      { "question": "Are these tools free to use?", "answer": "Yes, all the tax calculators and tools on Tax Filing Guru are 100% free for everyone." },
+      { "question": "How accurate are these calculators?", "answer": "Our tools are updated with the latest Budget 2025 laws. While they provide highly accurate estimates, we recommend a CA review for complex cases." },
+      { "question": "Is my data safe while using these tools?", "answer": "We do not store your financial inputs on our servers. The calculations are processed securely in your browser session." },
+      { "question": "Do I need to sign up to use the tools?", "answer": "No, you can use any of our tax tools anonymously without creating an account." },
+      { "question": "Can I use these tools for old financial years?", "answer": "Yes, our Regime Comparison and status tools support calculations for multiple assessment years." }
+    ]
+  },
+  "/contact": {
+    "title": "Contact Tax Filing Guru - Expert Support",
+    "description": "Need help with your taxes? Contact our experts for personalized assistance. We are here to help you file correctly.",
+    "keywords": "tax consultant contact, tax filing support, expert ca help",
+    "headings": {
+      "h1": "Get Expert Help",
+      "h2": "Contact Us Today",
+      "h3": "We're Here to Assist"
+    },
+    "faqs": [
+      { "question": "How quickly will you respond?", "answer": "We typically respond to all queries within 24 hours. For urgent matters, please call us directly." },
+      { "question": "Can I send documents via email?", "answer": "Yes, but we recommend our secure client portal for better tracking and encryption of your sensitive documents." },
+      { "question": "Do you provide video consultations?", "answer": "Yes, we offer scheduled video calls with expert CAs for deep-dive tax planning and notice resolution." },
+      { "question": "Where is your office located?", "answer": "We are a digital-first platform serving clients across India and globally (NRIs), with our primary processing center in New Delhi." },
+      { "question": "Do you help with GST notices?", "answer": "Yes, our team includes GST experts who can help you draft replies and represent you before GST authorities." }
+    ]
+  },
+  "/about": {
+    "title": "About Tax Filing Guru - Our Mission",
+    "description": "Learn about Tax Filing Guru, our mission to simplify taxes for every Indian, and our team of expert CAs.",
+    "keywords": "about tax filing guru, tax startup india, expert team",
+    "headings": {
+      "h1": "About Tax Filing Guru",
+      "h2": "Simplifying Taxes for Everyone",
+      "h3": "Our Story"
+    },
+    "faqs": [
+      { "question": "Who is Tax Filing Guru?", "answer": "We are a team of experienced CAs and tech professionals dedicated to making tax filing accurate, digital, and stress-free." },
+      { "question": "Do you help with tax planning?", "answer": "Yes, we go beyond filing to provide personalized advice on legal tax-saving investments and wealth structuring." },
+      { "question": "How long have you been in business?", "answer": "Our founding team has over 15 years of experience in Indian taxation and has served over 10,000 clients globally." },
+      { "question": "Is Tax Filing Guru an authorized e-return intermediary?", "answer": "Yes, we use secure, authorized channels to submit your tax returns directly to the Income Tax Department's servers." },
+      { "question": "What makes you different from other portals?", "answer": "We combine the speed of a software with the personal touch of a CA. We don't just file; we optimize every return for maximum savings." }
+    ]
+  },
+  "/nri": {
+    "title": "NRI Tax Services - Specialized Filing & DTAA Guidance",
+    "description": "Expert tax filing for NRIs. Handle foreign income, DTAA benefits, and FEMA compliance with ease. Get maximum refund on Indian income.",
+    "keywords": "nri tax filing, dtaa benefits, nro nre tax, foreign asset reporting",
+    "headings": {
+      "h1": "NRI Tax Solutions",
+      "h2": "Expert Guidance for Global Indians",
+      "h3": "Stay Compliant with Indian Laws"
+    },
+    "faqs": [
+      { "question": "Which package is right for me?", "answer": "Basic for simple Indian income, Standard for foreign income optimization, and Advanced for complex capital gains or house property sales." },
+      { "question": "How do you handle DTAA benefits?", "answer": "We analyze your country of residence's treaty with India and apply the lower tax rate or exemption as per the Double Taxation Avoidance Agreement." },
+      { "question": "Is my overseas income safe from Indian tax?", "answer": "Yes, as long as you maintain NRI status, your global income is not taxable in India. We ensure your status is correctly reported to protect your foreign earnings." },
+      { "question": "Can you help with NRE/NRO account issues?", "answer": "Yes, we advise on the correct taxation of interest income and help with Form 15CA/CB for transferring funds abroad." },
+      { "question": "Do I need to visit India for filing?", "answer": "No, our entire process is 100% digital. You can upload documents and consult with us from anywhere in the world." },
+      { "question": "Is the Basic plan genuinely free?", "answer": "Yes, the Basic plan is ₹0 for simple salary ITRs. No credit card required." }
+    ]
+  },
+  "/individualpackage": {
+    "title": "Tax Filing Packages for Individuals & Professionals",
+    "description": "Choose the best ITR filing plan. Packages for Salaried, House Property, Capital Gains, and Business Income.",
+    "keywords": "itr filing plans, tax filing packages, professional tax services",
+    "headings": {
+      "h1": "Choose Your Tax Plan",
+      "h2": "Simple, Transparent Pricing",
+      "h3": "Expert Assistance Included"
+    },
+    "faqs": [
+      { "question": "How do I choose a plan?", "answer": "Pick 'Salary Essential' for single employer income, 'Business Owner' for freelance income, or 'Premium' if you have shares and capital gains." },
+      { "question": "What happens after I pay for a plan?", "answer": "You will get immediate access to our secure dashboard where you can upload your documents and chat with your assigned CA." },
+      { "question": "Can I upgrade my plan later?", "answer": "Yes, if your case becomes more complex (e.g., you sold a house during the year), you can easily upgrade by paying the difference." },
+      { "question": "What if I miss the filing deadline?", "answer": "We help with 'Belated Returns' as well, though a late fee may apply as per government rules. We ensure it's filed correctly to minimize penalties." },
+      { "question": "Is the CA support unlimited?", "answer": "Yes, for the specific financial year of the plan, you can ask unlimited questions related to your tax filing until the return is processed." }
+    ]
+  },
+  "/login": {
+    "title": "Login - Tax Filing Guru Client Portal",
+    "description": "Access your secure tax dashboard. Upload documents, track your filing status, and chat with your assigned expert.",
+    "keywords": "tax portal login, client login, track itr status",
+    "headings": {
+      "h1": "Client Login",
+      "h2": "Access Your Dashboard",
+      "h3": "Secure Document Management"
+    },
+    "faqs": [
+      { "question": "I forgot my password, how do I reset it?", "answer": "Click on 'Forgot Password' and enter your registered email. We will send you an OTP to set a new password securely." },
+      { "question": "Is the login portal secure?", "answer": "Yes, our portal uses SSL encryption and multi-factor authentication options to ensure only you can access your data." },
+      { "question": "Can I access my previous year's filings?", "answer": "Yes, once you log in, all your past returns and uploaded documents are available in your archive forever." },
+      { "question": "Can I login from my mobile?", "answer": "Absolutely. Our platform is fully responsive. You can upload documents using your mobile camera directly into the portal." }
+    ]
+  },
+  "/reg": {
+    "title": "Register - Join Tax Filing Guru",
+    "description": "Create your account to start your stress-free tax filing journey. Get matched with a dedicated tax expert.",
+    "keywords": "register for tax filing, sign up tax guru",
+    "headings": {
+      "h1": "Create Your Account",
+      "h2": "Join the Smart Tax Movement",
+      "h3": "Start Filing in Minutes"
+    },
+    "faqs": [
+      { "question": "What information is needed for registration?", "answer": "You only need your name, email, and phone number to get started. You can add PAN details later." },
+      { "question": "Is registration free?", "answer": "Yes, creating an account and exploring our platform is completely free." },
+      { "question": "How do I get matched with a CA?", "answer": "Based on the package you select and the complexity of your income, our system automatically assigns the best-suited CA to your case." },
+      { "question": "Why do I need to register?", "answer": "Registration allows us to assign a dedicated tax expert to your case and gives you access to a secure vault for your tax documents." },
+      { "question": "Is there a registration fee?", "answer": "Account creation is completely free. You only pay when you choose a specific paid filing service." },
+      { "question": "Can I register with an international number?", "answer": "Yes, we support global users. Simply select your country code during registration." }
+    ]
+  },
+  "/privacy": {
+    "title": "Privacy Policy - Your Data is Secure",
+    "description": "Read our privacy policy to understand how we protect your financial and personal data with AES-256 encryption.",
+    "keywords": "privacy policy, data security tax guru",
+    "headings": {
+      "h1": "Privacy Policy",
+      "h2": "Your Privacy is Our Priority",
+      "h3": "Data Protection Standards"
+    },
+    "faqs": [
+      { "question": "Do you sell my data to advertisers?", "answer": "Absolutely not. We have a strict 'No-Data-Sale' policy. Your data is used exclusively for tax filing services." },
+      { "question": "How long do you store my documents?", "answer": "We store them for 8 years as per government compliance requirements, unless you request deletion of your account." },
+      { "question": "Who can see my uploaded documents?", "answer": "Only you and your assigned CA/Tax Expert can view your documents." },
+      { "question": "How long do you store my data?", "answer": "We store your data as long as required by tax laws or as until you request account deletion." },
+      { "question": "Do you sell my data to third parties?", "answer": "Never. Your personal and financial information is strictly confidential and used only for your tax filing services." }
+    ]
+  },
+  "/terms": {
+    "title": "Terms & Conditions - Tax Filing Guru",
+    "description": "Review the terms of service for using the Tax Filing Guru platform and our professional consultation services.",
+    "keywords": "terms of service, legal agreement tax guru",
+    "headings": {
+      "h1": "Terms & Conditions",
+      "h2": "Service Agreement",
+      "h3": "Usage Guidelines"
+    },
+    "faqs": [
+      { "question": "What is your refund policy?", "answer": "We offer a 100% money-back guarantee if we are unable to file your return due to an error on our part. Additionally, if we haven't started working on your file within 48 hours, you are eligible for a full refund; once CA review starts, fees are non-refundable." },
+      { "question": "What is included in the service fee?", "answer": "The fee includes data review, ITR drafting, computation shared for approval, and E-verification support." },
+      { "question": "What are my responsibilities as a client?", "answer": "Clients are responsible for providing accurate and complete information. We file based on the data provided by you." },
+      { "question": "Is the advice provided legally binding?", "answer": "Our advice is based on the current interpretation of tax laws. The final assessment is subject to the Income Tax Department's discretion." }
+    ]
+  },
+  "/resident": {
+    "headings": {
+      "h1": "Resident Tax Filing"
+    },
+    "faqs": [
+      {
+        "question": "Is it mandatory to file ITR?",
+        "answer": "It is mandatory if your income exceeds ₹2.5 Lakh. Filing is recommended even for lower income to tackle future notices, claim refunds, and for loan/visa approvals."
+      },
+      {
+        "question": "What documents are required?",
+        "answer": "Typically, you need your PAN, Aadhaar, Form 16, and bank statements. For capital gains or business income, additional statements are needed."
+      },
+      {
+        "question": "How long does it take to get a refund?",
+        "answer": "Once filed and verified, refunds usually process within 15-45 days."
+      },
+      {
+        "question": "Can I switch between Old and New Regime?",
+        "answer": "Yes. Salaried individuals can choose the beneficial regime every year."
+      }
+    ]
+  }
+}

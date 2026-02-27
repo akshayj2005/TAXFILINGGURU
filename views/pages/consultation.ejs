@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultations Dashboard - Tax Filing Guru</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-6 md:p-10 font-sans">
+    
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-blue-900 mb-8 border-b pb-4">Recent Consultation Requests</h1>
+
+        <div class="bg-white shadow-xl rounded-lg overflow-hidden border border-gray-100">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-blue-50 text-blue-900">
+                            <th class="p-4 border-b font-semibold">Date created</th>
+                            <th class="p-4 border-b font-semibold">Type</th>
+                            <th class="p-4 border-b font-semibold">Scheduled Date</th>
+                            <th class="p-4 border-b font-semibold">Scheduled Time</th>
+                            <th class="p-4 border-b font-semibold">Name</th>
+                            <th class="p-4 border-b font-semibold">Contact Info</th>
+                            <th class="p-4 border-b font-semibold">Details</th>
+                            <th class="p-4 border-b font-semibold">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <% if (consultations && consultations.length > 0) { %>
+                            <% consultations.forEach(item => { %>
+                                <tr class="hover:bg-blue-50/50 transition">
+                                    <td class="p-4 text-gray-500 text-sm whitespace-nowrap">
+                                        <%= new Date(item.createdAt).toLocaleString() %>
+                                    </td>
+                                    <td class="p-4">
+                                        <% if (item.type === 'Free Consultation') { %>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Free</span>
+                                        <% } else { %>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">Video</span>
+                                        <% } %>
+                                    </td>
+                                    <td class="p-4 text-gray-800 font-medium whitespace-nowrap"><%= item.date %></td>
+                                    <td class="p-4 text-gray-600 whitespace-nowrap"><%= item.time %></td>
+                                    <td class="p-4 font-semibold text-gray-900"><%= item.name || '-' %></td>
+                                    <td class="p-4">
+                                        <div class="text-xs text-gray-600"><%= item.email || '' %></div>
+                                        <div class="text-sm font-medium text-gray-800"><%= item.mobile || '-' %></div>
+                                    </td>
+                                    <td class="p-4 text-sm text-gray-600 whitespace-nowrap">
+                                        <% if (item.duration) { %>
+                                            <div>D: <%= item.duration %> mins</div>
+                                            <div>A: <%= item.amount %></div>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <%= item.status %>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="8" class="p-8 text-center text-gray-500">
+                                    No consultations booked yet.
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+
+</body>
+</html>

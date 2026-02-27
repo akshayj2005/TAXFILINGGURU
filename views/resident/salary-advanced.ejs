@@ -1,0 +1,221 @@
+<!-- ══ HERO ══════════════════════════════════════════════════════════════════ -->
+<section class="w-full hero-bg py-10 px-4 relative flex flex-col justify-center">
+    <div class="max-w-7xl mx-auto relative z-10 text-center w-full">
+        <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Salary Advanced – Resident Registration</h2>
+        <p class="text-gray-200">Advanced filing with HRA, home loans, and basic capital gains.</p>
+    </div>
+</section>
+<main class="w-full py-10 md:py-20 px-4 bg-gray-50">
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">
+            <div class="relative flex items-center justify-center min-h-[400px] md:min-h-full overflow-hidden p-6 md:p-12">
+                <div class="absolute inset-0 z-0">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 scale-105" style="background-image: url('/assets/images/pamphlet-resident.jpg'); filter: blur(6px);">
+                    </div>
+                    <div class="absolute inset-0 bg-black/15"></div>
+                </div>
+                <div
+                    class="relative z-10 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 md:p-8 w-[80%] max-h-[90%] overflow-y-auto border border-white/20">
+                    <div
+                        class="inline-block bg-red-100 text-red-600 font-bold px-3 py-1 rounded-full text-xs mb-4 tracking-wide">
+                        📈 Tax Optimisation</div>
+                    <h3 class="text-2xl font-bold mb-1 text-gray-900">Salary Advanced</h3>
+                    <p class="text-sm text-gray-500 mb-1">Salary ₹12L – ₹25L</p>
+                    <p class="text-2xl font-extrabold text-blue-600 mb-4">₹5,000 + GST</p>
+                    <p class="text-gray-600 text-sm mb-5 leading-relaxed border-b border-gray-200 pb-4">Advanced filing
+                        with HRA, home loans, and basic capital gains.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start text-gray-800 text-sm font-medium"><svg
+                                class="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>Multiple Employer Income</li>
+                        <li class="flex items-start text-gray-800 text-sm font-medium"><svg
+                                class="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>HRA &amp; Home Loan Deductions</li>
+                        <li class="flex items-start text-gray-800 text-sm font-medium"><svg
+                                class="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>Capital Gains (basic)</li>
+                        <li class="flex items-start text-gray-800 text-sm font-medium"><svg
+                                class="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>AIS Reconciliation</li>
+                        <li class="flex items-start text-gray-800 text-sm font-medium"><svg
+                                class="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>Regime Comparison (New vs Old)</li>
+                        <li class="flex items-start text-gray-800 text-sm font-medium"><svg
+                                class="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>Advanced Tax Planning</li>
+                    </ul>
+                </div>
+            </div>
+            
+      <div class="p-8 md:p-14 bg-white flex flex-col justify-center">
+          <div class="max-w-md mx-auto w-full">
+              <div class="mb-10 text-center">
+                  <h3 class="text-3xl font-bold text-gray-900 mb-2 font-heading">Provide Your Details</h3>
+                  <p class="text-gray-500 text-sm">Fill in the information below to secure your package.</p>
+              </div>
+
+              <form id="regForm" novalidate class="space-y-4" data-plan-name="Salary Advanced" data-plan-rate="₹5,000 + GST" data-is-nri="false">
+                  <!-- Inputs -->
+                  <div class="space-y-4">
+                      <div class="relative">
+                          <input required type="text" id="reg-name" placeholder="Full Name*"
+                              class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400">
+                      </div>
+
+                      <div class="relative">
+                          <input required type="email" id="reg-email" placeholder="Email Address*"
+                              class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400">
+                      </div>
+
+                      <div class="relative">
+                          <input required type="tel" id="reg-phone" placeholder="Phone Number*"
+                              class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400">
+                      </div>
+
+                      
+                      
+                      <div class="relative">
+                          <input type="text" id="reg-pan" placeholder="PAN NUMBER (OPTIONAL)" maxlength="10" style="text-transform:uppercase"
+                              class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400">
+                      </div>
+                      
+                      <div class="relative">
+                          <textarea id="reg-message" rows="2" placeholder="Any specific requirements? (optional)"
+                              class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400 resize-none"></textarea>
+                      </div>
+                  </div>
+
+                  <!-- Package Summary -->
+                  <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 space-y-4 pt-4 mt-6">
+                      <div class="flex justify-between items-center">
+                          <span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Package</span>
+                          <span class="text-gray-900 font-bold text-right">Salary Advanced</span>
+                      </div>
+                      <div class="flex justify-between items-center pt-3 border-t border-gray-200">
+                          <span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Amount</span>
+                          <span id="packageRate" class="text-blue-700 font-extrabold text-xl">₹5,000 + GST</span>
+                      </div>
+                  </div>
+
+                  <!-- Error Message -->
+                  <div id="regError" class="hidden text-red-600 text-sm bg-red-50 border border-red-100 rounded-xl px-5 py-3 font-medium"></div>
+
+                  <!-- Terms -->
+                  <label class="flex items-start gap-3 text-sm text-gray-500 cursor-pointer group mt-4">
+                      <input type="checkbox" id="reg-terms" required class="mt-1 w-5 h-5 rounded-lg border-gray-300 text-blue-600 focus:ring-blue-500 transition-colors">
+                      <span class="leading-relaxed">I agree to the <a href="/terms" class="text-blue-600 font-semibold hover:underline">Terms</a> & <a href="/privacy" class="text-blue-600 font-semibold hover:underline">Privacy Policy</a></span>
+                  </label>
+
+                  <!-- Submit -->
+                  <button type="submit" id="regSubmitBtn" style="background: #2563eb;"
+                      class="w-full py-5 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-blue-200/50 transition-all active:scale-[0.98] hover:opacity-90 hover:-translate-y-1 mt-4">
+                      File Your Tax Now
+                  </button>
+
+                  <p class="text-center text-sm text-gray-400 font-medium mt-4">
+                      Already Registered?
+                      <a href="/login?type=resident" class="text-blue-600 font-bold hover:underline">Log in</a>
+                  </p>
+              </form>
+          </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Back Link -->
+    <div class="mt-12 text-center">
+        <a href="/individualpackage"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-gray-200 text-gray-600 font-bold text-sm shadow-sm hover:shadow-md hover:border-blue-400 hover:text-blue-600 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Resident Packages
+        </a>
+    </div>
+  </div>
+</main>
+
+<!-- ── SCRIPT ──────────────────────────────────────────────── -->
+<script>
+(function () {
+    const form = document.getElementById('regForm');
+    const btn = document.getElementById('regSubmitBtn');
+    const err = document.getElementById('regError');
+
+    const planName = form.dataset.planName;
+    const planRate = form.dataset.planRate;
+    const isNri = form.dataset.isNri === 'true';
+
+    function showErr(msg) {
+        err.textContent = msg;
+        err.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'File Your Tax Now';
+        err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        err.classList.add('hidden');
+        btn.disabled = true;
+        btn.textContent = 'Processing...';
+
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const phone = document.getElementById('reg-phone').value.trim();
+        const pan = document.getElementById('reg-pan').value.trim();
+        const message = document.getElementById('reg-message').value.trim();
+        const terms = document.getElementById('reg-terms').checked;
+
+        if (isNri) {
+            const country = document.getElementById('reg-country').value.trim();
+            if (!country) return showErr('Please enter your country of residence.');
+        }
+
+        if (!name) return showErr('Please enter your full name.');
+        if (!email || !/\S+@\S+\.\S+/.test(email)) return showErr('Please enter a valid email address.');
+        if (!phone || phone.length < 7) return showErr('Please enter a valid phone number.');
+        if (!terms) return showErr('Please agree to the Terms & Privacy Policy.');
+
+        // Store details for checkout/payment
+        localStorage.setItem('regDetails', JSON.stringify({
+            name, email, phone, plan: planName, rate: planRate, source: 'parametric'
+        }));
+
+        const whatsappMsg = encodeURIComponent(`Hello Tax Filing Guru! 👋\n\nI would like to register for:\n*Salary Advanced* (₹5,000 + GST)\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nPAN: ${pan}\nRequirements: ${message}`);
+        
+        btn.textContent = 'Submission Successful!';
+        showPopup({ 
+            title: '🎉 Thank You!', 
+            message: `Your registration for Salary Advanced has been submitted.\nRedirecting to login...`, 
+            type: 'success', 
+            confirmText: 'Chat on WhatsApp', 
+            showCancel: true, 
+            callback: (confirmed) => { 
+                if (confirmed) {
+                    window.open(`https://api.whatsapp.com/send?phone=919811945176&text=${whatsappMsg}`, '_blank'); 
+                }
+                window.location.href = isNri ? '/login?type=nri' : '/login?type=resident';
+            } 
+        });
+    });
+})();
+</script>

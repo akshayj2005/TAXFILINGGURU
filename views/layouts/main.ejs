@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<%- include('../partials/head') %>
+
+    <body class="min-h-full bg-gray-50 flex flex-col">
+        <!-- Header -->
+        <%- include('../partials/header') %>
+
+            <!-- Global Floating Elements & Modals -->
+            <a href="javascript:void(0)"
+                onclick="trackWhatsAppClick('floating_button', 'General Enquiry'); setTimeout(()=>{window.location.href='https://api.whatsapp.com/send?phone=919811945176&text=%F0%9F%84%B8%F0%9F%85%83%F0%9F%84%B6%20%20I%20Want%20To%20Enquire%20About%20Your%20Tax%20Filing%20Guru%20Website'},400)"
+                class="whatsapp-float" target="_blank" rel="nofollow noopener" aria-label="Chat on WhatsApp">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg"
+                    alt="WhatsApp chat with TaxFilingGuru" />
+            </a>
+            <div id="rightTab" onclick="vcOpenBooking()">
+                Book Video Consultation
+                <span class="video-icon">📹</span>
+            </div>
+            <div id="bookingOverlay" class="overlay hidden">
+                <div class="booking-box" id="vcModalBox" onclick="event.stopPropagation()">
+                    <button class="close-btn" onclick="vcCloseBooking()">×</button>
+                    
+                    <!-- Step 1: Input Form -->
+                    <div id="vcFormStep">
+                        <h3>📹 Book Video Consultation</h3>
+                        <p class="subtitle" style="text-align: center;">Book Your Video Consultation Here</p>
+                        
+                        <!-- Error Message Container -->
+                        <div id="vcError" class="hidden mb-4 p-3 bg-red-50 border border-red-100 text-red-600 text-xs font-bold rounded-lg text-center">
+                        </div>
+
+                        <div class="duration">
+                            <button onclick="vcSelectDuration(45)" id="d45">45 Minutes</button>
+                            <button onclick="vcSelectDuration(90)" id="d90">1.5 Hour</button>
+                        </div>
+                        <input id="clientName" placeholder="Your Name" required>
+                        <input id="clientEmail" placeholder="Your Email" required>
+                        <input id="clientNo" placeholder="Your Mobile No." required>
+                        <div class="date-time-row">
+                            <div class="date-box">
+                                <label>Select Date</label>
+                                <input type="date" id="datePicker" required>
+                            </div>
+                            <div class="time-box">
+                                <label>Select Time</label>
+                                <div class="clock-picker small">
+                                    <button class="arrow" onclick="vcTimeUp()">▲</button>
+                                    <span id="timeDisplay">09:00 AM</span>
+                                    <button class="arrow" onclick="vcTimeDown()">▼</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="book-btn" onclick="vcBookNow()">Next Step</button>
+                    </div>
+
+                    <!-- Step 2: Confirmation -->
+                    <div id="vcConfirmStep" class="hidden text-center">
+                        <h3 class="mb-4">Confirm Booking</h3>
+                        <div class="bg-gray-50 rounded-xl p-6 mb-6 text-left space-y-3 text-sm">
+                            <p><strong>👤 Name:</strong> <span id="confName"></span></p>
+                            <p><strong>📅 Date:</strong> <span id="confDate"></span></p>
+                            <p><strong>⏰ Time:</strong> <span id="confTime"></span></p>
+                            <p><strong>⏳ Duration:</strong> <span id="confDuration"></span> Minutes</p>
+                            <p class="pt-2 border-t border-gray-200 text-lg"><strong>💰 Amount:</strong> <span id="confAmount" class="text-blue-600 font-bold"></span></p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="flex-1 py-3 rounded-lg border border-gray-200 font-bold" onclick="vcBackToForm()">Edit</button>
+                            <button class="flex-1 py-3 rounded-lg bg-green-600 text-white font-bold" onclick="vcFinalConfirm()">Confirm & WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="closeTab" class="overflow hidden" onclick="vcCloseBooking()">Close</div>
+
+            <!-- Main Content -->
+            <main class="flex-grow">
+                <%- body %>
+                    <!-- FAQ Section (Auto-renders if data exists) -->
+                    <%- include('../partials/faq') %>
+            </main>
+
+            <!-- Footer -->
+            <%- include('../partials/footer') %>
+
+                <!-- Global Scripts -->
+                <script src="/js/services-data.js"></script>
+                <script src="/js/utils.js"></script>
+                <script src="/js/booking.js"></script>
+                <script src="/js/tools.js"></script>
+                <script src="/js/script.js"></script>
+
+                <!-- Custom Popup -->
+                <%- include('../partials/popup') %>
+    </body>
+
+</html>

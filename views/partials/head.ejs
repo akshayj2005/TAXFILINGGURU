@@ -1,0 +1,50 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Dynamic SEO -->
+  <title>
+    <%= (typeof seo !=='undefined' && seo.title) ? seo.title : 'Tax Filing Guru' %>
+  </title>
+  <meta name="description" content="<%= (typeof seo !== 'undefined') ? seo.description : '' %>">
+  <meta name="keywords" content="<%= (typeof seo !== 'undefined') ? seo.keywords : '' %>">
+  <link rel="canonical" href="<%= (typeof seo !== 'undefined') ? seo.canonical : '' %>">
+
+  <!-- Open Graph (Facebook/LinkedIn) -->
+  <% if (typeof seo !=='undefined' && seo.og) { %>
+    <meta property="og:title" content="<%= seo.og.title %>">
+    <meta property="og:description" content="<%= seo.og.description %>">
+    <meta property="og:image" content="<%= seo.og.image %>">
+    <meta property="og:image:alt" content="<%= seo.og.imageAlt %>">
+    <meta property="og:url" content="<%= seo.og.url %>">
+    <meta property="og:type" content="<%= seo.og.type %>">
+    <% } %>
+
+      <!-- Twitter Card -->
+      <% if (typeof seo !=='undefined' && seo.twitter) { %>
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="<%= seo.twitter.title %>">
+        <meta name="twitter:description" content="<%= seo.twitter.description %>">
+        <meta name="twitter:image" content="<%= seo.twitter.image %>">
+        <% } %>
+
+          <!-- JSON-LD Schema (Structured Data) -->
+          <% if (typeof seo !=='undefined' && seo.schema && seo.schema.length> 0) { %>
+            <% seo.schema.forEach(function(s) { %>
+              <script type="application/ld+json">
+        <%- JSON.stringify(s) %>
+      </script>
+              <% }); %>
+                <% } %>
+
+                  <!-- Fonts -->
+                  <link rel="stylesheet"
+                    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@300;400;500;600;700;800&display=swap">
+
+                  <script src="https://cdn.tailwindcss.com"></script>
+                  <link rel="stylesheet" href="/css/styles.css">
+
+                  <link rel="icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
+                  <link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
+                  <link rel="apple-touch-icon" href="/assets/images/favicon/apple-touch-icon.png">
+</head>
