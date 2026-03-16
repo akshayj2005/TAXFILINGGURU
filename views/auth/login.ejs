@@ -1,0 +1,414 @@
+<!-- Page Heading -->
+
+<section class="w-full hero-bg py-10 px-4 relative flex flex-col justify-center">
+  <div class="max-w-7xl mx-auto relative z-10 text-center w-full">
+    <h2 id="page-title" class="text-3xl md:text-3xl md:text-5xl font-bold text-white mb-4">
+      <%= seo.headings.h1 %>
+    </h2>
+    <p id="page-subtitle" class="text-gray-100">
+      <%= seo.description %>
+    </p>
+  </div>
+</section>
+<main class="w-full py-10 md:py-20 px-4 bg-gray-50">
+  <div class="max-w-7xl mx-auto">
+    <!-- Registration Card -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">
+
+      <!-- LEFT IMAGE PAMPHLET -->
+      <div id="pamphlet"
+        class="relative flex items-center justify-center min-h-[550px] md:min-h-full overflow-hidden p-4 md:p-12">
+
+      </div>
+
+      <!-- RIGHT FORM -->
+      <div class="p-8 md:p-14 bg-white flex flex-col justify-center h-full">
+
+        <div class="mb-10 flex flex-col items-center">
+          <div class="flex p-1 bg-gray-100 rounded-xl w-fit">
+            <button type="button" onclick="setLoginMethod('email')" id="btn-email" class="px-6 py-2.5 rounded-lg text-sm font-bold transition-all bg-white text-blue-600 shadow-sm flex items-center gap-2">
+              <i class="fa-solid fa-envelope"></i> Email ID
+            </button>
+            <button type="button" onclick="setLoginMethod('mobile')" id="btn-mobile" class="px-6 py-2.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700 flex items-center gap-2">
+              <i class="fa-solid fa-phone"></i> Mobile Number
+            </button>
+          </div>
+        </div>
+
+        <form id="loginForm" class="space-y-5">
+
+          <div class="flex gap-2">
+            <select id="loginPhoneCode" class="hidden w-28 shrink-0 px-2 p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 bg-white cursor-pointer text-sm font-medium">
+              <optgroup label="Country Code">
+                <option value="+93" data-country="Afghanistan">+93</option><option value="+355" data-country="Albania">+355</option><option value="+213" data-country="Algeria">+213</option><option value="+376" data-country="Andorra">+376</option><option value="+244" data-country="Angola">+244</option><option value="+1268" data-country="Antigua and Barbuda">+1268</option><option value="+54" data-country="Argentina">+54</option><option value="+374" data-country="Armenia">+374</option><option value="+61" data-country="Australia">+61</option><option value="+43" data-country="Austria">+43</option><option value="+994" data-country="Azerbaijan">+994</option><option value="+1242" data-country="Bahamas">+1242</option><option value="+973" data-country="Bahrain">+973</option><option value="+880" data-country="Bangladesh">+880</option><option value="+1246" data-country="Barbados">+1246</option><option value="+375" data-country="Belarus">+375</option><option value="+32" data-country="Belgium">+32</option><option value="+501" data-country="Belize">+501</option><option value="+229" data-country="Benin">+229</option><option value="+975" data-country="Bhutan">+975</option><option value="+591" data-country="Bolivia">+591</option><option value="+387" data-country="Bosnia and Herzegovina">+387</option><option value="+267" data-country="Botswana">+267</option><option value="+55" data-country="Brazil">+55</option><option value="+673" data-country="Brunei">+673</option><option value="+359" data-country="Bulgaria">+359</option><option value="+226" data-country="Burkina Faso">+226</option><option value="+257" data-country="Burundi">+257</option><option value="+238" data-country="Cabo Verde">+238</option><option value="+855" data-country="Cambodia">+855</option><option value="+237" data-country="Cameroon">+237</option><option value="+1" data-country="Canada">+1</option><option value="+236" data-country="Central African Republic">+236</option><option value="+235" data-country="Chad">+235</option><option value="+56" data-country="Chile">+56</option><option value="+86" data-country="China">+86</option><option value="+57" data-country="Colombia">+57</option><option value="+269" data-country="Comoros">+269</option><option value="+242" data-country="Congo (Brazzaville)">+242</option><option value="+243" data-country="Congo (Kinshasa)">+243</option><option value="+506" data-country="Costa Rica">+506</option><option value="+385" data-country="Croatia">+385</option><option value="+53" data-country="Cuba">+53</option><option value="+357" data-country="Cyprus">+357</option><option value="+420" data-country="Czechia">+420</option><option value="+45" data-country="Denmark">+45</option><option value="+253" data-country="Djibouti">+253</option><option value="+1767" data-country="Dominica">+1767</option><option value="+1809" data-country="Dominican Republic">+1809</option><option value="+593" data-country="Ecuador">+593</option><option value="+20" data-country="Egypt">+20</option><option value="+503" data-country="El Salvador">+503</option><option value="+240" data-country="Equatorial Guinea">+240</option><option value="+291" data-country="Eritrea">+291</option><option value="+372" data-country="Estonia">+372</option><option value="+268" data-country="Eswatini">+268</option><option value="+251" data-country="Ethiopia">+251</option><option value="+679" data-country="Fiji">+679</option><option value="+358" data-country="Finland">+358</option><option value="+33" data-country="France">+33</option><option value="+241" data-country="Gabon">+241</option><option value="+220" data-country="Gambia">+220</option><option value="+995" data-country="Georgia">+995</option><option value="+49" data-country="Germany">+49</option><option value="+233" data-country="Ghana">+233</option><option value="+30" data-country="Greece">+30</option><option value="+1473" data-country="Grenada">+1473</option><option value="+502" data-country="Guatemala">+502</option><option value="+224" data-country="Guinea">+224</option><option value="+245" data-country="Guinea-Bissau">+245</option><option value="+592" data-country="Guyana">+592</option><option value="+509" data-country="Haiti">+509</option><option value="+504" data-country="Honduras">+504</option><option value="+36" data-country="Hungary">+36</option><option value="+354" data-country="Iceland">+354</option><option value="+91" data-country="India" selected>+91</option><option value="+62" data-country="Indonesia">+62</option><option value="+98" data-country="Iran">+98</option><option value="+964" data-country="Iraq">+964</option><option value="+353" data-country="Ireland">+353</option><option value="+972" data-country="Israel">+972</option><option value="+39" data-country="Italy">+39</option><option value="+1876" data-country="Jamaica">+1876</option><option value="+81" data-country="Japan">+81</option><option value="+962" data-country="Jordan">+962</option><option value="+7" data-country="Kazakhstan">+7</option><option value="+254" data-country="Kenya">+254</option><option value="+686" data-country="Kiribati">+686</option><option value="+965" data-country="Kuwait">+965</option><option value="+996" data-country="Kyrgyzstan">+996</option><option value="+856" data-country="Laos">+856</option><option value="+371" data-country="Latvia">+371</option><option value="+961" data-country="Lebanon">+961</option><option value="+266" data-country="Lesotho">+266</option><option value="+231" data-country="Liberia">+231</option><option value="+218" data-country="Libya">+218</option><option value="+423" data-country="Liechtenstein">+423</option><option value="+370" data-country="Lithuania">+370</option><option value="+352" data-country="Luxembourg">+352</option><option value="+261" data-country="Madagascar">+261</option><option value="+265" data-country="Malawi">+265</option><option value="+60" data-country="Malaysia">+60</option><option value="+960" data-country="Maldives">+960</option><option value="+223" data-country="Mali">+223</option><option value="+356" data-country="Malta">+356</option><option value="+692" data-country="Marshall Islands">+692</option><option value="+222" data-country="Mauritania">+222</option><option value="+230" data-country="Mauritius">+230</option><option value="+52" data-country="Mexico">+52</option><option value="+691" data-country="Micronesia">+691</option><option value="+373" data-country="Moldova">+373</option><option value="+377" data-country="Monaco">+377</option><option value="+976" data-country="Mongolia">+976</option><option value="+382" data-country="Montenegro">+382</option><option value="+212" data-country="Morocco">+212</option><option value="+258" data-country="Mozambique">+258</option><option value="+95" data-country="Myanmar">+95</option><option value="+264" data-country="Namibia">+264</option><option value="+674" data-country="Nauru">+674</option><option value="+977" data-country="Nepal">+977</option><option value="+31" data-country="Netherlands">+31</option><option value="+64" data-country="New Zealand">+64</option><option value="+505" data-country="Nicaragua">+505</option><option value="+227" data-country="Niger">+227</option><option value="+234" data-country="Nigeria">+234</option><option value="+850" data-country="North Korea">+850</option><option value="+389" data-country="North Macedonia">+389</option><option value="+47" data-country="Norway">+47</option><option value="+968" data-country="Oman">+968</option><option value="+92" data-country="Pakistan">+92</option><option value="+680" data-country="Palau">+680</option><option value="+970" data-country="Palestine">+970</option><option value="+507" data-country="Panama">+507</option><option value="+675" data-country="Papua New Guinea">+675</option><option value="+595" data-country="Paraguay">+595</option><option value="+51" data-country="Peru">+51</option><option value="+63" data-country="Philippines">+63</option><option value="+48" data-country="Poland">+48</option><option value="+351" data-country="Portugal">+351</option><option value="+974" data-country="Qatar">+974</option><option value="+40" data-country="Romania">+40</option><option value="+7" data-country="Russia">+7</option><option value="+250" data-country="Rwanda">+250</option><option value="+1869" data-country="Saint Kitts and Nevis">+1869</option><option value="+1758" data-country="Saint Lucia">+1758</option><option value="+1784" data-country="Saint Vincent and the Grenadines">+1784</option><option value="+685" data-country="Samoa">+685</option><option value="+378" data-country="San Marino">+378</option><option value="+239" data-country="Sao Tome and Principe">+239</option><option value="+966" data-country="Saudi Arabia">+966</option><option value="+221" data-country="Senegal">+221</option><option value="+381" data-country="Serbia">+381</option><option value="+248" data-country="Seychelles">+248</option><option value="+232" data-country="Sierra Leone">+232</option><option value="+65" data-country="Singapore">+65</option><option value="+421" data-country="Slovakia">+421</option><option value="+386" data-country="Slovenia">+386</option><option value="+677" data-country="Solomon Islands">+677</option><option value="+252" data-country="Somalia">+252</option><option value="+27" data-country="South Africa">+27</option><option value="+8韓國人" data-country="South Korea">+82</option><option value="+211" data-country="South Sudan">+211</option><option value="+34" data-country="Spain">+34</option><option value="+94" data-country="Sri Lanka">+94</option><option value="+249" data-country="Sudan">+249</option><option value="+597" data-country="Suriname">+597</option><option value="+46" data-country="Sweden">+46</option><option value="+41" data-country="Switzerland">+41</option><option value="+963" data-country="Syria">+963</option><option value="+992" data-country="Tajikistan">+992</option><option value="+255" data-country="Tanzania">+255</option><option value="+66" data-country="Thailand">+66</option><option value="+670" data-country="Timor-Leste">+670</option><option value="+228" data-country="Togo">+228</option><option value="+676" data-country="Tonga">+676</option><option value="+1868" data-country="Trinidad and Tobago">+1868</option><option value="+216" data-country="Tunisia">+216</option><option value="+90" data-country="Turkey">+90</option><option value="+993" data-country="Turkmenistan">+993</option><option value="+688" data-country="Tuvalu">+688</option><option value="+256" data-country="Uganda">+256</option><option value="+380" data-country="Ukraine">+380</option><option value="+971" data-country="United Arab Emirates">+971</option><option value="+44" data-country="United Kingdom">+44</option><option value="+1" data-country="United States">+1</option><option value="+598" data-country="Uruguay">+598</option><option value="+998" data-country="Uzbekistan">+998</option><option value="+678" data-country="Vanuatu">+678</option><option value="+58" data-country="Venezuela">+58</option><option value="+84" data-country="Vietnam">+84</option><option value="+967" data-country="Yemen">+967</option><option value="+260" data-country="Zambia">+260</option><option value="+263" data-country="Zimbabwe">+263</option>
+              </optgroup>
+            </select>
+            <input id="userid" required placeholder="Email Address*"
+              class="flex-1 min-w-0 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+
+          <div class="relative group">
+            <input id="loginPassword" type="password" required placeholder="Password*"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none pr-12">
+            <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors p-2">
+              <i class="fa-solid fa-eye-slash"></i>
+            </button>
+          </div>
+
+          <button type="submit" class="w-full py-4 rounded-lg bg-blue-600 text-white font-black text-lg hover:bg-blue-700 transition shadow-xl shadow-blue-200 flex items-center justify-center gap-3">
+            <i class="fa-solid fa-right-to-bracket"></i> Login to Dashboard
+          </button>
+
+          <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-bold uppercase tracking-wider">
+            <button type="button" onclick="openForgotPassword()" class="text-blue-600 hover:text-blue-800 flex items-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-key"></i> Forgot Password?
+            </button>
+            <button type="button" onclick="newCustomerAlert()" class="text-orange-600 hover:text-orange-800 flex items-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-user-plus"></i> New Customer?
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+    <div id="forgotPasswordModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50">
+
+      <div class="bg-white rounded-xl p-8 w-full max-w-md relative">
+        <button onclick="closeForgotPassword()" class="absolute top-3 right-3 text-gray-500">✕</button>
+
+        <h3 class="text-xl font-bold mb-4">Forgot Password</h3>
+
+        <div id="fp_step1">
+          <input id="fp_userid" placeholder="Enter User ID or Email" class="w-full mb-3 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+          <button onclick="sendOtp()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+            Send Reset OTP
+          </button>
+        </div>
+
+        <div id="fp_step2" class="hidden mt-4 pt-4 border-t border-gray-100">
+          <p class="text-xs text-blue-600 mb-3 font-bold uppercase"><i class="fa-solid fa-envelope"></i> Check your email for OTP</p>
+          <input id="fp_otp" placeholder="Enter 6-digit OTP" class="w-full mb-3 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+          <button onclick="verifyResetOtp()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+            Verify OTP
+          </button>
+        </div>
+
+        <div id="fp_step3" class="hidden mt-4 pt-4 border-t border-gray-100">
+          <p class="text-xs text-green-600 mb-3 font-bold uppercase"><i class="fa-solid fa-lock"></i> Set New Password</p>
+          <div class="relative mb-4">
+            <input id="fp_newpass" type="password" placeholder="Minimum 6 characters"
+              class="w-full px-4 py-3 border rounded-lg pr-12 outline-none focus:ring-2 focus:ring-green-500">
+            <button type="button" onclick="togglePasswordVisibility('fp_newpass', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors p-2">
+              <i class="fa-solid fa-eye-slash"></i>
+            </button>
+          </div>
+          <button onclick="resetPasswordNow()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">
+            Update Password
+          </button>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+
+
+  </div>
+</main>
+
+</div>
+<script>
+  const type = new URLSearchParams(window.location.search).get("type");
+
+  const pamphlet = document.getElementById("pamphlet");
+  const heroTitle = document.getElementById("page-title");
+  const heroSubtitle = document.getElementById("page-subtitle");
+
+
+  let bgImage = "/assets/images/pamphlet-resident.jpg";
+
+  if (type === "nri") {
+    bgImage = "/assets/images/pamphlet-nri.jpg";
+    heroTitle.innerText = "NRI Login";
+    heroSubtitle.innerText =
+      "Specialized tax filing for foreign income, DTAA & global compliance. \n Expert handling of overseas income and Indian tax obligations.";
+    document.title = "NRI Login - Tax Filing Guru";
+  }
+
+  // ---------- LATEST OFFERS CONFIGURATION ----------
+  const offersData = {
+    badge: "🔥 LATEST OFFERS",
+    heading: "Save BIG on Tax Filing!",
+    description: "Login now to claim your exclusive discounts and benefits for this tax season.",
+    features: [
+      "Flat 20% OFF on all Premium ITR Filing packages",
+      "Free Expert CA Consultation worth ₹499",
+      "Priority Support & Notice Management for 1 Year"
+    ]
+  };
+
+  // Render Offers Card inside the pamphlet
+  if (pamphlet) {
+    pamphlet.innerHTML = `
+        <!-- Full Background Layer -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 scale-105" 
+                 style="background-image: url('${bgImage}'); filter: blur(6px);">
+            </div>
+            <div class="absolute inset-0 bg-black/15"></div>
+        </div>
+
+        <!-- Centered Offers Card -->
+        <div class="relative z-10 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 md:p-10 w-[95%] md:w-[90%] max-w-lg border border-white/20">
+          
+          <div class="inline-block bg-red-100 text-red-600 font-bold px-3 py-1 rounded-full text-xs mb-4 shadow-sm tracking-wide">
+            ${offersData.badge}
+          </div>
+                  
+          <h3 class="text-3xl md:text-3xl font-black mb-3 text-gray-900 leading-tight tracking-tight">${offersData.heading}</h3>
+
+          <p class="text-gray-600 text-base mb-5 leading-relaxed border-b border-gray-200 pb-4">${offersData.description}</p>
+
+          <ul class="space-y-4">
+            ${offersData.features.map(f =>
+      '<li class="flex items-start text-gray-800 text-base font-semibold">' +
+      '<svg class="w-6 h-6 text-green-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">' +
+      '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>' +
+      '</svg>' + f + '</li>'
+    ).join("")}
+          </ul>
+        </div>
+      `;
+  }
+  function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    }
+  }
+
+  function setLoginMethod(method) {
+    const btnEmail = document.getElementById('btn-email');
+    const btnMobile = document.getElementById('btn-mobile');
+    const phoneCode = document.getElementById('loginPhoneCode');
+    const useridInput = document.getElementById('userid');
+
+    if (method === 'email') {
+      btnEmail.className = "px-6 py-2.5 rounded-lg text-sm font-bold transition-all bg-white text-blue-600 shadow-sm flex items-center gap-2";
+      btnMobile.className = "px-6 py-2.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700 flex items-center gap-2";
+      phoneCode.classList.add('hidden');
+      useridInput.placeholder = "Enter Registered Email*";
+      useridInput.type = "email";
+    } else {
+      btnMobile.className = "px-6 py-2.5 rounded-lg text-sm font-bold transition-all bg-white text-blue-600 shadow-sm flex items-center gap-2";
+      btnEmail.className = "px-6 py-2.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700 flex items-center gap-2";
+      phoneCode.classList.remove('hidden');
+      useridInput.placeholder = "Enter Mobile Number*";
+      useridInput.type = "tel";
+    }
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    let userIdRaw = document.getElementById("userid").value.trim();
+    const phoneCode = document.getElementById("loginPhoneCode").value;
+    
+    // Prepend phone code if it looks like a phone number (just numbers)
+    let userId = userIdRaw;
+    if (/^\d+$/.test(userIdRaw)) {
+        userId = phoneCode + userIdRaw;
+    }
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (!userId || !password) {
+      showPopup({ title: 'Input Required', message: 'Please enter both User ID and Password.', type: 'warning' });
+      return;
+    }
+
+    const loginBtn = this.querySelector('button[type="submit"]');
+    const originalText = loginBtn.innerHTML;
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, password, type: type || 'resident' })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem("loginType", data.loginType);
+        showPopup({
+          title: 'Login Successful',
+          message: 'Welcome back! Redirecting to your dashboard...',
+          type: 'success',
+          callback: () => onLoginSuccess()
+        });
+      } else {
+        showPopup({ title: 'Login Failed', message: data.error || 'Invalid User ID or Password.', type: 'error' });
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      showPopup({ title: 'System Error', message: 'Could not connect to the authentication server.', type: 'error' });
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = originalText;
+    }
+  });
+
+  // ----------------------------
+  // YOUR REDIRECT FUNCTION (UNCHANGED)
+  // ----------------------------
+  function onLoginSuccess() {
+    window.location.href = "/dashboard";
+    localStorage.removeItem("loginType");
+  }
+
+  function openForgotPassword() {
+    document.getElementById("forgotPasswordModal").classList.remove("hidden");
+    resetFpSteps();
+  }
+  function closeForgotPassword() {
+    document.getElementById("forgotPasswordModal").classList.add("hidden");
+  }
+  function resetFpSteps() {
+    document.getElementById("fp_step1").classList.remove("hidden");
+    document.getElementById("fp_step2").classList.add("hidden");
+    document.getElementById("fp_step3").classList.add("hidden");
+    document.getElementById("fp_userid").value = "";
+    document.getElementById("fp_otp").value = "";
+    document.getElementById("fp_newpass").value = "";
+  }
+
+  function openForgotUserId() {
+    // Removed
+  }
+  function closeForgotUserId() {
+    // Removed
+  }
+  function resetFuidSteps() {
+    // Removed
+  }
+
+  async function sendOtp() {
+    const userId = document.getElementById("fp_userid").value.trim();
+    if (!userId) {
+      showPopup({ title: 'Error', message: 'Please enter your User ID or Email.', type: 'error' });
+      return;
+    }
+
+    try {
+      const resp = await fetch('/api/auth/forgot-password-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, type: type || 'resident' })
+      });
+      const data = await resp.json();
+      if (data.success) {
+        showPopup({ title: 'Step 1 Complete', message: '📩 ' + data.message, type: 'info' });
+        document.getElementById("fp_step1").classList.add("hidden");
+        document.getElementById("fp_step2").classList.remove("hidden");
+      } else {
+        showPopup({ title: 'Error', message: data.error, type: 'error' });
+      }
+    } catch (err) {
+      showPopup({ title: 'System Error', message: 'Could not send OTP.', type: 'error' });
+    }
+  }
+
+  async function verifyResetOtp() {
+    const userId = document.getElementById("fp_userid").value.trim();
+    const otp = document.getElementById("fp_otp").value.trim();
+    if (!otp) return showPopup({ title: 'Error', message: 'Please enter OTP', type: 'error' });
+
+    try {
+      const resp = await fetch('/api/auth/verify-reset-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, otp, type: type || 'resident' })
+      });
+      const data = await resp.json();
+      if (data.success) {
+        showPopup({ title: 'OTP Verified', message: '✅ ' + data.message, type: 'success' });
+        document.getElementById("fp_step2").classList.add("hidden");
+        document.getElementById("fp_step3").classList.remove("hidden");
+      } else {
+        showPopup({ title: 'Error', message: data.error, type: 'error' });
+      }
+    } catch (err) {
+      showPopup({ title: 'Error', message: 'Verification failed', type: 'error' });
+    }
+  }
+
+  async function resetPasswordNow() {
+    const userId = document.getElementById("fp_userid").value.trim();
+    const otp = document.getElementById("fp_otp").value.trim();
+    const newPassword = document.getElementById("fp_newpass").value.trim();
+
+    if (newPassword.length < 6) return showPopup({ title: 'Error', message: 'Password must be at least 6 characters', type: 'error' });
+
+    try {
+      const resp = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, otp, newPassword, type: type || 'resident' })
+      });
+      const data = await resp.json();
+      if (data.success) {
+        showPopup({
+          title: 'Success',
+          message: '✅ ' + data.message,
+          type: 'success',
+          callback: () => closeForgotPassword()
+        });
+      } else {
+        showPopup({ title: 'Error', message: data.error, type: 'error' });
+      }
+    } catch (err) {
+      showPopup({ title: 'System Error', message: 'Could not reset password.', type: 'error' });
+    }
+  }
+
+  function newCustomerAlert() {
+    showPopup({
+      title: 'New Customer?',
+      message: 'You need to choose Resident or NRI before continuing.',
+      type: 'info',
+      showCancel: true,
+      confirmText: 'Go to Main Page',
+      callback: (confirmed) => {
+        if (confirmed) {
+          window.location.href = "/";
+        }
+      }
+    });
+  }
+  // Fetch IP to set country code
+  document.addEventListener('DOMContentLoaded', () => {
+      fetch('https://ipapi.co/json/')
+          .then(r => r.json())
+          .then(d => {
+              if (d && d.country_name) {
+                  const cc = document.getElementById('loginPhoneCode');
+                  if (cc) {
+                      for (let i = 0; i < cc.options.length; i++) {
+                          if (cc.options[i].getAttribute('data-country') === d.country_name) {
+                              cc.selectedIndex = i;
+                              break;
+                          }
+                      }
+                  }
+              }
+          }).catch(() => {});
+  });
+</script>
+<script src="js/script.js"></script>

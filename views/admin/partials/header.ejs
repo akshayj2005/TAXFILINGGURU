@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <title>TaxFilingGuru CRM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+  <script>
+    // Global SweetAlert Theme Override for Admin Panel
+    const originalSwal = window.Swal;
+    window.Swal = originalSwal.mixin({
+      background: '#0a0a0a',
+      color: '#e8eaf0',
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#ef4444',
+      customClass: {
+        popup: 'admin-swal-popup'
+      }
+    });
+  </script>
+  <style>
+    .admin-swal-popup {
+      border: 1px solid #262626 !important;
+      border-radius: 14px !important;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
+    }
+  </style>
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/assets/images/favicon/apple-touch-icon.png">
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+      <span class="logo-text">TFG CRM</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="/admin/dashboard" class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
+        <i class="fa-solid fa-chart-pie"></i><span>Dashboard</span>
+      </a>
+
+      <div class="nav-section-label">Management</div>
+      <a href="/admin/users" class="nav-item <%= currentPage === 'users' ? 'active' : '' %>">
+        <i class="fa-solid fa-users"></i><span>Users</span>
+      </a>
+      <a href="/admin/consultations" class="nav-item <%= currentPage === 'consultations' ? 'active' : '' %>">
+        <i class="fa-solid fa-calendar-check"></i><span>Consultations</span>
+      </a>
+      <a href="/admin/leads" class="nav-item <%= currentPage === 'leads' ? 'active' : '' %>">
+        <i class="fa-solid fa-address-card"></i><span>Leads</span>
+      </a>
+      <a href="/admin/packages" class="nav-item <%= currentPage === 'packages' ? 'active' : '' %>">
+        <i class="fa-solid fa-box-open"></i><span>Packages</span>
+      </a>
+      <a href="/admin/faqs" class="nav-item <%= currentPage === 'faqs' ? 'active' : '' %>">
+        <i class="fa-solid fa-circle-question"></i><span>FAQs</span>
+      </a>
+      <a href="/admin/blogs" class="nav-item <%= currentPage === 'blogs' ? 'active' : '' %>">
+        <i class="fa-solid fa-newspaper"></i><span>Blogs</span>
+      </a>
+      <a href="/admin/authors" class="nav-item <%= currentPage === 'authors' ? 'active' : '' %>">
+        <i class="fa-solid fa-user-gear"></i><span>Authors / Properties</span>
+      </a>
+      <a href="/admin/testimonials" class="nav-item <%= currentPage === 'testimonials' ? 'active' : '' %>">
+        <i class="fa-solid fa-comments"></i><span>Testimonials</span>
+      </a>
+
+      <div class="nav-section-label">Analytics</div>
+      <a href="/admin/visitors" class="nav-item <%= currentPage === 'visitors' ? 'active' : '' %>">
+        <i class="fa-solid fa-eye"></i><span>Visitors</span>
+      </a>
+      <a href="/admin/interactions" class="nav-item <%= currentPage === 'interactions' ? 'active' : '' %>">
+        <i class="fa-solid fa-hand-pointer"></i><span>Interactions</span>
+      </a>
+      <a href="/admin/logs" class="nav-item <%= currentPage === 'logs' ? 'active' : '' %>">
+        <i class="fa-solid fa-file-lines"></i><span>Request Logs</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/admin/logout" class="nav-item">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        <span style="font-size:13px;color:var(--text-secondary);display:none;" id="page-title-mobile">CRM</span>
+      </div>
+      <div class="topbar-right">
+        <div class="user-profile">
+          <img src="/assets/images/TFG_LOGO.png" alt="TFG Logo" style="background: white; padding: 2px;">
+          <div class="user-info">
+            <span class="greeting" style="color: var(--text-primary);">Hello,<strong> <%= locals.adminUser ? adminUser.userid : 'Admin' %></strong></span>
+            <span class="role">Super Administrator</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dynamic Content -->
+    <div id="content-area" class="content-body">

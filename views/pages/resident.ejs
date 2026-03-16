@@ -1,0 +1,242 @@
+
+<section class="w-full hero-bg py-16 md:py-20 px-5 sm:px-9 md:px-2 lg:px-8 relative flex flex-col justify-center">
+    <div class="max-w-7xl mx-auto relative z-10 text-center w-full">
+        <h2
+            class="font-heading text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 sm:mb-5 md:mb-6 tracking-tight drop-shadow-sm leading-tight">
+            <%= seo.headings.h1 %>
+        </h2>
+        <p
+            class="text-base sm:text-lg md:text-lg lg:text-xl text-gray-100 max-w-xs sm:max-w-md md:max-w-2xl mx-auto font-light leading-relaxed">
+            <%= seo.description %>
+        </p>
+    </div>
+</section>
+
+<main class="w-full relative">
+    <!--main package container-->
+    <section id="packages" class="w-full py-8 md:py-16 px-2 md:px-4 relative z-10 bg-gray-50 overflow-hidden border-b ">
+        <div
+            class="max-w-7xl mx-auto relative z-10 bg-white/80 backdrop-blur-md rounded-3xl p-3 md:p-8 shadow-lg shadow-gray-200 border border-white">
+
+            <% 
+        const categories = Object.keys(groupedPackages).filter(h => h !== 'Additional Services' && h !== 'Exclusive Packages');
+        categories.forEach(function(heading, idx) { 
+          const packages = groupedPackages[heading]; 
+          const subheading = categorySubheadings[heading]; 
+      %>
+                <div class="mt-10 md:mt-20">
+                    <div class="text-center mb-10 cursor-pointer md:cursor-default select-none group"
+                        onclick="togglePackageSection(this)">
+                        <div class="inline-flex items-center gap-3">
+                            <div>
+                                <% let words=heading.split(' '); let lastWord = words.pop(); %>
+                                <h3 class="font-heading text-xl md:text-2xl font-extrabold text-gray-900 mb-2 tracking-tight">
+                                    <%= words.join(' ') %> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"><%= lastWord %></span>
+                                </h3>
+                                <p class="text-sm text-gray-500"><%= subheading %></p>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-400 group-hover:text-blue-600 transition-transform duration-300 transform rotate-180 toggle-icon md:hidden"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="package-content transition-all duration-300 md:block">
+                        <div class="relative group">
+                            <% if (packages.length > 3) { %>
+                            <button onclick="scrollPackages(this, -1)"
+                                class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg items-center justify-center text-blue-600 hover:bg-blue-50 hover:scale-110 active:scale-95 transition-all duration-300 opacity-0 group-hover:opacity-100 border border-gray-100">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <% } %>
+
+                            <div class="flex flex-col md:flex-row gap-6 md:overflow-x-auto scroll-smooth no-scrollbar p-4 -m-4 items-stretch" data-scroll-container>
+                                <% packages.forEach(function(pkg) { %>
+                                    <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-white shadow-xl hover:shadow-2xl hover:border-blue-400 border-4 flex flex-col h-full relative transition-all duration-300 group package-card w-full md:w-auto md:min-w-[45%] lg:min-w-[32%] md:min-h-[570px]" data-slug="<%= pkg.slug %>">
+                                        
+                                        <% if (pkg.badge) { %>
+                                            <span class="absolute top-0 right-0 transform translate-x-2 -translate-y-2 <%= pkg.badgeClass || 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white' %> text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl shadow-md z-20">
+                                                <%= pkg.badge %>
+                                            </span>
+                                        <% } %>
+
+                                        <div class="h-16 flex items-end justify-center mb-1">
+                                            <h3 class="package-name font-heading text-xl font-bold text-gray-900 text-center leading-tight"><%= pkg.name %></h3>
+                                        </div>
+                                        <div class="h-8 flex items-start justify-center mb-4">
+                                            <p class="package-desc text-sm text-gray-500 text-center"><%= pkg.shortDescription %></p>
+                                        </div>
+
+                                        <div class="h-20 flex flex-col justify-center items-center mb-6 border-b border-gray-100 pb-4 w-full">
+                                            <% if (pkg.originalPrice) { %>
+                                                <div class="flex items-center gap-2 h-5 mb-1">
+                                                    <span class="text-gray-400 line-through text-sm font-medium">₹<%= pkg.originalPrice %></span>
+                                                    <% if (pkg.discountBadge) { %>
+                                                        <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full"><%= pkg.discountBadge %></span>
+                                                    <% } %>
+                                                </div>
+                                            <% } %>
+                                            <div class="rate text-3xl font-bold text-gray-900 font-heading">
+                                                <%= (String(pkg.price)==='Custom' || String(pkg.price).includes('–')) ? '' : '₹' %><%= pkg.price %>
+                                                <span class="text-sm font-normal text-gray-500 font-sans"><%= pkg.priceSuffix %></span>
+                                            </div>
+                                            <% if (pkg.highlight) { %>
+                                                <div class="text-[10px] text-blue-600 font-bold uppercase mt-1"><%= pkg.highlight %></div>
+                                            <% } %>
+                                        </div>
+
+                                        <ul class="package-features space-y-3 text-sm text-gray-600 mb-2 md:mb-8 flex-grow px-2">
+                                            <% pkg.features.forEach(function(feat) { %>
+                                                <li class="flex items-start"><span class="text-green-500 mr-2 shrink-0">✔</span><%= feat %></li>
+                                            <% }); %>
+                                        </ul>
+
+                                        <% if (pkg.bestFor) { %>
+                                            <p class="text-[11px] text-gray-400 mb-4 italic text-center">Best for: <%= pkg.bestFor %></p>
+                                        <% } %>
+
+                                        <button onclick="togglePackage(this)"
+                                            class="mt-auto w-full inline-flex justify-center items-center rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 font-bold shadow-lg shadow-blue-500/30 hover:-translate-y-1 hover:scale-105 transition-all duration-300">
+                                            Get Started</button>
+                                    </div>
+                                <% }); %>
+                            </div>
+
+                            <% if (packages.length > 3) { %>
+                            <button onclick="scrollPackages(this, 1)"
+                                class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg items-center justify-center text-blue-600 hover:bg-blue-50 hover:scale-110 active:scale-95 transition-all duration-300 opacity-0 group-hover:opacity-100 border border-gray-100">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <% if (idx < categories.length - 1) { %>
+                    <hr class="border-gray-100 mb-8 md:mb-16 mt-8 md:mt-16">
+                <% } %>
+            <% }); %>
+
+        </div>
+    </section>
+
+    <!-- Exclusive Packages Section -->
+    <% if (groupedPackages['Exclusive Packages']) { %>
+        <section id="exclusive-packages"
+            class="w-full py-10 md:py-16 px-2 md:px-4 relative z-10 bg-slate-900 overflow-hidden border-b border-slate-700">
+            <div class="max-w-7xl mx-auto relative z-10">
+                <div class="text-center mb-12">
+                    <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mb-3">Exclusive Packages</h2>
+                    <p class="text-blue-200 text-lg"><%= categorySubheadings['Exclusive Packages'] %></p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <% groupedPackages['Exclusive Packages'].forEach(function(pkg) { %>
+                        <div class="bg-white rounded-3xl p-8 shadow-2xl flex flex-col justify-between border-4 border-white/10 relative overflow-hidden group hover:shadow-2xl hover:border-blue-400 border-4 transition-all duration-300 package-card" data-slug="<%= pkg.slug %>">
+                            <% if (pkg.badge) { %>
+                                <div class="absolute top-0 right-0 <%= pkg.badgeClass || 'bg-yellow-400 text-yellow-900' %> text-xs font-bold px-4 py-1.5 rounded-bl-xl shadow-sm uppercase tracking-wider">
+                                    <%= pkg.badge %>
+                                </div>
+                            <% } %>
+                            <div>
+                                <h3 class="package-name font-heading text-2xl font-bold text-gray-900 mb-2"><%= pkg.name %></h3>
+                                <p class="package-desc text-gray-600 mb-6 text-sm leading-relaxed"><%= pkg.shortDescription %></p>
+                                <ul class="package-features space-y-3 mb-8">
+                                    <% pkg.features.forEach(function(feat) { %>
+                                        <li class="flex items-start">
+                                            <span class="flex-shrink-0 w-5 h-5 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mr-3 mt-0.5 text-xs">✔</span>
+                                            <span class="text-gray-700 text-sm"><%- feat %></span>
+                                        </li>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                            <div class="border-t border-gray-100 pt-6 mt-auto">
+                                <div class="flex justify-between items-end mb-4">
+                                    <div>
+                                        <p class="text-gray-500 text-xs font-medium uppercase tracking-wide"><%= pkg.highlight || 'Package Fee' %></p>
+                                        <div class="rate text-3xl font-heading font-extrabold text-blue-700">
+                                            <%= (String(pkg.price)==='Custom' || String(pkg.price).includes('–')) ? '' : '₹' %><%= pkg.price %>
+                                            <p class="text-gray-400 text-[10px] font-medium"><%= pkg.priceSuffix %></p>
+                                        </div>
+                                    </div>
+                                    <a href="/resident/<%= pkg.slug %>"
+                                        class="inline-flex justify-center items-center rounded-full bg-blue-600 text-white px-6 py-2.5 font-bold text-sm shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-all duration-300">
+                                        Get Started</a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </section>
+    <% } %>
+
+    <!-- Additional Services Section -->
+    <% if (groupedPackages['Additional Services']) { %>
+        <section id="additional-services"
+            class="w-full py-16 px-2 md:px-4 relative z-10 bg-slate-800 overflow-hidden border-b border-slate-700">
+            <div class="max-w-7xl mx-auto relative z-10">
+                <div class="text-center mb-10">
+                    <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mb-3">Additional Services</h2>
+                    <div class="w-20 h-1.5 bg-blue-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <% groupedPackages['Additional Services'].forEach(function(pkg) { %>
+                        <div class="bg-white rounded-xl p-4 md:p-6 flex items-center justify-between shadow-lg hover:shadow-blue-500/20 hover:scale-[1.01] transition-all duration-300 group cursor-pointer border-l-4 border-blue-500 package-card" data-slug="<%= pkg.slug %>">
+                            <div class="flex items-center gap-3 md:gap-4">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-50 flex-shrink-0 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="package-name font-heading font-bold text-gray-900 text-base md:text-lg leading-tight"><%= pkg.name %></h4>
+                                    <p class="package-desc text-gray-500 text-[10px] md:text-xs mt-0.5 md:mt-1 font-medium uppercase tracking-wide"><%= pkg.shortDescription %></p>
+                                    <div class="md:hidden mt-1">
+                                        <span class="font-heading font-bold text-base text-blue-700 leading-none">₹<%= pkg.price %></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 md:gap-4">
+                                <div class="text-right hidden md:block">
+                                    <span class="rate font-heading font-bold text-xl text-blue-700 block leading-none">₹<%= pkg.price %></span>
+                                </div>
+                                <a href="/resident/<%= pkg.slug %>"
+                                    class="bg-blue-600 text-white text-xs font-bold px-4 py-2 md:px-5 md:py-2.5 rounded-full hover:bg-blue-700 shadow-lg transition-colors whitespace-nowrap inline-block">Get Started</a>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </section>
+    <% } %>
+
+</main>
+
+<script>
+    function scrollPackages(btn, direction) {
+        const container = btn.parentElement.querySelector('[data-scroll-container]');
+        const cardWidth = container.querySelector('.package-card').offsetWidth + 24;
+        container.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+    }
+
+    function togglePackageSection(header) {
+        if (window.innerWidth >= 768) return;
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('.toggle-icon');
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            icon.classList.remove('rotate-180');
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.classList.add('rotate-180');
+        }
+    }
+</script>
+

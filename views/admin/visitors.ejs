@@ -1,0 +1,180 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1>Live Visitors</h1>
+    <p>Real-time website visitor sessions and location data.</p>
+  </div>
+  <div class="header-actions">
+    <span class="live-badge">LIVE</span>
+    <button class="btn btn-danger btn-sm" onclick="confirmDelete('/admin/visitors/clear-all','ALL visitor data')">
+      <i class="fa-solid fa-trash"></i> Clear Data
+    </button>
+    <button class="btn btn-outline" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Total Visitors</span>
+      <h2 class="stat-value"><%= stats.total %></h2>
+    </div>
+    <div class="stat-icon blue"><i class="fa-solid fa-globe"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Online Now</span>
+      <h2 class="stat-value"><%= stats.online %></h2>
+    </div>
+    <div class="stat-icon green"><i class="fa-solid fa-circle" style="font-size:10px;margin:auto;"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Logged In Users</span>
+      <h2 class="stat-value"><%= stats.loggedIn %></h2>
+    </div>
+    <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Unique Countries</span>
+      <h2 class="stat-value"><%= stats.countries %></h2>
+    </div>
+    <div class="stat-icon yellow"><i class="fa-solid fa-map-location-dot"></i></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-toolbar">
+    <div class="search-box">
+      <i class="fa-solid fa-search"></i>
+      <input type="text" id="visitor-search" placeholder="Search by visitor ID, city…">
+    </div>
+    <div class="filter-row">
+      <select id="online-filter" class="filter-select">
+        <option value="">All</option>
+        <option value="online">Online</option>
+        <option value="offline">Offline</option>
+      </select>
+    </div>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table" id="visitors-table">
+      <thead>
+        <tr>
+          <th>VISITOR</th>
+          <th>LOCATION</th>
+          <th>DEVICE / BROWSER</th>
+          <th>CURRENT PATH</th>
+          <th>LAST SEEN</th>
+          <th>STATUS</th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (visitors && visitors.length > 0) { %>
+          <% visitors.forEach(v => { %>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="avatar <%= v.isOnline ? 'green' : '' %> avatar-sm" style="width:32px;height:32px;font-size:11px;">
+                  <%= v.visitorId ? v.visitorId.substr(-2).toUpperCase() : 'VX' %>
+                </div>
+                <div>
+                  <div class="name" style="font-size:12px;font-family:monospace;"><%= v.visitorId ? v.visitorId.substr(0,16)+'…' : '—' %></div>
+                  <div class="meta"><%= v.ipAddress || '—' %></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="fw-600"><%= v.location?.city || '—' %></div>
+              <div class="text-muted" style="font-size:12px;"><%= v.location?.country || '' %></div>
+            </td>
+            <td>
+              <div><%= v.userAgent?.browser || '—' %></div>
+              <div class="text-muted" style="font-size:12px;"><%= v.userAgent?.os || '' %> · <%= v.userAgent?.device || '' %></div>
+            </td>
+            <td><code style="font-size:11px;color:var(--accent);"><%= v.currentPath || '/' %></code></td>
+            <td class="text-muted" style="font-size:12px;"><%= v.lastSeen ? new Date(v.lastSeen).toLocaleString('en-IN',{hour12:true,hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'}) : '—' %></td>
+            <td>
+              <% if (v.isOnline) { %>
+                <span class="live-badge">ONLINE</span>
+              <% } else { %>
+                <span class="badge badge-gray">Offline</span>
+              <% } %>
+            </td>
+            <td>
+              <button class="btn-icon" onclick="viewVisitor('<%= encodeURIComponent(JSON.stringify(v)) %>')" title="View">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="7">
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fa-solid fa-eye-slash"></i></div>
+              <h4>No visitors recorded yet</h4>
+              <p>Visitor tracking will populate once the website receives traffic.</p>
+            </div>
+          </td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- VIEW MODAL -->
+<div class="modal-overlay" id="view-visitor-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-user-secret"></i> &nbsp;Visitor Details</h3>
+      <button class="modal-close" onclick="closeModal('view-visitor-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="visitor-detail-body" class="detail-grid"></div>
+      <div class="form-group" style="margin-top:16px;">
+        <label class="form-label">Path History</label>
+        <div id="path-history" style="background:var(--bg-input);border-radius:8px;padding:12px;max-height:160px;overflow-y:auto;font-size:12px;font-family:monospace;color:var(--text-secondary);"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/confirm-dialog') %>
+
+<script>
+  filterTable('visitor-search','visitors-table',[0,1,3]);
+
+  document.getElementById('online-filter').addEventListener('change', function() {
+    const val = this.value;
+    document.querySelectorAll('#visitors-table tbody tr').forEach(row => {
+      const status = row.cells[5]?.textContent.trim().toLowerCase() || '';
+      row.style.display = (!val || status.includes(val)) ? '' : 'none';
+    });
+  });
+
+  function viewVisitor(raw) {
+    const v = JSON.parse(decodeURIComponent(raw));
+    document.getElementById('visitor-detail-body').innerHTML = `
+      <div class="detail-item"><label>Visitor ID</label><span style="font-family:monospace;font-size:11px;">${v.visitorId || '—'}</span></div>
+      <div class="detail-item"><label>IP Address</label><span>${v.ipAddress || '—'}</span></div>
+      <div class="detail-item"><label>Country</label><span>${v.location?.country || '—'}</span></div>
+      <div class="detail-item"><label>City</label><span>${v.location?.city || '—'}</span></div>
+      <div class="detail-item"><label>Browser</label><span>${v.userAgent?.browser || '—'}</span></div>
+      <div class="detail-item"><label>OS</label><span>${v.userAgent?.os || '—'}</span></div>
+      <div class="detail-item"><label>Device</label><span>${v.userAgent?.device || '—'}</span></div>
+      <div class="detail-item"><label>Status</label><span>${v.isOnline ? '🟢 Online' : '⚫ Offline'}</span></div>
+      <div class="detail-item"><label>First Seen</label><span>${v.firstSeen ? new Date(v.firstSeen).toLocaleString() : '—'}</span></div>
+      <div class="detail-item"><label>Last Seen</label><span>${v.lastSeen ? new Date(v.lastSeen).toLocaleString() : '—'}</span></div>`;
+    const hist = document.getElementById('path-history');
+    hist.innerHTML = (v.pathHistory && v.pathHistory.length)
+      ? v.pathHistory.map(p=>`<div style="padding:3px 0;border-bottom:1px solid var(--border);">${p.path} <span style="color:var(--text-muted);float:right;">${new Date(p.timestamp).toLocaleTimeString()}</span></div>`).join('')
+      : '<span style="color:var(--text-muted)">No path history.</span>';
+    openModal('view-visitor-modal');
+  }
+</script>
+
+<%- include('partials/footer') %>

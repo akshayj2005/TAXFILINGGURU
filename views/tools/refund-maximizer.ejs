@@ -1,0 +1,200 @@
+<section class="w-full hero-bg py-20 px-4 relative flex flex-col justify-center min-h-[35vh]">
+  <div class="max-w-7xl mx-auto relative z-10 text-center w-full">
+    <div class="flex justify-center mb-6">
+      <span class="bg-white/20 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide border border-white/30 uppercase">
+        refund optimization
+      </span>
+    </div>
+    <h1 class="font-heading text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight drop-shadow-lg">
+      <%= seo.headings.h1 %>
+    </h1>
+    <p class="text-xl text-blue-50 max-w-2xl mx-auto font-light leading-relaxed">
+      <%= seo.description %>
+    </p>
+  </div>
+  <!-- Wave Divider -->
+  <div class="wave-divider">
+    <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V46.35C50.62,54.91,105.48,63.07,161.16,64.74,213,66.3,266.3,62.72,321.39,56.44Z" fill="#F9FAFB" fill-opacity="1"></path>
+    </svg>
+  </div>
+</section>
+
+<div class="max-w-4xl mx-auto py-24 px-4 relative">
+  <!-- Progress Bar (Hidden on Step 0 and Results) -->
+  <div id="quiz-progress-wrapper" class="hidden mb-12">
+    <div class="flex justify-between items-center mb-4">
+      <span class="text-xs font-black text-blue-600 uppercase tracking-widest">Scanning Progress</span>
+      <span id="progress-text" class="text-xs font-black text-gray-400 uppercase tracking-widest">Step 1 of 5</span>
+    </div>
+    <div class="w-full h-3 bg-gray-100 rounded-full overflow-hidden border border-gray-50">
+      <div id="progress-bar" class="h-full bg-gradient-to-r from-blue-400 to-blue-600 transition-all duration-500 ease-out" style="width: 20%"></div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-[3rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] overflow-hidden border border-gray-100 relative">
+    <div id="quiz-container" class="p-10 md:p-16">
+      
+      <!-- Welcome Step -->
+      <div id="step-0" class="quiz-step animate-[fadeInUp_0.6s_ease-out]">
+        <div class="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-8">
+            <i class="fa-solid fa-wand-magic-sparkles text-blue-600 text-3xl"></i>
+        </div>
+        <h3 class="text-4xl font-black text-gray-900 mb-6 leading-tight">
+          <%= seo.headings.h2 %>
+        </h3>
+        <p class="text-gray-500 text-lg mb-10 leading-relaxed font-medium">
+          Answer 5 simple questions to see if you can claim more deductions. Our AI-powered scanner takes less than 60 seconds to find hidden savings.
+        </p>
+        <button onclick="document.getElementById('quiz-progress-wrapper').classList.remove('hidden'); nextQuizStep(0)"
+          class="group bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 px-12 rounded-2xl transition-all shadow-xl shadow-blue-100 flex items-center justify-center">
+          Start Smart Scan
+          <i class="fa-solid fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+        </button>
+      </div>
+
+      <!-- Question 1 -->
+      <div id="step-1" class="quiz-step hidden animate-[fadeInUp_0.5s_ease-out]">
+        <h3 class="text-3xl font-black text-gray-900 mb-10 leading-snug">Do you pay rent for your residence?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <button onclick="setQuizAnswer('paysRent', true); document.getElementById('progress-bar').style.width='40%'; document.getElementById('progress-text').innerText='Step 2 of 5'; nextQuizStep(1)"
+            class="group p-8 border-2 border-gray-100 hover:border-blue-500 rounded-[2rem] text-left transition-all hover:shadow-xl hover:shadow-blue-50/50 hover:bg-blue-50/30">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-house-chimney text-blue-600 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-900 mb-1">Yes, I do</span>
+            <span class="text-sm font-medium text-blue-600 italic">Potential HRA or 80GG Savings</span>
+          </button>
+          <button onclick="setQuizAnswer('paysRent', false); document.getElementById('progress-bar').style.width='40%'; document.getElementById('progress-text').innerText='Step 2 of 5'; nextQuizStep(1)"
+            class="group p-8 border-2 border-gray-100 hover:border-gray-300 rounded-[2rem] text-left transition-all hover:bg-gray-50/50">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-xmark text-gray-400 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-400">No, I don't</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div id="step-2" class="quiz-step hidden animate-[fadeInUp_0.5s_ease-out]">
+        <h3 class="text-3xl font-black text-gray-900 mb-10 leading-snug">Do you cover health insurance for self or parents?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <button onclick="setQuizAnswer('healthIns', true); document.getElementById('progress-bar').style.width='60%'; document.getElementById('progress-text').innerText='Step 3 of 5'; nextQuizStep(2)"
+            class="group p-8 border-2 border-gray-100 hover:border-blue-500 rounded-[2rem] text-left transition-all hover:shadow-xl hover:shadow-blue-50/50 hover:bg-blue-50/30">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-heart-pulse text-blue-600 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-900 mb-1">Yes, I do</span>
+            <span class="text-sm font-medium text-blue-600 italic">Section 80D (Up to ₹75,000)</span>
+          </button>
+          <button onclick="setQuizAnswer('healthIns', false); document.getElementById('progress-bar').style.width='60%'; document.getElementById('progress-text').innerText='Step 3 of 5'; nextQuizStep(2)"
+            class="group p-8 border-2 border-gray-100 hover:border-gray-300 rounded-[2rem] text-left transition-all hover:bg-gray-50/50">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-xmark text-gray-400 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-400">No, I don't</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div id="step-3" class="quiz-step hidden animate-[fadeInUp_0.5s_ease-out]">
+        <h3 class="text-3xl font-black text-gray-900 mb-10 leading-snug">Do you have an active home loan?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <button onclick="setQuizAnswer('homeLoan', true); document.getElementById('progress-bar').style.width='80%'; document.getElementById('progress-text').innerText='Step 4 of 5'; nextQuizStep(3)"
+            class="group p-8 border-2 border-gray-100 hover:border-blue-500 rounded-[2rem] text-left transition-all hover:shadow-xl hover:shadow-blue-50/50 hover:bg-blue-50/30">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-key text-blue-600 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-900 mb-1">Yes, I do</span>
+            <span class="text-sm font-medium text-blue-600 italic">Section 24(b) (Up to ₹2 Lakh)</span>
+          </button>
+          <button onclick="setQuizAnswer('homeLoan', false); document.getElementById('progress-bar').style.width='80%'; document.getElementById('progress-text').innerText='Step 4 of 5'; nextQuizStep(3)"
+            class="group p-8 border-2 border-gray-100 hover:border-gray-300 rounded-[2rem] text-left transition-all hover:bg-gray-50/50">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-xmark text-gray-400 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-400">No, I don't</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div id="step-4" class="quiz-step hidden animate-[fadeInUp_0.5s_ease-out]">
+        <h3 class="text-3xl font-black text-gray-900 mb-10 leading-snug">Did you donate to any authorized NGO or Temple?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <button onclick="setQuizAnswer('donations', true); document.getElementById('progress-bar').style.width='100%'; document.getElementById('progress-text').innerText='Final Step'; nextQuizStep(4)"
+            class="group p-8 border-2 border-gray-100 hover:border-blue-500 rounded-[2rem] text-left transition-all hover:shadow-xl hover:shadow-blue-50/50 hover:bg-blue-50/30">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-hands-holding-heart text-blue-600 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-900 mb-1">Yes, I did</span>
+            <span class="text-sm font-medium text-blue-600 italic">Section 80G Savings</span>
+          </button>
+          <button onclick="setQuizAnswer('donations', false); document.getElementById('progress-bar').style.width='100%'; document.getElementById('progress-text').innerText='Final Step'; nextQuizStep(4)"
+            class="group p-8 border-2 border-gray-100 hover:border-gray-300 rounded-[2rem] text-left transition-all hover:bg-gray-50/50">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-xmark text-gray-400 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-400">No, I didn't</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Question 5 -->
+      <div id="step-5" class="quiz-step hidden animate-[fadeInUp_0.5s_ease-out]">
+        <h3 class="text-3xl font-black text-gray-900 mb-10 leading-snug">Do you have children currently in school/college?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <button onclick="setQuizAnswer('schoolFees', true); document.getElementById('quiz-progress-wrapper').classList.add('hidden'); showQuizResults()"
+            class="group p-8 border-2 border-gray-100 hover:border-blue-500 rounded-[2rem] text-left transition-all hover:shadow-xl hover:shadow-blue-50/50 hover:bg-blue-50/30">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-graduation-cap text-blue-600 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-900 mb-1">Yes, I do</span>
+            <span class="text-sm font-medium text-blue-600 italic">Part of Section 80C</span>
+          </button>
+          <button onclick="setQuizAnswer('schoolFees', false); document.getElementById('quiz-progress-wrapper').classList.add('hidden'); showQuizResults()"
+            class="group p-8 border-2 border-gray-100 hover:border-gray-300 rounded-[2rem] text-left transition-all hover:bg-gray-50/50">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-xmark text-gray-400 text-xl"></i>
+            </div>
+            <span class="block text-2xl font-black text-gray-400">No, I don't</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Display -->
+      <div id="results" class="hidden animate-[fadeInUp_0.8s_ease-out]">
+        <div class="flex items-center space-x-4 mb-8">
+            <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center">
+                <i class="fa-solid fa-file-invoice-dollar text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-3xl font-black text-gray-900 tracking-tight">Your Maximizer Report</h3>
+        </div>
+        
+        <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-10 border-b border-gray-50 pb-4">Potential Missed Deductions Identified:</p>
+
+        <div id="checklist" class="grid grid-cols-1 gap-6">
+          <!-- Dynamic Results will be injected here -->
+        </div>
+
+        <div class="mt-16 p-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-[2.5rem] relative overflow-hidden group shadow-2xl shadow-blue-200">
+          <div class="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform duration-700">
+             <i class="fa-solid fa-piggy-bank text-9xl text-white"></i>
+          </div>
+          <div class="relative z-10">
+            <h4 class="text-white text-3xl font-black mb-4">Want to save more?</h4>
+            <p class="text-blue-100 text-lg mb-8 max-w-xl font-medium leading-relaxed">
+              Our tax gurus can help you structure these claims correctly to avoid notices while significantly increasing your final refund amount.
+            </p>
+            <a href="/contact" class="inline-flex items-center bg-white text-blue-600 font-black py-4 px-10 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+              Talk to a Tax Guru
+              <i class="fa-solid fa-chevron-right ml-3 text-sm"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>div>

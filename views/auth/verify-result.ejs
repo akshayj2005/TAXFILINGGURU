@@ -1,0 +1,33 @@
+<%- contentFor('body') %>
+<div class="min-h-[60vh] flex items-center justify-center px-4 py-12">
+    <div class="max-w-md w-full bg-white shadow-2xl rounded-3xl overflow-hidden border border-gray-100 p-8 md:p-12 text-center">
+        <% if (success) { %>
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-check-circle text-4xl"></i>
+            </div>
+            <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-4">Email Verified!</h1>
+            <p class="text-gray-600 leading-relaxed mb-8">
+                <%= message %> You can now access all features of your Tax Filing Guru account.
+            </p>
+            <a href="/dashboard" class="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all transform hover:-translate-y-1 shadow-lg shadow-blue-200">
+                Go to Dashboard
+            </a>
+        <% } else { %>
+            <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-times-circle text-4xl"></i>
+            </div>
+            <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-4">Verification Failed</h1>
+            <p class="text-gray-600 leading-relaxed mb-8">
+                <%= message %>
+            </p>
+            <div class="space-y-4">
+                <a href="/dashboard" class="block w-full px-8 py-3 rounded-xl bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 transition-all">
+                    Return to Dashboard
+                </a>
+                <p class="text-xs text-gray-400">
+                    If you continue to have issues, please contact our support team.
+                </p>
+            </div>
+        <% } %>
+    </div>
+</div>

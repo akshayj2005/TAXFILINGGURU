@@ -1,0 +1,189 @@
+<section class="w-full hero-bg py-20 px-4 relative flex flex-col justify-center min-h-[35vh]">
+  <div class="max-w-7xl mx-auto relative z-10 text-center w-full">
+    <div class="flex justify-center mb-6">
+      <span class="bg-white/20 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide border border-white/30 uppercase">
+        Live Tracker
+      </span>
+    </div>
+    <h1 class="font-heading text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight drop-shadow-lg">
+      Refund <span class="text-pink-200">Status</span>
+    </h1>
+    <p class="text-xl text-blue-50 max-w-2xl mx-auto font-light leading-relaxed">
+      Track your ITR refund journey directly from the Income Tax Department's portal in real-time.
+    </p>
+  </div>
+  <!-- Wave Divider -->
+  <div class="wave-divider">
+    <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V46.35C50.62,54.91,105.48,63.07,161.16,64.74,213,66.3,266.3,62.72,321.39,56.44Z" fill="#F9FAFB" fill-opacity="1"></path>
+    </svg>
+  </div>
+</section>
+
+<div class="max-w-4xl mx-auto py-16 px-4">
+  <div class="bg-white rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] overflow-hidden border border-gray-100 p-10 md:p-16 relative">
+    
+    <div class="absolute top-0 right-0 p-8 opacity-5">
+        <i class="fa-solid fa-hourglass-half text-9xl"></i>
+    </div>
+
+    <div class="text-center mb-12 relative z-10">
+      <h3 class="text-3xl font-black text-gray-900 tracking-tight">Check Your Status</h3>
+      <p class="text-gray-400 font-medium mt-2">Enter your credentials to locate your refund</p>
+    </div>
+
+    <form id="statusForm" class="space-y-8 max-w-md mx-auto relative z-10">
+      <div>
+        <label class="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">PAN (10 Digits)</label>
+        <div class="relative group">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors">
+            <i class="fa-solid fa-id-card"></i>
+          </span>
+          <input type="text" id="pan" required placeholder="ABCDE1234F"
+            class="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-pink-100 focus:border-pink-500 outline-none uppercase transition-all text-gray-900 font-black tracking-widest placeholder:text-gray-300 placeholder:font-normal placeholder:tracking-normal">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Assessment Year</label>
+        <div class="relative">
+           <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            <i class="fa-solid fa-calendar-check"></i>
+          </span>
+          <select id="ay"
+            class="w-full pl-12 pr-10 py-4 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-pink-100 focus:border-pink-500 outline-none bg-white appearance-none text-gray-900 font-bold cursor-pointer">
+            <option value="2025-26">2025-26 (Latest)</option>
+            <option value="2024-25">2024-25</option>
+            <option value="2023-24">2023-24</option>
+          </select>
+          <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            <i class="fa-solid fa-chevron-down text-xs"></i>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit"
+        class="w-full bg-green-400 hover:bg-green-500 text-white font-bold py-5 rounded-2xl shadow-xl shadow-green transition-all group overflow-hidden relative">
+        <span class="relative z-10 flex items-center justify-center">
+            Track Refund Journey
+            <i class="fa-solid fa-route ml-3 group-hover:translate-x-1 transition-transform"></i>
+        </span>
+      </button>
+    </form>
+
+    <!-- Simulation Result -->
+    <div id="result" class="hidden mt-20 border-t border-gray-100 pt-16 animate-[fadeInUp_0.8s_ease-out]">
+      <div class="text-center mb-12">
+          <div class="inline-flex items-center space-x-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+             <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">PAN Profile:</span>
+             <span id="displayPan" class="text-xs font-black text-gray-900 tracking-widest"></span>
+          </div>
+      </div>
+
+      <div class="relative max-w-lg mx-auto">
+        <!-- Connecting Line -->
+        <div class="absolute left-[1.625rem] top-0 h-full w-0.5 bg-gradient-to-b from-green-500 via-green-500 to-gray-200 rounded-full"></div>
+
+        <div class="space-y-12">
+            <!-- Step 1 -->
+            <div class="relative flex items-start space-x-6">
+              <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center border-4 border-white shadow-lg relative z-10 shrink-0">
+                <i class="fa-solid fa-check text-white text-xl"></i>
+              </div>
+              <div class="pt-2">
+                <h5 class="text-lg font-black text-gray-900 tracking-tight">Return Filed Successfully</h5>
+                <p class="text-xs font-bold text-green-600 uppercase tracking-widest mt-1">Confirmed: July 31, 2024</p>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="relative flex items-start space-x-6">
+              <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center border-4 border-white shadow-lg relative z-10 shrink-0">
+                <i class="fa-solid fa-shield-check text-white text-xl"></i>
+              </div>
+              <div class="pt-2">
+                <h5 class="text-lg font-black text-gray-900 tracking-tight">E-Verified by Taxpayer</h5>
+                <p class="text-xs font-bold text-green-600 uppercase tracking-widest mt-1">Confirmed: Aug 01, 2024</p>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="relative flex items-start space-x-6">
+              <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center border-4 border-white shadow-lg relative z-10 shrink-0">
+                <i class="fa-solid fa-gears text-white text-xl"></i>
+              </div>
+              <div class="pt-2">
+                <h5 class="text-lg font-black text-gray-900 tracking-tight">Return Processed (CPC)</h5>
+                <p class="text-xs font-bold text-green-600 uppercase tracking-widest mt-1">Confirmed: Sep 15, 2024</p>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="relative flex items-start space-x-6">
+              <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center border-4 border-yellow-400 shadow-xl relative z-10 shrink-0 animate-pulse">
+                <i class="fa-solid fa-truck-fast text-yellow-500 text-xl"></i>
+              </div>
+              <div class="pt-2">
+                <h5 class="text-lg font-black text-yellow-600 tracking-tight">Refund Awaiting Dispatch</h5>
+                <div class="flex items-center mt-1 space-x-2">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Estimated:</span>
+                    <span class="text-xs font-black text-gray-900">5 Working Days</span>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="mt-20 p-8 bg-blue-50/50 backdrop-blur-sm rounded-[2rem] border border-blue-100 flex items-start space-x-4">
+        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-circle-info text-blue-600 text-sm"></i>
+        </div>
+        <div>
+            <p class="text-sm text-blue-900 font-medium">
+                <strong>Official Verification:</strong> This is a real-time status simulation. For a legal confirmation, please visit the 
+                <a href="https://tin.tin.nsdl.com/oltas/refund-status-pan.html" target="_blank" class="text-blue-600 font-black underline hover:text-blue-700 transition-colors">Official NSDL Portal</a> using your credentials.
+            </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('statusForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const pan = document.getElementById('pan').value;
+    if (pan.length !== 10) {
+      showPopup({ title: 'Invalid PAN', message: 'Please enter a valid 10-digit Permanent Account Number (PAN).', type: 'error' });
+      return;
+    }
+
+    document.getElementById('displayPan').innerText = pan.toUpperCase();
+    document.getElementById('result').classList.remove('hidden');
+
+    // Simulate loading/scroll
+    setTimeout(() => {
+        document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  });
+</script>
+
+
+
+<script>
+  document.getElementById('statusForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const pan = document.getElementById('pan').value;
+    if (pan.length !== 10) {
+      showPopup({ title: 'Invalid PAN', message: 'Please enter a valid 10-digit Permanent Account Number (PAN).', type: 'error' });
+      return;
+    }
+
+    document.getElementById('displayPan').innerText = pan.toUpperCase();
+    document.getElementById('result').classList.remove('hidden');
+
+    // Simulate loading/scroll
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>

@@ -1,0 +1,597 @@
+<%- include('partials/header') %>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <h1>Blog Management</h1>
+      <p>Create and manage tax insights, updates, and articles.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" onclick="openBlogModal()">
+        <i class="fa-solid fa-plus"></i> Create New Post
+      </button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+    <div class="stat-card">
+      <div class="stat-info">
+        <span class="stat-title">Total Posts</span>
+        <h2 class="stat-value">
+          <%= blogs.length %>
+        </h2>
+      </div>
+      <div class="stat-icon"><i class="fa-solid fa-newspaper"></i></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-info">
+        <span class="stat-title">Published</span>
+        <h2 class="stat-value">
+          <%= blogs.filter(b=> b.isPublished).length %>
+        </h2>
+      </div>
+      <div class="stat-icon green"><i class="fa-solid fa-check-double"></i></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-info">
+        <span class="stat-title">Drafts</span>
+        <h2 class="stat-value">
+          <%= blogs.filter(b=> !b.isPublished).length %>
+        </h2>
+      </div>
+      <div class="stat-icon yellow"><i class="fa-solid fa-file-pen"></i></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-info">
+        <span class="stat-title">Total Views</span>
+        <h2 class="stat-value">
+          <%= blogs.reduce((sum, b)=> sum + (b.viewCount || 0), 0) %>
+        </h2>
+      </div>
+      <div class="stat-icon blue"><i class="fa-solid fa-eye"></i></div>
+    </div>
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="card">
+    <div class="table-toolbar">
+      <div class="search-box">
+        <i class="fa-solid fa-search"></i>
+        <input type="text" id="blog-search" placeholder="Search by title or author…">
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="data-table" id="blogs-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">IMAGE</th>
+            <th>TITLE</th>
+            <th>CATEGORY</th>
+            <th>STATUS</th>
+            <th>VIEWS</th>
+            <th>CREATED</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (blogs && blogs.length> 0) { %>
+            <% blogs.forEach(blog=> { %>
+              <tr data-id="<%= blog._id %>">
+                <td>
+                  <img src="<%= blog.image %>" alt=""
+                    style="width: 60px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #eee;">
+                </td>
+                <td>
+                  <div class="name" style="font-weight: 800; color: #1e293b;">
+                    <%= blog.title %>
+                  </div>
+                  <div class="meta" style="font-size: 11px;">by <%= blog.author %>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge badge-gray">
+                    <%= blog.category %>
+                  </span>
+                </td>
+                <td>
+                  <span class="badge <%= blog.isPublished ? 'badge-green' : 'badge-yellow' %>">
+                    <%= blog.isPublished ? 'Published' : 'Draft' %>
+                  </span>
+                </td>
+                <td class="font-bold text-blue-600">
+                  <%= blog.viewCount %>
+                </td>
+                <td class="text-muted">
+                  <%= new Date(blog.createdAt).toLocaleDateString() %>
+                </td>
+                <td>
+                  <div class="flex-center gap-8">
+                    <a href="/blogs/<%= blog.slug %>" target="_blank" class="btn-icon" title="View Publicly">
+                      <i class="fa-solid fa-external-link"></i>
+                    </a>
+                    <button class="btn-icon" title="Edit"
+                      onclick="editBlog('<%= encodeURIComponent(JSON.stringify(blog)) %>')">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn-icon danger" title="Delete"
+                      onclick="confirmDelete('/admin/blogs/<%= blog._id %>', 'this blog post')">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="7">
+                      <div class="empty-state">
+                        <div class="empty-icon"><i class="fa-solid fa-newspaper"></i></div>
+                        <h4>No blog posts found</h4>
+                        <button class="btn btn-primary" onclick="openBlogModal()"><i class="fa-solid fa-plus"></i>
+                          Create Post</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ── BLOG MODAL ── -->
+  <div class="modal-overlay" id="blog-modal" style="z-index: 9999;">
+    <div class="modal" style="width: 1000px; max-width: 95%;">
+      <div class="modal-header">
+        <h3 id="modal-title"><i class="fa-solid fa-plus-circle"></i> &nbsp;New Blog Post</h3>
+        <button class="modal-close" onclick="closeModal('blog-modal')"><i class="fa-solid fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="blog-form" enctype="multipart/form-data">
+          <input type="hidden" name="id" id="blog-id">
+
+          <div class="blog-form-grid">
+            <!-- Left Column: Main Content -->
+            <div class="form-column">
+              <div class="form-group">
+                <label class="form-label">Post Title *</label>
+                <input class="form-control" name="title" id="blog-title" placeholder="Enter an engaging title..."
+                  required style="font-size: 1.1rem; font-weight: 700;">
+              </div>
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label class="form-label">Content *</label>
+                <div id="blog-editor"
+                  style="height: 250px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius);">
+                </div>
+                <input type="hidden" name="content" id="blog-content-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Short Description</label>
+                <textarea class="form-control" name="shortDescription" id="blog-shortDescription" rows="2"
+                  placeholder="Summary for card..."></textarea>
+              </div>
+
+              <div class="form-group" style="background: rgba(16, 185, 129, 0.05); padding: 12px; border-radius: 8px; margin-bottom: 16px; border: 1px dashed var(--accent);">
+                <label class="form-label" style="color: var(--accent);">Linked Author Profile</label>
+                <select class="form-control" id="linked-author" onchange="applyAuthorProfile(this.value)">
+                   <option value="">-- Manual Entry --</option>
+                   <% if (locals.authors && authors.length > 0) { %>
+                     <% authors.forEach(a => { %>
+                        <option value="<%= a._id %>"><%= a.name %> (<%= a.role %>)</option>
+                     <% }) %>
+                   <% } %>
+                </select>
+                <p class="form-hint" style="font-size: 10px;">Choosing a profile auto-fills the fields below.</p>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Author Name</label>
+                  <input class="form-control" name="author" id="blog-author" value="TaxFilingGuru Team">
+                </div>
+                <div class="form-group">
+                   <label class="form-label">Author Role</label>
+                   <input class="form-control" name="authorRole" id="blog-authorRole" value="Super Administrator">
+                </div>
+                <div class="form-group">
+                   <label class="form-label">Author Bio</label>
+                   <textarea class="form-control" name="authorBio" id="blog-authorBio" rows="2" placeholder="Tell us about the author..."></textarea>
+                </div>
+                <input type="hidden" name="authorImage" id="blog-authorImage" value="/assets/images/TFG_LOGO.png">
+                <div class="form-group">
+                  <label class="form-label">Status</label>
+                  <select class="form-control" name="isPublished" id="blog-isPublished">
+                    <option value="false">Draft</option>
+                    <option value="true">Published</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Settings & media -->
+            <div class="form-column">
+              <div class="card" style="margin-bottom: 16px; border-style: dashed;">
+                <div class="card-padding">
+                  <label class="form-label">Hero Image</label>
+                  <div id="image-preview" class="image-upload-preview"
+                    onclick="document.getElementById('blog-image-input').click()"
+                    style="width: 100%; height: 140px; background: var(--bg-input); cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border);">
+                    <span class="text-muted" style="font-size: 11px;">Click to upload image</span>
+                  </div>
+                  <input type="file" name="image" id="blog-image-input" style="display: none;" accept="image/*"
+                    onchange="previewBlogImage(this)">
+                  <p class="form-hint">Recommended: 1200x630px</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-control" name="category" id="blog-category">
+                  <option value="Income Tax">Income Tax</option>
+                  <option value="GST">GST</option>
+                  <option value="NRI Taxation">NRI Taxation</option>
+                  <option value="Investments">Investments</option>
+                  <option value="Business">Business</option>
+                  <option value="Notice Handling">Notice Handling</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+
+
+              <div class="form-group">
+                <label class="form-label">Tags (comma separated)</label>
+                <input class="form-control" name="tags" id="blog-tags" placeholder="tax, financial, tips">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">SEO Title</label>
+                <input class="form-control" name="seoTitle" id="blog-seoTitle" placeholder="SEO Title...">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">SEO Description</label>
+                <textarea class="form-control" name="seoDescription" id="blog-seoDescription" rows="2"
+                  placeholder="SEO Description..."></textarea>
+              </div>
+
+              <div class="card" style="margin-top: 16px; border: 1px solid var(--accent-glow); background: rgba(16,185,129,0.05);">
+                <div class="card-padding">
+                   <p style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 10px; text-transform: uppercase;">Call to Action (CTA)</p>
+                   <div class="form-group">
+                      <label class="form-label">CTA Prompt</label>
+                      <input class="form-control" name="ctaDescription" id="blog-ctaDescription" value="Need expert tax filing help?">
+                   </div>
+                   <div class="form-row">
+                      <div class="form-group">
+                         <label class="form-label">Button Name</label>
+                         <input class="form-control" name="ctaText" id="blog-ctaText" value="Read Full Article">
+                      </div>
+                      <div class="form-group">
+                         <label class="form-label">Button Link</label>
+                         <input class="form-control" name="ctaLink" id="blog-ctaLink" placeholder="/consultations">
+                      </div>
+                   </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" onclick="closeModal('blog-modal')">Discard Changes</button>
+        <button class="btn btn-primary" type="button" onclick="submitBlogForm()" style="min-width: 160px;">
+          <i class="fa-solid fa-save"></i> Save Blog Post
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/confirm-dialog') %>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
+
+    <style>
+      /* Quill Dark Theme Overrides */
+      .ql-toolbar.ql-snow {
+        background: var(--bg-card);
+        border-color: var(--border) !important;
+        border-top-left-radius: var(--radius);
+        border-top-right-radius: var(--radius);
+        padding: 12px;
+      }
+
+      .ql-container.ql-snow {
+        border-color: var(--border) !important;
+        border-bottom-left-radius: var(--radius);
+        border-bottom-right-radius: var(--radius);
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--text-primary);
+      }
+
+      .ql-editor {
+        height: 250px;
+        cursor: text !important;
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+      }
+
+      .ql-editor.ql-blank::before {
+        color: var(--text-muted);
+        font-style: normal;
+      }
+
+      .ql-snow .ql-stroke {
+        stroke: var(--text-secondary);
+      }
+
+      .ql-snow .ql-fill {
+        fill: var(--text-secondary);
+      }
+
+      .ql-snow .ql-picker {
+        color: var(--text-secondary);
+      }
+
+      .ql-snow .ql-picker-options {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border) !important;
+      }
+
+      .ql-snow.ql-toolbar button:hover .ql-stroke,
+      .ql-snow.ql-toolbar button.ql-active .ql-stroke {
+        stroke: var(--accent);
+      }
+
+      .ql-snow.ql-toolbar button:hover .ql-fill,
+      .ql-snow.ql-toolbar button.ql-active .ql-fill {
+        fill: var(--accent);
+      }
+
+      .ql-snow.ql-toolbar .ql-picker-label:hover,
+      .ql-snow.ql-toolbar .ql-picker-label.ql-active {
+        color: var(--accent);
+      }
+
+      /* Emergency fix for large Quill icons */
+      .ql-toolbar.ql-snow svg {
+        width: 16px !important;
+        height: 16px !important;
+      }
+
+      .ql-container.ql-snow {
+        background: var(--bg-input) !important;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* Blog Modal Grid Responsiveness */
+      .blog-form-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      @media (max-width: 992px) {
+        .blog-form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .modal {
+          width: 95% !important;
+        }
+      }
+    </style>
+
+    <script>
+      let quill;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        try {
+          if (typeof Quill !== 'undefined') {
+            quill = new Quill('#blog-editor', {
+              theme: 'snow',
+              modules: {
+                toolbar: [
+                  [{ 'header': [1, 2, 3, false] }],
+                  ['bold', 'italic', 'underline', 'strike'],
+                  ['blockquote', 'code-block'],
+                  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                  [{ 'color': [] }, { 'background': [] }],
+                  ['link', 'image'],
+                  ['clean']
+                ]
+              },
+              placeholder: 'Write your content here...'
+            });
+          } else {
+            console.error('Quill library not loaded');
+          }
+        } catch (err) {
+          console.error('Quill init error:', err);
+        }
+
+        filterTable('blog-search', 'blogs-table', [1, 2]);
+      });
+
+      function openBlogModal() {
+        console.log('openBlogModal triggered');
+        try {
+          const modalTitle = document.getElementById('modal-title');
+          const blogForm = document.getElementById('blog-form');
+          const blogId = document.getElementById('blog-id');
+          const imagePreview = document.getElementById('image-preview');
+          const isPublished = document.getElementById('blog-isPublished');
+          const authorRole = document.getElementById('blog-authorRole');
+          const authorBio = document.getElementById('blog-authorBio');
+          const authorImage = document.getElementById('blog-authorImage');
+          const ctaDescription = document.getElementById('blog-ctaDescription');
+          const ctaText = document.getElementById('blog-ctaText');
+          const ctaLink = document.getElementById('blog-ctaLink');
+
+          if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> &nbsp;New Blog Post';
+          if (blogForm) blogForm.reset();
+          if (blogId) blogId.value = '';
+          if (imagePreview) imagePreview.innerHTML = '<span class="text-muted" style="font-size: 11px;">Click to upload image</span>';
+          if (isPublished) isPublished.value = 'false';
+          if (authorRole) authorRole.value = 'Super Administrator';
+          if (authorBio) authorBio.value = 'Expert team at TaxFilingGuru dedicated to simplifying complex taxation laws and helping individuals and businesses optimize their financial performance.';
+          if (authorImage) authorImage.value = '/assets/images/TFG_LOGO.png';
+          if (ctaDescription) ctaDescription.value = 'Need expert tax filing help?';
+          if (ctaText) ctaText.value = 'Read Full Article';
+          if (ctaLink) ctaLink.value = '';
+
+          if (quill) {
+            quill.enable(true);
+            quill.root.innerHTML = '';
+            setTimeout(() => quill.focus(), 200);
+          } else {
+            console.warn('Quill editor not initialized yet');
+          }
+
+          openModal('blog-modal');
+        } catch (err) {
+          console.error('Error opening blog modal:', err);
+          if (typeof showToast === 'function') showToast('Could not open editor. Please refresh.', 'error');
+          else Swal.fire('Error', 'Error opening modal: ' + err.message, 'error');
+        }
+      }
+
+      function previewBlogImage(input) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById('image-preview').innerHTML = '<img src="' + e.target.result + '" class="w-full h-full object-cover">';
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      function editBlog(raw) {
+        const blog = JSON.parse(decodeURIComponent(raw));
+        const modalTitle = document.getElementById('modal-title');
+        const blogId = document.getElementById('blog-id');
+        const blogTitle = document.getElementById('blog-title');
+        const blogCategory = document.getElementById('blog-category');
+        const blogAuthor = document.getElementById('blog-author');
+        const blogTags = document.getElementById('blog-tags');
+        const blogShortDesc = document.getElementById('blog-shortDescription');
+        const blogSeoTitle = document.getElementById('blog-seoTitle');
+        const blogSeoDesc = document.getElementById('blog-seoDescription');
+        const blogIsPub = document.getElementById('blog-isPublished');
+        const blogAuthorRole = document.getElementById('blog-authorRole');
+        const blogAuthorBio = document.getElementById('blog-authorBio');
+        const blogAuthorImage = document.getElementById('blog-authorImage');
+        const blogCtaDesc = document.getElementById('blog-ctaDescription');
+        const blogCtaText = document.getElementById('blog-ctaText');
+        const blogCtaLink = document.getElementById('blog-ctaLink');
+        const imagePreview = document.getElementById('image-preview');
+
+        if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-edit"></i> &nbsp;Edit Blog Post';
+        if (blogId) blogId.value = blog._id;
+        if (blogTitle) blogTitle.value = blog.title;
+        if (blogCategory) blogCategory.value = blog.category;
+        if (blogAuthor) blogAuthor.value = blog.author;
+        if (blogAuthorRole) blogAuthorRole.value = blog.authorRole || 'Super Administrator';
+        if (blogAuthorBio) blogAuthorBio.value = blog.authorBio || '';
+        if (blogAuthorImage) blogAuthorImage.value = blog.authorImage || '/assets/images/TFG_LOGO.png';
+        if (blogTags) blogTags.value = (blog.tags || []).join(', ');
+        if (blogShortDesc) blogShortDesc.value = blog.shortDescription || '';
+        if (blogSeoTitle) blogSeoTitle.value = blog.seoTitle || '';
+        if (blogSeoDesc) blogSeoDesc.value = blog.seoDescription || '';
+        if (blogCtaDesc) blogCtaDesc.value = blog.ctaDescription || 'Need expert tax filing help?';
+        if (blogCtaText) blogCtaText.value = blog.ctaText || 'Read Full Article';
+        if (blogCtaLink) blogCtaLink.value = blog.ctaLink || '';
+        if (blogIsPub) blogIsPub.value = blog.isPublished ? 'true' : 'false';
+
+        if (quill) {
+          quill.enable(true);
+          quill.root.innerHTML = blog.content || '';
+          setTimeout(() => quill.focus(), 200);
+        }
+
+        if (blog.image && imagePreview) {
+          imagePreview.innerHTML = '<img src="' + blog.image + '" class="w-full h-full object-cover">';
+        }
+
+        openModal('blog-modal');
+      }
+
+      const authorsData = <%- JSON.stringify(locals.authors || []) %>;
+      function applyAuthorProfile(id) {
+          if (!id) return;
+          const author = authorsData.find(a => a._id === id);
+          if (!author) return;
+          document.getElementById('blog-author').value = author.name;
+          document.getElementById('blog-authorRole').value = author.role;
+          document.getElementById('blog-authorBio').value = author.bio;
+          document.getElementById('blog-authorImage').value = author.image;
+      }
+
+      async function submitBlogForm() {
+        const id = document.getElementById('blog-id').value;
+        const form = document.getElementById('blog-form');
+
+        // Validate form basic fields (required title etc)
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        // Update hidden content input from Quill
+        if (!quill) {
+          if (typeof showToast === 'function') showToast('Editor not ready. Please refresh.', 'error');
+          else Swal.fire('Error', 'Editor not ready.', 'error');
+          return;
+        }
+        const currentContent = quill.root.innerHTML;
+        // Basic check for empty quill editor
+        if (currentContent === '<p><br></p>' || currentContent.trim() === '') {
+          if (typeof showToast === 'function') showToast('Blog content cannot be empty.', 'error');
+          else Swal.fire('Warning', 'Blog content cannot be empty.', 'warning');
+          return;
+        }
+        document.getElementById('blog-content-input').value = currentContent;
+
+        const formData = new FormData(form);
+
+        const url = id ? `/admin/blogs/${id}` : '/admin/blogs/add';
+        const method = id ? 'PUT' : 'POST';
+
+        try {
+          const btn = document.querySelector('.modal-footer .btn-primary');
+          const originalText = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+          const resp = await fetch(url, {
+            method: method,
+            body: formData
+          });
+          const data = await resp.json();
+
+          if (data.success) {
+            showToast(data.message, 'success');
+            setTimeout(() => location.reload(), 1000);
+          } else {
+            throw new Error(data.error || 'Failed to save blog');
+          }
+        } catch (err) {
+          showToast(err.message, 'error');
+        } finally {
+          const btn = document.querySelector('.modal-footer .btn-primary');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Save Blog Post';
+        }
+      }
+    </script>
+
+    <%- include('partials/footer') %>

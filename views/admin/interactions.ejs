@@ -1,0 +1,141 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1>Interactions</h1>
+    <p>All logged user interaction events — WhatsApp clicks, button presses, bookings.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-danger btn-sm" onclick="confirmDelete('/admin/interactions/clear-all', 'ALL interaction logs')">
+      <i class="fa-solid fa-trash"></i> Clear Logs
+    </button>
+    <button class="btn btn-outline" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Total Events</span><h2 class="stat-value"><%= stats.total %></h2></div>
+    <div class="stat-icon blue"><i class="fa-solid fa-hand-pointer"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">WhatsApp Clicks</span><h2 class="stat-value"><%= stats.whatsapp %></h2></div>
+    <div class="stat-icon green"><i class="fa-brands fa-whatsapp"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Consultation</span><h2 class="stat-value"><%= stats.consultation %></h2></div>
+    <div class="stat-icon yellow"><i class="fa-solid fa-calendar-plus"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Other Events</span><h2 class="stat-value"><%= stats.other %></h2></div>
+    <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-toolbar">
+    <div class="search-box">
+      <i class="fa-solid fa-search"></i>
+      <input type="text" id="interaction-search" placeholder="Search by type, path, text…">
+    </div>
+    <div class="filter-row">
+      <select id="category-filter" class="filter-select">
+        <option value="">All Categories</option>
+        <option>floating_button</option>
+        <option>booking_modal</option>
+        <option>consultation</option>
+        <option>navigation</option>
+      </select>
+    </div>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table" id="interactions-table">
+      <thead>
+        <tr>
+          <th>TYPE</th>
+          <th>CATEGORY</th>
+          <th>TEXT / CONTENT</th>
+          <th>PAGE PATH</th>
+          <th>VISITOR</th>
+          <th>TIMESTAMP</th>
+          <th>DETAILS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (interactions && interactions.length > 0) { %>
+          <% interactions.forEach(i => { %>
+          <tr>
+            <td>
+              <span class="badge badge-indigo"><%= i.type %></span>
+            </td>
+            <td>
+              <span class="badge badge-gray"><%= i.category || '—' %></span>
+            </td>
+            <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+              <%= i.text || '—' %>
+            </td>
+            <td><code style="font-size:11px;color:var(--accent)"><%= i.path || '/' %></code></td>
+            <td class="text-muted" style="font-size:11px;font-family:monospace;"><%= i.visitorId ? i.visitorId.substr(0,12)+'…' : '—' %></td>
+            <td class="text-muted" style="font-size:12px;">
+              <%= i.timestamp ? new Date(i.timestamp).toLocaleString('en-IN',{hour12:true,hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'}) : '—' %>
+            </td>
+            <td>
+              <button class="btn-icon" onclick="viewInteraction('<%= encodeURIComponent(JSON.stringify(i)) %>')" title="View metadata">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="7">
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fa-solid fa-hand-pointer"></i></div>
+              <h4>No interactions logged</h4>
+              <p>Events from the website will appear here once tracking is active.</p>
+            </div>
+          </td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- VIEW MODAL -->
+<div class="modal-overlay" id="view-interaction-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-bolt"></i> &nbsp;Interaction Details</h3>
+      <button class="modal-close" onclick="closeModal('view-interaction-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="interaction-detail-body" class="detail-grid"></div>
+      <div class="form-group" style="margin-top:16px;">
+        <label class="form-label">Metadata (raw)</label>
+        <pre id="interaction-metadata" style="background:var(--bg-input);border-radius:8px;padding:12px;font-size:11px;color:var(--text-secondary);max-height:140px;overflow:auto;border:1px solid var(--border);white-space:pre-wrap;"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/confirm-dialog') %>
+
+<script>
+  filterTable('interaction-search','interactions-table',[0,1,2,3]);
+  filterBySelect('category-filter','interactions-table',1, 'type');
+
+  function viewInteraction(raw) {
+    const i = JSON.parse(decodeURIComponent(raw));
+    document.getElementById('interaction-detail-body').innerHTML = `
+      <div class="detail-item"><label>Type</label><span>${i.type}</span></div>
+      <div class="detail-item"><label>Category</label><span>${i.category || '—'}</span></div>
+      <div class="detail-item"><label>Text</label><span>${i.text || '—'}</span></div>
+      <div class="detail-item"><label>Path</label><span style="font-family:monospace">${i.path || '/'}</span></div>
+      <div class="detail-item"><label>Visitor ID</label><span style="font-family:monospace;font-size:11px">${i.visitorId || '—'}</span></div>
+      <div class="detail-item"><label>Timestamp</label><span>${i.timestamp ? new Date(i.timestamp).toLocaleString() : '—'}</span></div>`;
+    document.getElementById('interaction-metadata').textContent = JSON.stringify(i.metadata || {}, null, 2);
+    openModal('view-interaction-modal');
+  }
+</script>
+
+<%- include('partials/footer') %>

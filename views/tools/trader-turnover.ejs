@@ -1,0 +1,82 @@
+<section class="w-full hero-bg py-20 px-4 relative flex flex-col justify-center min-h-[35vh]">
+  <div class="max-w-7xl mx-auto relative z-10 text-center w-full">
+    <div class="flex justify-center mb-6">
+      <span class="bg-white/20 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide border border-white/30 uppercase">
+        F&O Audit Scanner
+      </span>
+    </div>
+    <h1 class="font-heading text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight drop-shadow-lg">
+      Trader <span class="text-blue-200">Turnover</span>
+    </h1>
+    <p class="text-xl text-blue-50 max-w-2xl mx-auto font-light leading-relaxed">
+      Calculate absolute turnover for your speculative and non-speculative trades to check for mandatory Tax Audit requirements.
+    </p>
+  </div>
+  <!-- Wave Divider -->
+  <div class="wave-divider">
+    <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V46.35C50.62,54.91,105.48,63.07,161.16,64.74,213,66.3,266.3,62.72,321.39,56.44Z" fill="#F9FAFB" fill-opacity="1"></path>
+    </svg>
+  </div>
+</section>
+
+<div class="max-w-4xl mx-auto py-16 px-4">
+  <div class="bg-white rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] border border-gray-100 p-8 md:p-12 relative overflow-hidden">
+    
+    <div class="absolute top-0 left-0 w-32 h-32 bg-blue-50 rounded-br-[100px] -ml-16 -mt-16 opacity-50"></div>
+
+    <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+      <div>
+        <h3 class="text-2xl font-black text-gray-900 tracking-tight">Financial Transactions</h3>
+        <p class="text-gray-400 text-sm font-medium mt-1">Add all your Intraday and F&O P&L entries</p>
+      </div>
+      <button onclick="addTradeRow()"
+        class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold py-3 px-6 rounded-2xl text-sm transition-all flex items-center shadow-sm">
+        <i class="fa-solid fa-plus mr-2"></i>
+        Add New Trade
+      </button>
+    </div>
+
+    <div class="overflow-x-auto mb-10 rounded-[2rem] border border-gray-50">
+      <table class="w-full text-left" id="tradeTable">
+        <thead>
+          <tr class="bg-gray-50/50">
+            <th class="p-6 font-black text-xs uppercase tracking-[0.2em] text-gray-400">Sequence</th>
+            <th class="p-6 font-black text-xs uppercase tracking-[0.2em] text-gray-400">Profit / Loss (₹)</th>
+            <th class="p-6 font-black text-xs uppercase tracking-[0.2em] text-gray-400 w-24 text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          <!-- Dynamic Rows -->
+        </tbody>
+      </table>
+    </div>
+
+    <button onclick="calculateTraderTurnover()"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-xl shadow-blue-100 transition-all group">
+      Generate Audit Analysis
+      <i class="fa-solid fa-bolt-lightning ml-3 group-hover:rotate-12 transition-transform"></i>
+    </button>
+
+    <!-- Result Section -->
+    <div id="result" class="hidden mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 animate-[fadeInUp_0.6s_ease-out]">
+      <div class="p-8 bg-blue-50/50 backdrop-blur-sm rounded-[2rem] border-2 border-blue-100">
+        <p class="text-blue-400 font-black text-[10px] uppercase tracking-widest mb-2">Absolute Turnover</p>
+        <h3 class="text-4xl font-black text-blue-900 tracking-tighter" id="turnoverValue">₹0</h3>
+        <div class="mt-6 flex items-center text-[10px] text-blue-400 font-bold uppercase tracking-wider bg-white/50 w-fit px-3 py-1.5 rounded-full">
+            <i class="fa-solid fa-circle-info mr-2"></i>
+            |P| + |L| Method
+        </div>
+      </div>
+
+      <div id="auditBox" class="p-8 rounded-[2rem] border-2 flex items-center justify-center transition-all duration-500">
+        <div class="text-center">
+          <p class="text-xs font-black uppercase tracking-widest mb-1 opacity-60">Audit Status</p>
+          <h4 class="text-2xl font-black mb-1 leading-tight tracking-tight" id="auditStatus">Analysis Pending</h4>
+          <p class="text-sm font-medium" id="auditReason">Calculating limits...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

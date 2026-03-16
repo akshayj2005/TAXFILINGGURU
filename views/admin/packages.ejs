@@ -1,0 +1,362 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1>Packages</h1>
+    <p>Manage tax filing packages — pricing, features, and visibility.</p>
+  </div>
+  <div class="header-actions">
+    <select id="type-view-filter" class="filter-select" onchange="filterPkgType(this.value)">
+      <option value="">All Types</option>
+      <option value="resident">Resident</option>
+      <option value="nri">NRI</option>
+      <option value="global">Global (Both)</option>
+      <option value="global-services">Index Service (Home Only)</option>
+    </select>
+    <button class="btn btn-primary" onclick="openModal('add-pkg-modal')">
+      <i class="fa-solid fa-plus"></i> Add Package
+    </button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Total</span><h2 class="stat-value"><%= stats.total %></h2></div>
+    <div class="stat-icon blue"><i class="fa-solid fa-box-open"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Active</span><h2 class="stat-value"><%= stats.active %></h2></div>
+    <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Resident</span><h2 class="stat-value"><%= stats.resident %></h2></div>
+    <div class="stat-icon"><i class="fa-solid fa-house"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">NRI</span><h2 class="stat-value"><%= stats.nri %></h2></div>
+    <div class="stat-icon yellow"><i class="fa-solid fa-plane-departure"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Global</span><h2 class="stat-value"><%= stats.global %></h2></div>
+    <div class="stat-icon purple"><i class="fa-solid fa-globe"></i></div>
+  </div>
+</div>
+
+<!-- Package Cards Grid -->
+<div id="pkg-grid" class="package-grid">
+  <% if (packages && packages.length > 0) { %>
+    <% packages.forEach(pkg => { %>
+    <div class="pkg-card" data-type="<%= pkg.type %>">
+      <% if (pkg.badge) { %>
+        <span class="badge badge-indigo pkg-badge"><%= pkg.badge %></span>
+      <% } %>
+      <% if (!pkg.isActive) { %>
+        <span class="badge badge-red" style="position:absolute;top:14px;left:14px;font-size:10px;">Inactive</span>
+      <% } %>
+      <div class="pkg-type"><%= pkg.type.toUpperCase() %> &bull; <%= pkg.heading %></div>
+      <div class="pkg-name"><%= pkg.name %></div>
+      <div class="pkg-price"><%= pkg.price %> <span><%= pkg.priceSuffix || '' %></span></div>
+      <% if (pkg.originalPrice) { %>
+        <div style="font-size:12px;color:var(--text-muted);text-decoration:line-through;">₹<%= pkg.originalPrice %></div>
+      <% } %>
+      <% if (pkg.highlight) { %>
+        <div style="font-size:11px;color:var(--accent);margin:4px 0;"><i class="fa-solid fa-star"></i> <%= pkg.highlight %></div>
+      <% } %>
+      <% if (pkg.bestFor) { %>
+        <div style="font-size:11px;color:var(--text-secondary);font-style:italic;margin-bottom:8px;">Best for: <%= pkg.bestFor %></div>
+      <% } %>
+      <% if (pkg.features && pkg.features.length) { %>
+        <ul class="pkg-features">
+          <% pkg.features.slice(0,4).forEach(f => { %>
+            <li><i class="fa-solid fa-check"></i> <%= f %></li>
+          <% }) %>
+          <% if (pkg.features.length > 4) { %>
+            <li style="color:var(--text-muted)"><i class="fa-solid fa-ellipsis"></i> +<%= pkg.features.length - 4 %> more</li>
+          <% } %>
+        </ul>
+      <% } %>
+      <div class="pkg-actions">
+        <button class="btn btn-outline btn-sm" style="flex:1;" onclick="editPackage('<%= pkg._id %>')">
+          <i class="fa-solid fa-pen-to-square"></i> Edit
+        </button>
+        <button class="btn-icon danger" onclick="confirmDelete('/admin/packages/<%= pkg._id %>','<%= pkg.name %>')">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <% }) %>
+  <% } else { %>
+    <div style="grid-column:1/-1;">
+      <div class="empty-state">
+        <div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>
+        <h4>No packages created</h4>
+        <p>Add your first tax filing package.</p>
+        <button class="btn btn-primary" onclick="openModal('add-pkg-modal')"><i class="fa-solid fa-plus"></i> Add Package</button>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<!-- ── ADD MODAL ── -->
+<div class="modal-overlay" id="add-pkg-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-box-open"></i> &nbsp;New Package</h3>
+      <button class="modal-close" onclick="closeModal('add-pkg-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="add-pkg-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Slug * <span class="form-hint" style="display:inline">(unique, no spaces)</span></label>
+            <input class="form-control" name="slug" placeholder="itr1-basic" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input class="form-control" name="name" placeholder="ITR-1 Basic" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Type *</label>
+            <select class="form-control" name="type" required>
+              <option value="resident">Resident</option>
+              <option value="nri">NRI</option>
+              <option value="global">Global (Both)</option>
+              <option value="global-services">Index Service (Home Only)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Heading *</label>
+            <input class="form-control" name="heading" placeholder="Individual Packages" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subheading</label>
+          <input class="form-control" name="subheading" placeholder="Brief category description">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Short Description (card text)</label>
+          <input class="form-control" name="shortDescription" placeholder="Ideal for salaried individuals">
+        </div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">Price *</label>
+            <input class="form-control" name="price" placeholder="₹499" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Original Price</label>
+            <input class="form-control" name="originalPrice" placeholder="₹999">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Price Suffix</label>
+            <input class="form-control" name="priceSuffix" placeholder="/ Filing">
+          </div>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">Discount Badge</label>
+            <input class="form-control" name="discountBadge" placeholder="50% OFF">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Badge Label</label>
+            <input class="form-control" name="badge" placeholder="Recommended">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Highlight</label>
+            <input class="form-control" name="highlight" placeholder="Tax Optimisation">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Features (one per line)</label>
+          <textarea class="form-control" name="featuresRaw" rows="4" placeholder="Form 16 included&#10;Free consultation&#10;Expert review"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Best For</label>
+            <input class="form-control" name="bestFor" placeholder="Salaried professionals">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Position (sort order)</label>
+            <input class="form-control" type="number" name="position" value="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Active</label>
+          <select class="form-control" name="isActive">
+            <option value="true">Yes — visible on website</option>
+            <option value="false">No — hidden</option>
+          </select>
+        </div>
+
+        <div class="faq-editor-section" style="margin-top:20px; padding:15px; background:var(--card-bg,#1e293b); border-radius:8px; border:1px solid var(--border,#334155);">
+          <h4 style="margin-bottom:12px; font-size:14px; color:var(--text-primary,#f1f5f9); display:flex; justify-content:space-between; align-items:center;">
+            <span>Frequently Asked Questions</span>
+            <button type="button" class="btn btn-sm btn-outline" onclick="addFaqRow('add-faq-container')"><i class="fa-solid fa-plus"></i> Add FAQ</button>
+          </h4>
+          <div id="add-faq-container"></div>
+          <input type="hidden" name="faqsRaw" id="add-faqs-raw">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('add-pkg-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="prepareFaqsAndSubmit('add-pkg-form','POST','/admin/packages/add','add-faq-container','add-faqs-raw')">
+        <i class="fa-solid fa-check"></i> Create Package
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT MODAL ── -->
+<div class="modal-overlay" id="edit-pkg-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-pen-to-square"></i> &nbsp;Edit Package</h3>
+      <button class="modal-close" onclick="closeModal('edit-pkg-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="edit-pkg-form">
+        <input type="hidden" name="_id" id="ep-id">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Slug</label><input class="form-control" name="slug" id="ep-slug"></div>
+          <div class="form-group"><label class="form-label">Name</label><input class="form-control" name="name" id="ep-name"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-control" name="type" id="ep-type"><option value="resident">Resident</option><option value="nri">NRI</option><option value="global">Global</option><option value="global-services">Global Services</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Heading</label><input class="form-control" name="heading" id="ep-heading"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subheading</label>
+          <input class="form-control" name="subheading" id="ep-subheading">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Short Description</label>
+          <input class="form-control" name="shortDescription" id="ep-shortDescription">
+        </div>
+        <div class="form-row-3">
+          <div class="form-group"><label class="form-label">Price</label><input class="form-control" name="price" id="ep-price"></div>
+          <div class="form-group"><label class="form-label">Original Price</label><input class="form-control" name="originalPrice" id="ep-originalPrice"></div>
+          <div class="form-group"><label class="form-label">Price Suffix</label><input class="form-control" name="priceSuffix" id="ep-priceSuffix"></div>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group"><label class="form-label">Discount Badge</label><input class="form-control" name="discountBadge" id="ep-discountBadge"></div>
+          <div class="form-group"><label class="form-label">Badge Label</label><input class="form-control" name="badge" id="ep-badge"></div>
+          <div class="form-group"><label class="form-label">Highlight</label><input class="form-control" name="highlight" id="ep-highlight"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Features (one per line)</label>
+          <textarea class="form-control" name="featuresRaw" id="ep-features" rows="4"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Best For</label><input class="form-control" name="bestFor" id="ep-bestFor"></div>
+          <div class="form-group"><label class="form-label">Position</label><input class="form-control" type="number" name="position" id="ep-position"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Active</label>
+          <select class="form-control" name="isActive" id="ep-isActive"><option value="true">Yes</option><option value="false">No</option></select>
+        </div>
+
+        <div class="faq-editor-section" style="margin-top:20px; padding:15px; background:var(--card-bg,#1e293b); border-radius:8px; border:1px solid var(--border,#334155);">
+          <h4 style="margin-bottom:12px; font-size:14px; color:var(--text-primary,#f1f5f9); display:flex; justify-content:space-between; align-items:center;">
+            <span>Frequently Asked Questions</span>
+            <button type="button" class="btn btn-sm btn-outline" onclick="addFaqRow('edit-faq-container')"><i class="fa-solid fa-plus"></i> Add FAQ</button>
+          </h4>
+          <div id="edit-faq-container"></div>
+          <input type="hidden" name="faqsRaw" id="edit-faqs-raw">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('edit-pkg-modal')">Cancel</button>
+      <button class="btn btn-primary" id="save-pkg-btn"><i class="fa-solid fa-save"></i> Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/confirm-dialog') %>
+
+<script>
+  // ── All packages as JSON lookup (for edit by _id) ───────────────
+  const ALL_PACKAGES = <%- JSON.stringify(packages) %>;
+
+  function filterPkgType(val) {
+    document.querySelectorAll('.pkg-card').forEach(c => {
+      c.style.display = (!val || c.dataset.type === val) ? '' : 'none';
+    });
+  }
+
+  function editPackage(id) {
+    const p = ALL_PACKAGES.find(x => x._id === id);
+    if (!p) { showToast('Package not found', 'error'); return; }
+    document.getElementById('ep-id').value              = p._id;
+    document.getElementById('ep-slug').value            = p.slug;
+    document.getElementById('ep-name').value            = p.name;
+    document.getElementById('ep-type').value            = p.type;
+    document.getElementById('ep-heading').value         = p.heading;
+    document.getElementById('ep-subheading').value      = p.subheading || '';
+    document.getElementById('ep-shortDescription').value = p.shortDescription || '';
+    document.getElementById('ep-price').value           = p.price;
+    document.getElementById('ep-originalPrice').value   = p.originalPrice || '';
+    document.getElementById('ep-priceSuffix').value     = p.priceSuffix || '';
+    document.getElementById('ep-discountBadge').value   = p.discountBadge || '';
+    document.getElementById('ep-badge').value           = p.badge || '';
+    document.getElementById('ep-highlight').value       = p.highlight || '';
+    document.getElementById('ep-features').value        = (p.features || []).join('\n');
+    document.getElementById('ep-bestFor').value         = p.bestFor || '';
+    document.getElementById('ep-position').value        = p.position || 0;
+    document.getElementById('ep-isActive').value        = p.isActive ? 'true' : 'false';
+
+    // Clear and populate FAQs
+    const container = document.getElementById('edit-faq-container');
+    container.innerHTML = '';
+    if (p.faqs && p.faqs.length > 0) {
+      p.faqs.forEach(f => addFaqRow('edit-faq-container', f.question, f.answer));
+    }
+
+    openModal('edit-pkg-modal');
+  }
+
+  function addFaqRow(containerId, q = '', a = '') {
+    const container = document.getElementById(containerId);
+    const row = document.createElement('div');
+    row.className = 'faq-row';
+    row.style.cssText = 'background:var(--bg-secondary,#0f172a); padding:10px; border-radius:6px; border:1px solid var(--border,#334155); margin-bottom:10px; position:relative;';
+    row.innerHTML = `
+      <div class="form-group" style="margin-bottom:8px">
+        <input class="form-control form-control-sm faq-q" placeholder="Question" value="${(q || '').replace(/"/g, '&quot;').replace(/`/g, '\\`')}" style="font-weight:600">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <textarea class="form-control form-control-sm faq-a" placeholder="Answer" rows="2">${(a || '').replace(/</g,'&lt;')}</textarea>
+      </div>
+      <button type="button" onclick="this.parentElement.remove()" style="position:absolute;top:-8px;right:-8px;background:#450a0a;color:#ef4444;border:1px solid #7f1d1d;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-weight:bold;">×</button>
+    `;
+    container.appendChild(row);
+  }
+
+  function prepareFaqsAndSubmit(formId, method, url, containerId, hiddenInputId) {
+    const container = document.getElementById(containerId);
+    const faqs = [];
+    container.querySelectorAll('.faq-row').forEach(row => {
+      const q = (row.querySelector('.faq-q').value || '').trim();
+      const a = (row.querySelector('.faq-a').value || '').trim();
+      if (q && a) faqs.push({ question: q, answer: a });
+    });
+    document.getElementById(hiddenInputId).value = JSON.stringify(faqs);
+    submitForm(formId, method, url, 'Package saved!', () => {
+      closeModal(formId.includes('edit') ? 'edit-pkg-modal' : 'add-pkg-modal');
+      setTimeout(() => location.reload(), 800);
+    });
+  }
+
+  document.getElementById('save-pkg-btn').addEventListener('click', () => {
+    const id = document.getElementById('ep-id').value;
+    prepareFaqsAndSubmit('edit-pkg-form', 'PUT', `/admin/packages/${id}`, 'edit-faq-container', 'edit-faqs-raw');
+  });
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<%- include('../partials/head') %>
+
+    <body class="min-h-full bg-gray-50 flex flex-col">
+        <!-- Header -->
+        <%- include('../partials/header') %>
+
+            <!-- Global Floating Elements & Modals -->
+            <a href="javascript:void(0)"
+                onclick="trackWhatsAppClick('floating_button', 'General Enquiry'); setTimeout(()=>{window.location.href='https://api.whatsapp.com/send?phone=919811945176&text=%F0%9F%84%B8%F0%9F%85%83%F0%9F%84%B6%20%20I%20Want%20To%20Enquire%20About%20Your%20Tax%20Filing%20Guru%20Website'},400)"
+                class="whatsapp-float" target="_blank" rel="nofollow noopener" aria-label="Chat on WhatsApp">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg"
+                    alt="WhatsApp chat with TaxFilingGuru" />
+            </a>
+            <!-- ===== FREE CONSULTATION MODAL ===== -->
+            <div id="bookingModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4" style="display:none;">
+                <!-- Backdrop -->
+                <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeBookingModal()"></div>
+                <!-- Card -->
+                <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 z-10 mx-auto" onclick="event.stopPropagation()">
+                    <!-- Close -->
+                    <button onclick="closeBookingModal()" class="absolute top-4 right-5 text-gray-400 hover:text-gray-700 text-2xl font-light leading-none">&times;</button>
+
+                    <!-- Title -->
+                    <h3 class="text-2xl font-bold text-gray-900 text-center mb-1">Book Free Consultation</h3>
+                    <p class="text-gray-500 text-sm text-center mb-6">Select your preferred date and time</p>
+
+                    <!-- Date + Time row -->
+                    <div class="flex gap-4 mb-6">
+                        <!-- Date -->
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Select Date</label>
+                            <div class="relative flex items-center border border-gray-300 rounded-lg px-3 py-2.5 bg-white focus-within:ring-2 focus-within:ring-blue-500 transition">
+                                <input type="date" id="appointmentDate"
+                                    class="flex-1 text-gray-800 text-sm font-medium bg-transparent outline-none cursor-pointer" />
+                                <svg class="w-5 h-5 text-gray-500 ml-1 pointer-events-none flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Time -->
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Select Time</label>
+                            <div class="flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2 bg-white">
+                                <button onclick="timeUp()" class="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center justify-center text-xs font-bold transition">▲</button>
+                                <span id="freeTimeDisplay" class="flex-1 text-center text-gray-800 text-sm font-semibold">04:00 AM</span>
+                                <button onclick="timeDown()" class="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center justify-center text-xs font-bold transition">▼</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error -->
+                    <div id="freeBookingError" class="hidden mb-4 p-3 bg-red-50 border border-red-100 text-red-600 text-xs font-bold rounded-lg text-center"></div>
+
+                    <!-- Book Now Button -->
+                    <button onclick="bookNow()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl text-base transition shadow-md shadow-green-200">
+                        Book Now
+                    </button>
+                </div>
+            </div>
+            <!-- ===== END FREE CONSULTATION MODAL ===== -->
+
+             <div id="rightTab" onclick="vcOpenBooking()">
+                Book Video Consultation
+                <span class="video-icon">📹</span>
+            </div>
+            <div id="bookingOverlay" class="overlay hidden">
+                <div class="booking-box" id="vcModalBox" onclick="event.stopPropagation()">
+                    <button class="close-btn" onclick="vcCloseBooking()">×</button>
+
+                    <!-- Step 1: Input Form -->
+                    <div id="vcFormStep">
+                        <h3>📹 Book Video Consultation</h3>
+                        <p class="subtitle" style="text-align: center;">Book Your Video Consultation Here</p>
+
+                        <!-- Error Message Container -->
+                        <div id="vcError"
+                            class="hidden mb-4 p-3 bg-red-50 border border-red-100 text-red-600 text-xs font-bold rounded-lg text-center">
+                        </div>
+
+                        <div class="duration">
+                            <button onclick="vcSelectDuration(45)" id="d45">45 Minutes</button>
+                            <button onclick="vcSelectDuration(90)" id="d90">1.5 Hour</button>
+                        </div>
+                        <input id="clientName" placeholder="Your Name" required>
+                        <input id="clientEmail" placeholder="Your Email" required>
+                        <select id="vcClientCountry" required style="width: 100%; margin-bottom: 12px; font-size: 14px; padding: 10px; border-radius: 8px; border: 1px solid #ddd; outline: none; background: white; color: #333; cursor: pointer;">
+                            <option value="" disabled>Country of Residence*</option>
+                            <option value="India" selected>India</option>
+                            <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Andorra</option><option>Angola</option><option>Antigua and Barbuda</option><option>Argentina</option><option>Armenia</option><option>Australia</option><option>Austria</option><option>Azerbaijan</option><option>Bahamas</option><option>Bahrain</option><option>Bangladesh</option><option>Barbados</option><option>Belarus</option><option>Belgium</option><option>Belize</option><option>Benin</option><option>Bhutan</option><option>Bolivia</option><option>Bosnia and Herzegovina</option><option>Botswana</option><option>Brazil</option><option>Brunei</option><option>Bulgaria</option><option>Burkina Faso</option><option>Burundi</option><option>Cabo Verde</option><option>Cambodia</option><option>Cameroon</option><option>Canada</option><option>Central African Republic</option><option>Chad</option><option>Chile</option><option>China</option><option>Colombia</option><option>Comoros</option><option>Congo (Brazzaville)</option><option>Congo (Kinshasa)</option><option>Costa Rica</option><option>Croatia</option><option>Cuba</option><option>Cyprus</option><option>Czechia</option><option>Denmark</option><option>Djibouti</option><option>Dominica</option><option>Dominican Republic</option><option>Ecuador</option><option>Egypt</option><option>El Salvador</option><option>Equatorial Guinea</option><option>Eritrea</option><option>Estonia</option><option>Eswatini</option><option>Ethiopia</option><option>Fiji</option><option>Finland</option><option>France</option><option>Gabon</option><option>Gambia</option><option>Georgia</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Grenada</option><option>Guatemala</option><option>Guinea</option><option>Guinea-Bissau</option><option>Guyana</option><option>Haiti</option><option>Honduras</option><option>Hungary</option><option>Iceland</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Israel</option><option>Italy</option><option>Jamaica</option><option>Japan</option><option>Jordan</option><option>Kazakhstan</option><option>Kenya</option><option>Kiribati</option><option>Kuwait</option><option>Kyrgyzstan</option><option>Laos</option><option>Latvia</option><option>Lebanon</option><option>Lesotho</option><option>Liberia</option><option>Libya</option><option>Liechtenstein</option><option>Lithuania</option><option>Luxembourg</option><option>Madagascar</option><option>Malawi</option><option>Malaysia</option><option>Maldives</option><option>Mali</option><option>Malta</option><option>Marshall Islands</option><option>Mauritania</option><option>Mauritius</option><option>Mexico</option><option>Micronesia</option><option>Moldova</option><option>Monaco</option><option>Mongolia</option><option>Montenegro</option><option>Morocco</option><option>Mozambique</option><option>Myanmar</option><option>Namibia</option><option>Nauru</option><option>Nepal</option><option>Netherlands</option><option>New Zealand</option><option>Nicaragua</option><option>Niger</option><option>Nigeria</option><option>North Korea</option><option>North Macedonia</option><option>Norway</option><option>Oman</option><option>Pakistan</option><option>Palau</option><option>Palestine</option><option>Panama</option><option>Papua New Guinea</option><option>Paraguay</option><option>Peru</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Romania</option><option>Russia</option><option>Rwanda</option><option>Saint Kitts and Nevis</option><option>Saint Lucia</option><option>Saint Vincent and the Grenadines</option><option>Samoa</option><option>San Marino</option><option>Sao Tome and Principe</option><option>Saudi Arabia</option><option>Senegal</option><option>Serbia</option><option>Seychelles</option><option>Sierra Leone</option><option>Singapore</option><option>Slovakia</option><option>Slovenia</option><option>Solomon Islands</option><option>Somalia</option><option>South Africa</option><option>South Korea</option><option>South Sudan</option><option>Spain</option><option>Sri Lanka</option><option>Sudan</option><option>Suriname</option><option>Sweden</option><option>Switzerland</option><option>Syria</option><option>Tajikistan</option><option>Tanzania</option><option>Thailand</option><option>Timor-Leste</option><option>Togo</option><option>Tonga</option><option>Trinidad and Tobago</option><option>Tunisia</option><option>Turkey</option><option>Turkmenistan</option><option>Tuvalu</option><option>Uganda</option><option>Ukraine</option><option>United Arab Emirates</option><option>United Kingdom</option><option>United States</option><option>Uruguay</option><option>Uzbekistan</option><option>Vanuatu</option><option>Venezuela</option><option>Vietnam</option><option>Yemen</option><option>Zambia</option><option>Zimbabwe</option>
+                        </select>
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <select id="vcClientPhoneCode" style="width: 80px; font-size: 14px; padding: 10px; border-radius: 8px; border: 1px solid #ddd; outline: none; background: white; color: #333; cursor: pointer;">
+                                <option value="+93" data-country="Afghanistan">+93</option><option value="+355" data-country="Albania">+355</option><option value="+213" data-country="Algeria">+213</option><option value="+376" data-country="Andorra">+376</option><option value="+244" data-country="Angola">+244</option><option value="+1268" data-country="Antigua and Barbuda">+1268</option><option value="+54" data-country="Argentina">+54</option><option value="+374" data-country="Armenia">+374</option><option value="+61" data-country="Australia">+61</option><option value="+43" data-country="Austria">+43</option><option value="+994" data-country="Azerbaijan">+994</option><option value="+1242" data-country="Bahamas">+1242</option><option value="+973" data-country="Bahrain">+973</option><option value="+880" data-country="Bangladesh">+880</option><option value="+1246" data-country="Barbados">+1246</option><option value="+375" data-country="Belarus">+375</option><option value="+32" data-country="Belgium">+32</option><option value="+501" data-country="Belize">+501</option><option value="+229" data-country="Benin">+229</option><option value="+975" data-country="Bhutan">+975</option><option value="+591" data-country="Bolivia">+591</option><option value="+387" data-country="Bosnia and Herzegovina">+387</option><option value="+267" data-country="Botswana">+267</option><option value="+55" data-country="Brazil">+55</option><option value="+673" data-country="Brunei">+673</option><option value="+359" data-country="Bulgaria">+359</option><option value="+226" data-country="Burkina Faso">+226</option><option value="+257" data-country="Burundi">+257</option><option value="+238" data-country="Cabo Verde">+238</option><option value="+855" data-country="Cambodia">+855</option><option value="+237" data-country="Cameroon">+237</option><option value="+1" data-country="Canada">+1</option><option value="+236" data-country="Central African Republic">+236</option><option value="+235" data-country="Chad">+235</option><option value="+56" data-country="Chile">+56</option><option value="+86" data-country="China">+86</option><option value="+57" data-country="Colombia">+57</option><option value="+269" data-country="Comoros">+269</option><option value="+242" data-country="Congo (Brazzaville)">+242</option><option value="+243" data-country="Congo (Kinshasa)">+243</option><option value="+506" data-country="Costa Rica">+506</option><option value="+385" data-country="Croatia">+385</option><option value="+53" data-country="Cuba">+53</option><option value="+357" data-country="Cyprus">+357</option><option value="+420" data-country="Czechia">+420</option><option value="+45" data-country="Denmark">+45</option><option value="+253" data-country="Djibouti">+253</option><option value="+1767" data-country="Dominica">+1767</option><option value="+1809" data-country="Dominican Republic">+1809</option><option value="+593" data-country="Ecuador">+593</option><option value="+20" data-country="Egypt">+20</option><option value="+503" data-country="El Salvador">+503</option><option value="+240" data-country="Equatorial Guinea">+240</option><option value="+291" data-country="Eritrea">+291</option><option value="+372" data-country="Estonia">+372</option><option value="+268" data-country="Eswatini">+268</option><option value="+251" data-country="Ethiopia">+251</option><option value="+679" data-country="Fiji">+679</option><option value="+358" data-country="Finland">+358</option><option value="+33" data-country="France">+33</option><option value="+241" data-country="Gabon">+241</option><option value="+220" data-country="Gambia">+220</option><option value="+995" data-country="Georgia">+995</option><option value="+49" data-country="Germany">+49</option><option value="+233" data-country="Ghana">+233</option><option value="+30" data-country="Greece">+30</option><option value="+1473" data-country="Grenada">+1473</option><option value="+502" data-country="Guatemala">+502</option><option value="+224" data-country="Guinea">+224</option><option value="+245" data-country="Guinea-Bissau">+245</option><option value="+592" data-country="Guyana">+592</option><option value="+509" data-country="Haiti">+509</option><option value="+504" data-country="Honduras">+504</option><option value="+36" data-country="Hungary">+36</option><option value="+354" data-country="Iceland">+354</option><option value="+91" data-country="India" selected>+91</option><option value="+62" data-country="Indonesia">+62</option><option value="+98" data-country="Iran">+98</option><option value="+964" data-country="Iraq">+964</option><option value="+353" data-country="Ireland">+353</option><option value="+972" data-country="Israel">+972</option><option value="+39" data-country="Italy">+39</option><option value="+1876" data-country="Jamaica">+1876</option><option value="+81" data-country="Japan">+81</option><option value="+962" data-country="Jordan">+962</option><option value="+7" data-country="Kazakhstan">+7</option><option value="+254" data-country="Kenya">+254</option><option value="+686" data-country="Kiribati">+686</option><option value="+965" data-country="Kuwait">+965</option><option value="+996" data-country="Kyrgyzstan">+996</option><option value="+856" data-country="Laos">+856</option><option value="+371" data-country="Latvia">+371</option><option value="+961" data-country="Lebanon">+961</option><option value="+266" data-country="Lesotho">+266</option><option value="+231" data-country="Liberia">+231</option><option value="+218" data-country="Libya">+218</option><option value="+423" data-country="Liechtenstein">+423</option><option value="+370" data-country="Lithuania">+370</option><option value="+352" data-country="Luxembourg">+352</option><option value="+261" data-country="Madagascar">+261</option><option value="+265" data-country="Malawi">+265</option><option value="+60" data-country="Malaysia">+60</option><option value="+960" data-country="Maldives">+960</option><option value="+223" data-country="Mali">+223</option><option value="+356" data-country="Malta">+356</option><option value="+692" data-country="Marshall Islands">+692</option><option value="+222" data-country="Mauritania">+222</option><option value="+230" data-country="Mauritius">+230</option><option value="+52" data-country="Mexico">+52</option><option value="+691" data-country="Micronesia">+691</option><option value="+373" data-country="Moldova">+373</option><option value="+377" data-country="Monaco">+377</option><option value="+976" data-country="Mongolia">+976</option><option value="+382" data-country="Montenegro">+382</option><option value="+212" data-country="Morocco">+212</option><option value="+258" data-country="Mozambique">+258</option><option value="+95" data-country="Myanmar">+95</option><option value="+264" data-country="Namibia">+264</option><option value="+674" data-country="Nauru">+674</option><option value="+977" data-country="Nepal">+977</option><option value="+31" data-country="Netherlands">+31</option><option value="+64" data-country="New Zealand">+64</option><option value="+505" data-country="Nicaragua">+505</option><option value="+227" data-country="Niger">+227</option><option value="+234" data-country="Nigeria">+234</option><option value="+850" data-country="North Korea">+850</option><option value="+389" data-country="North Macedonia">+389</option><option value="+47" data-country="Norway">+47</option><option value="+968" data-country="Oman">+968</option><option value="+92" data-country="Pakistan">+92</option><option value="+680" data-country="Palau">+680</option><option value="+970" data-country="Palestine">+970</option><option value="+507" data-country="Panama">+507</option><option value="+675" data-country="Papua New Guinea">+675</option><option value="+595" data-country="Paraguay">+595</option><option value="+51" data-country="Peru">+51</option><option value="+63" data-country="Philippines">+63</option><option value="+48" data-country="Poland">+48</option><option value="+351" data-country="Portugal">+351</option><option value="+974" data-country="Qatar">+974</option><option value="+40" data-country="Romania">+40</option><option value="+7" data-country="Russia">+7</option><option value="+250" data-country="Rwanda">+250</option><option value="+1869" data-country="Saint Kitts and Nevis">+1869</option><option value="+1758" data-country="Saint Lucia">+1758</option><option value="+1784" data-country="Saint Vincent and the Grenadines">+1784</option><option value="+685" data-country="Samoa">+685</option><option value="+378" data-country="San Marino">+378</option><option value="+239" data-country="Sao Tome and Principe">+239</option><option value="+966" data-country="Saudi Arabia">+966</option><option value="+221" data-country="Senegal">+221</option><option value="+381" data-country="Serbia">+381</option><option value="+248" data-country="Seychelles">+248</option><option value="+232" data-country="Sierra Leone">+232</option><option value="+65" data-country="Singapore">+65</option><option value="+421" data-country="Slovakia">+421</option><option value="+386" data-country="Slovenia">+386</option><option value="+677" data-country="Solomon Islands">+677</option><option value="+252" data-country="Somalia">+252</option><option value="+27" data-country="South Africa">+27</option><option value="+82" data-country="South Korea">+82</option><option value="+211" data-country="South Sudan">+211</option><option value="+34" data-country="Spain">+34</option><option value="+94" data-country="Sri Lanka">+94</option><option value="+249" data-country="Sudan">+249</option><option value="+597" data-country="Suriname">+597</option><option value="+46" data-country="Sweden">+46</option><option value="+41" data-country="Switzerland">+41</option><option value="+963" data-country="Syria">+963</option><option value="+992" data-country="Tajikistan">+992</option><option value="+255" data-country="Tanzania">+255</option><option value="+66" data-country="Thailand">+66</option><option value="+670" data-country="Timor-Leste">+670</option><option value="+228" data-country="Togo">+228</option><option value="+676" data-country="Tonga">+676</option><option value="+1868" data-country="Trinidad and Tobago">+1868</option><option value="+216" data-country="Tunisia">+216</option><option value="+90" data-country="Turkey">+90</option><option value="+993" data-country="Turkmenistan">+993</option><option value="+688" data-country="Tuvalu">+688</option><option value="+256" data-country="Uganda">+256</option><option value="+380" data-country="Ukraine">+380</option><option value="+971" data-country="United Arab Emirates">+971</option><option value="+44" data-country="United Kingdom">+44</option><option value="+1" data-country="United States">+1</option><option value="+598" data-country="Uruguay">+598</option><option value="+998" data-country="Uzbekistan">+998</option><option value="+678" data-country="Vanuatu">+678</option><option value="+58" data-country="Venezuela">+58</option><option value="+84" data-country="Vietnam">+84</option><option value="+967" data-country="Yemen">+967</option><option value="+260" data-country="Zambia">+260</option><option value="+263" data-country="Zimbabwe">+263</option>
+                            </select>
+                            <input id="clientNo" placeholder="Your Mobile No." required style="flex: 1; margin-bottom: 0;">
+                        </div>
+                        <div class="date-time-row">
+                            <div class="date-box">
+                                <label for="datePicker">Select Date</label>
+                                <input type="date" id="datePicker" required>
+                            </div>
+                            <div class="time-box">
+                                <span class="date-box"
+                                    style="font-size:12px;font-weight:600;margin-bottom:4px;display:block;">Select
+                                    Time</span>
+                                <div class="clock-picker small">
+                                    <button class="arrow" onclick="vcTimeUp()">▲</button>
+                                    <span id="timeDisplay">09:00 AM</span>
+                                    <button class="arrow" onclick="vcTimeDown()">▼</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="book-btn" onclick="vcBookNow()">Next Step</button>
+                    </div>
+
+                    <!-- Step 2: Confirmation -->
+                    <div id="vcConfirmStep" class="hidden text-center">
+                        <h3 class="mb-4">Confirm Booking</h3>
+                        <div class="bg-gray-50 rounded-xl p-6 mb-6 text-left space-y-3 text-sm">
+                            <p><strong>👤 Name:</strong> <span id="confName"></span></p>
+                            <p><strong>🌍 Country:</strong> <span id="confCountry"></span></p>
+                            <p><strong>📅 Date:</strong> <span id="confDate"></span></p>
+                            <p><strong>⏰ Time:</strong> <span id="confTime"></span></p>
+                            <p><strong>⏳ Duration:</strong> <span id="confDuration"></span> Minutes</p>
+                            <p class="pt-2 border-t border-gray-200 text-lg"><strong>💰 Amount:</strong> <span
+                                    id="confAmount" class="text-blue-600 font-bold"></span></p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="flex-1 py-3 rounded-lg border border-gray-200 font-bold"
+                                onclick="vcBackToForm()">Edit</button>
+                            <button class="flex-1 py-3 rounded-lg bg-green-600 text-white font-bold"
+                                onclick="vcFinalConfirm()">Confirm & WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="closeTab" class="overflow hidden" onclick="vcCloseBooking()">Close</div>
+
+
+            <!-- Main Content -->
+            <main class="flex-grow">
+                <%- body %>
+                    <!-- FAQ Section (Auto-renders if data exists) -->
+                    <%- include('../partials/faq') %>
+            </main>
+
+            <!-- Footer -->
+            <%- include('../partials/footer') %>
+
+                <!-- Global Scripts -->
+                <script src="/js/services-data.js"></script>
+                <script src="/js/utils.js"></script>
+                <script src="/js/booking.js"></script>
+                <script src="/js/tools.js"></script>
+                <script src="/js/script.js"></script>
+                
+                <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const vcCountry = document.getElementById("vcClientCountry");
+                        const vcPhoneCode = document.getElementById("vcClientPhoneCode");
+                        if (vcCountry && vcPhoneCode) {
+                            vcCountry.addEventListener("change", function () {
+                                const cName = this.value;
+                                const opt = Array.from(vcPhoneCode.options).find(o => o.getAttribute("data-country") === cName);
+                                if (opt) vcPhoneCode.value = opt.value;
+                            });
+                            
+                            // Try to initialize from IP API if not selected
+                            if (!vcCountry.value || vcCountry.value === 'India') {
+                                fetch('https://ipapi.co/json/')
+                                .then(r => r.json())
+                                .then(d => {
+                                    if (d && d.country_name) {
+                                        for (let i = 0; i < vcCountry.options.length; i++) {
+                                            if (vcCountry.options[i].value === d.country_name) {
+                                                vcCountry.value = d.country_name;
+                                                // Trigger change to sync phone code
+                                                vcCountry.dispatchEvent(new Event('change'));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }).catch(() => {});
+                            }
+                        }
+                    });
+                </script>
+
+                <!-- Custom Popup -->
+                <%- include('../partials/popup') %>
+                
+                <!-- Testimonial Modal -->
+                <%- include('../partials/testimonial-modal') %>
+    </body>
+
+</html>

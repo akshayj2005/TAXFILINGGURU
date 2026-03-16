@@ -1,0 +1,336 @@
+<%# Universal DB-driven package registration page — old two-column format %>
+<%
+  const isNri       = pkg.type === 'nri';
+  const isGlobal    = pkg.type === 'global' || pkg.type === 'global-services';
+  const isResident  = pkg.type === 'resident';
+  const showCountry = true; // Always show now
+  const showPan     = !isNri || isGlobal;  // Resident + Global show PAN; pure NRI hide it
+  const displayPrice = (() => {
+    const p = String(pkg.price);
+    if (p === 'Custom' || p.includes('–') || p.includes('-')) return p;
+    return '₹' + p;
+  })();
+  const displayRate = pkg.priceSuffix ? `${displayPrice} ${pkg.priceSuffix}` : displayPrice;
+  // Back link: each type returns to its listing page
+  const backMap = { resident: '/individualpackage', nri: '/nri', global: '/individualpackage', 'global-services': '/' };
+  const backTextMap = { resident: '← Back to Resident Packages', nri: '← Back to NRI Packages', global: '← Back to Packages', 'global-services': '← Back to Services' };
+  const backUrl  = backMap[pkg.type]  || '/';
+  const backText = backTextMap[pkg.type] || '← Back';
+  const loginUrl = isNri ? '/login?type=nri' : '/login?type=resident';
+  const bgImage = isNri ? 'pamphlet-nri.jpg' : 'pamphlet-resident.jpg';
+%>
+
+<!-- ══ HERO ════════════════════════════════════════════════════════ -->
+<section class="w-full hero-bg py-10 px-4 relative flex flex-col justify-center">
+    <div class="max-w-7xl mx-auto relative z-10 text-center w-full">
+        <h2 class="text-3xl md:text-5xl font-bold text-white mb-4"><%= pkg.name %></h2>
+        <p class="text-gray-200"><%= pkg.shortDescription || pkg.subheading %></p>
+    </div>
+</section>
+
+<!-- ══ MAIN ═════════════════════════════════════════════════════════ -->
+<main class="w-full py-10 md:py-20 px-4 bg-gray-50">
+    <div class="max-w-7xl mx-auto">
+
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">
+
+            <!-- LEFT PANEL — package info card on blurred background -->
+            <div class="relative flex items-center justify-center min-h-[550px] md:min-h-full overflow-hidden p-4 md:p-12">
+                <div class="absolute inset-0 z-0">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 scale-105"
+                        style="background-image: url('/assets/images/<%= bgImage %>'); filter: blur(6px);">
+                    </div>
+                    <div class="absolute inset-0 bg-black/15"></div>
+                </div>
+
+                <div class="relative z-10 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 py-8 md:p-8 w-[95%] md:w-[90%] max-w-lg border border-white/20">
+                    <% if (pkg.badge) { %>
+                    <div class="inline-block <%= pkg.badgeClass || 'bg-blue-100 text-blue-600' %> font-bold px-3 py-1 rounded-full text-xs mb-4 tracking-wide">
+                        <%= pkg.badge %>
+                    </div>
+                    <% } %>
+
+                    <h3 class="text-3xl md:text-4xl font-black tracking-tight mb-2 text-gray-900"><%= pkg.name %></h3>
+
+                    <% if (pkg.subheading) { %>
+                        <p class="text-base text-gray-500 mb-1"><%= pkg.subheading %></p>
+                    <% } %>
+
+                    <p class="text-gray-600 text-lg mb-5 leading-relaxed border-b border-gray-200 pb-4">
+                        <%= pkg.shortDescription || pkg.subheading %>
+                    </p>
+
+                    <!-- Features list -->
+                    <ul class="space-y-3">
+                        <% pkg.features.forEach(function(feat) { %>
+                        <li class="flex items-start text-gray-800 text-base font-semibold">
+                            <svg class="w-6 h-6 text-green-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <%= feat %>
+                        </li>
+                        <% }); %>
+                    </ul>
+
+                    <% if (pkg.bestFor) { %>
+                        <p class="mt-4 text-xs text-gray-400 italic">Best for: <%= pkg.bestFor %></p>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL — registration form -->
+            <div class="p-8 md:p-14 bg-white flex flex-col justify-center">
+                <div class="max-w-md mx-auto w-full">
+                    <div class="mb-10 text-center">
+                        <h3 class="text-3xl font-bold text-gray-900 mb-2 font-heading">Provide Your Details</h3>
+                        <p class="text-gray-500 text-sm">Fill in the information below to secure your package.</p>
+                    </div>
+
+                    <form id="regForm" novalidate class="space-y-4"
+                        data-plan-name="<%= pkg.name %>"
+                        data-plan-rate="<%= displayRate %>"
+                        data-plan-slug="<%= pkg.slug %>"
+                        data-is-nri="<%= isNri %>">
+
+                        <div class="space-y-4">
+                            <div class="relative">
+                                <input required type="text" id="reg-name" placeholder="Full Name*"
+                                    value="<%= locals.user ? user.name : '' %>"
+                                    class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400">
+                            </div>
+
+                            <div class="relative">
+                                <input required type="email" id="reg-email" placeholder="Email Address*"
+                                    value="<%= locals.user ? user.email : '' %>"
+                                    class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400">
+                            </div>
+
+                            <% if (showCountry) { %>
+                            <div class="relative">
+                                <% if (isResident) { %>
+                                <input type="text" id="reg-country" value="India" readonly
+                                    class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none text-gray-500 bg-gray-50 font-medium cursor-not-allowed">
+                                <% } else { %>
+                                <select required id="reg-country" class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 bg-white cursor-pointer">
+                                    <option value="" disabled <%= !isGlobal && (!locals.user || !locals.user.residenceCountry) ? 'selected' : '' %>>Country of Residence*</option>
+                                    <option value="India" <%= isGlobal && (!locals.user || !locals.user.residenceCountry) ? 'selected' : '' %>>India</option>
+                                    <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Andorra</option><option>Angola</option><option>Antigua and Barbuda</option><option>Argentina</option><option>Armenia</option><option>Australia</option><option>Austria</option><option>Azerbaijan</option><option>Bahamas</option><option>Bahrain</option><option>Bangladesh</option><option>Barbados</option><option>Belarus</option><option>Belgium</option><option>Belize</option><option>Benin</option><option>Bhutan</option><option>Bolivia</option><option>Bosnia and Herzegovina</option><option>Botswana</option><option>Brazil</option><option>Brunei</option><option>Bulgaria</option><option>Burkina Faso</option><option>Burundi</option><option>Cabo Verde</option><option>Cambodia</option><option>Cameroon</option><option>Canada</option><option>Central African Republic</option><option>Chad</option><option>Chile</option><option>China</option><option>Colombia</option><option>Comoros</option><option>Congo (Brazzaville)</option><option>Congo (Kinshasa)</option><option>Costa Rica</option><option>Croatia</option><option>Cuba</option><option>Cyprus</option><option>Czechia</option><option>Denmark</option><option>Djibouti</option><option>Dominica</option><option>Dominican Republic</option><option>Ecuador</option><option>Egypt</option><option>El Salvador</option><option>Equatorial Guinea</option><option>Eritrea</option><option>Estonia</option><option>Eswatini</option><option>Ethiopia</option><option>Fiji</option><option>Finland</option><option>France</option><option>Gabon</option><option>Gambia</option><option>Georgia</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Grenada</option><option>Guatemala</option><option>Guinea</option><option>Guinea-Bissau</option><option>Guyana</option><option>Haiti</option><option>Honduras</option><option>Hungary</option><option>Iceland</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Israel</option><option>Italy</option><option>Jamaica</option><option>Japan</option><option>Jordan</option><option>Kazakhstan</option><option>Kenya</option><option>Kiribati</option><option>Kuwait</option><option>Kyrgyzstan</option><option>Laos</option><option>Latvia</option><option>Lebanon</option><option>Lesotho</option><option>Liberia</option><option>Libya</option><option>Liechtenstein</option><option>Lithuania</option><option>Luxembourg</option><option>Madagascar</option><option>Malawi</option><option>Malaysia</option><option>Maldives</option><option>Mali</option><option>Malta</option><option>Marshall Islands</option><option>Mauritania</option><option>Mauritius</option><option>Mexico</option><option>Micronesia</option><option>Moldova</option><option>Monaco</option><option>Mongolia</option><option>Montenegro</option><option>Morocco</option><option>Mozambique</option><option>Myanmar</option><option>Namibia</option><option>Nauru</option><option>Nepal</option><option>Netherlands</option><option>New Zealand</option><option>Nicaragua</option><option>Niger</option><option>Nigeria</option><option>North Korea</option><option>North Macedonia</option><option>Norway</option><option>Oman</option><option>Pakistan</option><option>Palau</option><option>Palestine</option><option>Panama</option><option>Papua New Guinea</option><option>Paraguay</option><option>Peru</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Romania</option><option>Russia</option><option>Rwanda</option><option>Saint Kitts and Nevis</option><option>Saint Lucia</option><option>Saint Vincent and the Grenadines</option><option>Samoa</option><option>San Marino</option><option>Sao Tome and Principe</option><option>Saudi Arabia</option><option>Senegal</option><option>Serbia</option><option>Seychelles</option><option>Sierra Leone</option><option>Singapore</option><option>Slovakia</option><option>Slovenia</option><option>Solomon Islands</option><option>Somalia</option><option>South Africa</option><option>South Korea</option><option>South Sudan</option><option>Spain</option><option>Sri Lanka</option><option>Sudan</option><option>Suriname</option><option>Sweden</option><option>Switzerland</option><option>Syria</option><option>Tajikistan</option><option>Tanzania</option><option>Thailand</option><option>Timor-Leste</option><option>Togo</option><option>Tonga</option><option>Trinidad and Tobago</option><option>Tunisia</option><option>Turkey</option><option>Turkmenistan</option><option>Tuvalu</option><option>Uganda</option><option>Ukraine</option><option>United Arab Emirates</option><option>United Kingdom</option><option>United States</option><option>Uruguay</option><option>Uzbekistan</option><option>Vanuatu</option><option>Venezuela</option><option>Vietnam</option><option>Yemen</option><option>Zambia</option><option>Zimbabwe</option>
+                                </select>
+                                <% } %>
+                            </div>
+                            <% } %>
+
+                            <div class="flex gap-2">
+                                <select id="reg-phone-code" class="w-28 shrink-0 px-2 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 bg-white cursor-pointer text-sm font-medium">
+                                    <option value="+93" data-country="Afghanistan">+93</option><option value="+355" data-country="Albania">+355</option><option value="+213" data-country="Algeria">+213</option><option value="+376" data-country="Andorra">+376</option><option value="+244" data-country="Angola">+244</option><option value="+1268" data-country="Antigua and Barbuda">+1268</option><option value="+54" data-country="Argentina">+54</option><option value="+374" data-country="Armenia">+374</option><option value="+61" data-country="Australia">+61</option><option value="+43" data-country="Austria">+43</option><option value="+994" data-country="Azerbaijan">+994</option><option value="+1242" data-country="Bahamas">+1242</option><option value="+973" data-country="Bahrain">+973</option><option value="+880" data-country="Bangladesh">+880</option><option value="+1246" data-country="Barbados">+1246</option><option value="+375" data-country="Belarus">+375</option><option value="+32" data-country="Belgium">+32</option><option value="+501" data-country="Belize">+501</option><option value="+229" data-country="Benin">+229</option><option value="+975" data-country="Bhutan">+975</option><option value="+591" data-country="Bolivia">+591</option><option value="+387" data-country="Bosnia and Herzegovina">+387</option><option value="+267" data-country="Botswana">+267</option><option value="+55" data-country="Brazil">+55</option><option value="+673" data-country="Brunei">+673</option><option value="+359" data-country="Bulgaria">+359</option><option value="+226" data-country="Burkina Faso">+226</option><option value="+257" data-country="Burundi">+257</option><option value="+238" data-country="Cabo Verde">+238</option><option value="+855" data-country="Cambodia">+855</option><option value="+237" data-country="Cameroon">+237</option><option value="+1" data-country="Canada">+1</option><option value="+236" data-country="Central African Republic">+236</option><option value="+235" data-country="Chad">+235</option><option value="+56" data-country="Chile">+56</option><option value="+86" data-country="China">+86</option><option value="+57" data-country="Colombia">+57</option><option value="+269" data-country="Comoros">+269</option><option value="+242" data-country="Congo (Brazzaville)">+242</option><option value="+243" data-country="Congo (Kinshasa)">+243</option><option value="+506" data-country="Costa Rica">+506</option><option value="+385" data-country="Croatia">+385</option><option value="+53" data-country="Cuba">+53</option><option value="+357" data-country="Cyprus">+357</option><option value="+420" data-country="Czechia">+420</option><option value="+45" data-country="Denmark">+45</option><option value="+253" data-country="Djibouti">+253</option><option value="+1767" data-country="Dominica">+1767</option><option value="+1809" data-country="Dominican Republic">+1809</option><option value="+593" data-country="Ecuador">+593</option><option value="+20" data-country="Egypt">+20</option><option value="+503" data-country="El Salvador">+503</option><option value="+240" data-country="Equatorial Guinea">+240</option><option value="+291" data-country="Eritrea">+291</option><option value="+372" data-country="Estonia">+372</option><option value="+268" data-country="Eswatini">+268</option><option value="+251" data-country="Ethiopia">+251</option><option value="+679" data-country="Fiji">+679</option><option value="+358" data-country="Finland">+358</option><option value="+33" data-country="France">+33</option><option value="+241" data-country="Gabon">+241</option><option value="+220" data-country="Gambia">+220</option><option value="+995" data-country="Georgia">+995</option><option value="+49" data-country="Germany">+49</option><option value="+233" data-country="Ghana">+233</option><option value="+30" data-country="Greece">+30</option><option value="+1473" data-country="Grenada">+1473</option><option value="+502" data-country="Guatemala">+502</option><option value="+224" data-country="Guinea">+224</option><option value="+245" data-country="Guinea-Bissau">+245</option><option value="+592" data-country="Guyana">+592</option><option value="+509" data-country="Haiti">+509</option><option value="+504" data-country="Honduras">+504</option><option value="+36" data-country="Hungary">+36</option><option value="+354" data-country="Iceland">+354</option><option value="+91" data-country="India" <%= isNri ? '' : 'selected' %>>+91</option><option value="+62" data-country="Indonesia">+62</option><option value="+98" data-country="Iran">+98</option><option value="+964" data-country="Iraq">+964</option><option value="+353" data-country="Ireland">+353</option><option value="+972" data-country="Israel">+972</option><option value="+39" data-country="Italy">+39</option><option value="+1876" data-country="Jamaica">+1876</option><option value="+81" data-country="Japan">+81</option><option value="+962" data-country="Jordan">+962</option><option value="+7" data-country="Kazakhstan">+7</option><option value="+254" data-country="Kenya">+254</option><option value="+686" data-country="Kiribati">+686</option><option value="+965" data-country="Kuwait">+965</option><option value="+996" data-country="Kyrgyzstan">+996</option><option value="+856" data-country="Laos">+856</option><option value="+371" data-country="Latvia">+371</option><option value="+961" data-country="Lebanon">+961</option><option value="+266" data-country="Lesotho">+266</option><option value="+231" data-country="Liberia">+231</option><option value="+218" data-country="Libya">+218</option><option value="+423" data-country="Liechtenstein">+423</option><option value="+370" data-country="Lithuania">+370</option><option value="+352" data-country="Luxembourg">+352</option><option value="+261" data-country="Madagascar">+261</option><option value="+265" data-country="Malawi">+265</option><option value="+60" data-country="Malaysia">+60</option><option value="+960" data-country="Maldives">+960</option><option value="+223" data-country="Mali">+223</option><option value="+356" data-country="Malta">+356</option><option value="+692" data-country="Marshall Islands">+692</option><option value="+222" data-country="Mauritania">+222</option><option value="+230" data-country="Mauritius">+230</option><option value="+52" data-country="Mexico">+52</option><option value="+691" data-country="Micronesia">+691</option><option value="+373" data-country="Moldova">+373</option><option value="+377" data-country="Monaco">+377</option><option value="+976" data-country="Mongolia">+976</option><option value="+382" data-country="Montenegro">+382</option><option value="+212" data-country="Morocco">+212</option><option value="+258" data-country="Mozambique">+258</option><option value="+95" data-country="Myanmar">+95</option><option value="+264" data-country="Namibia">+264</option><option value="+674" data-country="Nauru">+674</option><option value="+977" data-country="Nepal">+977</option><option value="+31" data-country="Netherlands">+31</option><option value="+64" data-country="New Zealand">+64</option><option value="+505" data-country="Nicaragua">+505</option><option value="+227" data-country="Niger">+227</option><option value="+234" data-country="Nigeria">+234</option><option value="+850" data-country="North Korea">+850</option><option value="+389" data-country="North Macedonia">+389</option><option value="+47" data-country="Norway">+47</option><option value="+968" data-country="Oman">+968</option><option value="+92" data-country="Pakistan">+92</option><option value="+680" data-country="Palau">+680</option><option value="+970" data-country="Palestine">+970</option><option value="+507" data-country="Panama">+507</option><option value="+675" data-country="Papua New Guinea">+675</option><option value="+595" data-country="Paraguay">+595</option><option value="+51" data-country="Peru">+51</option><option value="+63" data-country="Philippines">+63</option><option value="+48" data-country="Poland">+48</option><option value="+351" data-country="Portugal">+351</option><option value="+974" data-country="Qatar">+974</option><option value="+40" data-country="Romania">+40</option><option value="+7" data-country="Russia">+7</option><option value="+250" data-country="Rwanda">+250</option><option value="+1869" data-country="Saint Kitts and Nevis">+1869</option><option value="+1758" data-country="Saint Lucia">+1758</option><option value="+1784" data-country="Saint Vincent and the Grenadines">+1784</option><option value="+685" data-country="Samoa">+685</option><option value="+378" data-country="San Marino">+378</option><option value="+239" data-country="Sao Tome and Principe">+239</option><option value="+966" data-country="Saudi Arabia">+966</option><option value="+221" data-country="Senegal">+221</option><option value="+381" data-country="Serbia">+381</option><option value="+248" data-country="Seychelles">+248</option><option value="+232" data-country="Sierra Leone">+232</option><option value="+65" data-country="Singapore">+65</option><option value="+421" data-country="Slovakia">+421</option><option value="+386" data-country="Slovenia">+386</option><option value="+677" data-country="Solomon Islands">+677</option><option value="+252" data-country="Somalia">+252</option><option value="+27" data-country="South Africa">+27</option><option value="+82" data-country="South Korea">+82</option><option value="+211" data-country="South Sudan">+211</option><option value="+34" data-country="Spain">+34</option><option value="+94" data-country="Sri Lanka">+94</option><option value="+249" data-country="Sudan">+249</option><option value="+597" data-country="Suriname">+597</option><option value="+46" data-country="Sweden">+46</option><option value="+41" data-country="Switzerland">+41</option><option value="+963" data-country="Syria">+963</option><option value="+992" data-country="Tajikistan">+992</option><option value="+255" data-country="Tanzania">+255</option><option value="+66" data-country="Thailand">+66</option><option value="+670" data-country="Timor-Leste">+670</option><option value="+228" data-country="Togo">+228</option><option value="+676" data-country="Tonga">+676</option><option value="+1868" data-country="Trinidad and Tobago">+1868</option><option value="+216" data-country="Tunisia">+216</option><option value="+90" data-country="Turkey">+90</option><option value="+993" data-country="Turkmenistan">+993</option><option value="+688" data-country="Tuvalu">+688</option><option value="+256" data-country="Uganda">+256</option><option value="+380" data-country="Ukraine">+380</option><option value="+971" data-country="United Arab Emirates">+971</option><option value="+44" data-country="United Kingdom">+44</option><option value="+1" data-country="United States" <%= isNri ? 'selected' : '' %>>+1</option><option value="+598" data-country="Uruguay">+598</option><option value="+998" data-country="Uzbekistan">+998</option><option value="+678" data-country="Vanuatu">+678</option><option value="+58" data-country="Venezuela">+58</option><option value="+84" data-country="Vietnam">+84</option><option value="+967" data-country="Yemen">+967</option><option value="+260" data-country="Zambia">+260</option><option value="+263" data-country="Zimbabwe">+263</option>
+                                </select>
+                                <input required type="tel" id="reg-phone" placeholder="Phone Number*" inputmode="numeric"
+                                    value="<%= locals.user ? user.phone : '' %>"
+                                    class="flex-1 min-w-0 px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400">
+                            </div>
+
+                            <% if (showPan) { %>
+                            <div class="relative">
+                                <input type="text" id="reg-pan" placeholder="PAN Number (Optional)" maxlength="10"
+                                    style="text-transform:uppercase"
+                                    value="<%= locals.user && locals.user.pan ? user.pan : '' %>"
+                                    class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400">
+                            </div>
+                            <% } %>
+
+                            <div class="relative">
+                                <textarea id="reg-message" rows="2" placeholder="Any specific requirements? (optional)"
+                                    class="w-full px-5 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-800 placeholder-gray-400 resize-none"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Package Summary -->
+                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 space-y-4 pt-4 mt-6">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Package</span>
+                                <span class="text-gray-900 font-bold text-right"><%= pkg.name %></span>
+                            </div>
+                            <div class="flex justify-between items-center pt-3 border-t border-gray-200">
+                                <span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Amount</span>
+                                <span id="packageRate" class="text-blue-700 font-extrabold text-xl"><%= displayRate %></span>
+                            </div>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="regError" class="hidden text-red-600 text-sm bg-red-50 border border-red-100 rounded-xl px-5 py-3 font-medium"></div>
+
+                        <!-- Terms -->
+                        <label class="flex items-start gap-3 text-sm text-gray-500 cursor-pointer group mt-4">
+                            <input type="checkbox" id="reg-terms" required class="mt-1 w-5 h-5 rounded-lg border-gray-300 text-blue-600 focus:ring-blue-500 transition-colors">
+                            <span class="leading-relaxed">I agree to the <a href="/terms" class="text-blue-600 font-semibold hover:underline">Terms</a> &amp; <a href="/privacy" class="text-blue-600 font-semibold hover:underline">Privacy Policy</a></span>
+                        </label>
+
+                        <!-- Submit -->
+                        <button type="submit" id="regSubmitBtn" style="background: #2563eb;" disabled
+                            class="w-full py-5 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-blue-200/50 transition-all active:scale-[0.98] hover:opacity-90 hover:-translate-y-1 mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                            File Your Tax Now
+                        </button>
+
+                        <p class="text-center text-sm text-gray-400 font-medium mt-4">
+                            Already Registered?
+                            <a href="<%= loginUrl %>" class="text-blue-600 font-bold hover:underline">Log in</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Link -->
+        <div class="mt-12 text-center">
+            <a href="<%= backUrl %>"
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-gray-200 text-gray-600 font-bold text-sm shadow-sm hover:shadow-md hover:border-blue-400 hover:text-blue-600 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <%= backText %>
+            </a>
+        </div>
+    </div>
+</main>
+
+<!-- ══ SCRIPT ══════════════════════════════════════════════════════ -->
+<script>
+(function () {
+    const form = document.getElementById('regForm');
+    const btn  = document.getElementById('regSubmitBtn');
+    const err  = document.getElementById('regError');
+
+    const isNri    = form.dataset.isNri === 'true';
+    const planName = form.dataset.planName;
+    const planRate = form.dataset.planRate;
+    const planSlug = form.dataset.planSlug;
+
+    function showErr(msg) {
+        Swal.fire('Notice', msg, 'warning');
+        btn.disabled = false;
+        btn.textContent = 'File Your Tax Now';
+    }
+
+    // Toggle button state based on terms checkbox
+    const termsCheckbox = document.getElementById('reg-terms');
+    if (termsCheckbox) {
+        termsCheckbox.addEventListener('change', function() {
+            btn.disabled = !this.checked;
+        });
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        err.classList.add('hidden');
+        btn.disabled = true;
+        btn.textContent = 'Processing...';
+
+        const name    = document.getElementById('reg-name').value.trim();
+        const email   = document.getElementById('reg-email').value.trim();
+        let phone   = document.getElementById('reg-phone').value.trim();
+        if (document.getElementById('reg-phone-code')) {
+            phone = document.getElementById('reg-phone-code').value + phone;
+        }
+        const pan     = (document.getElementById('reg-pan') || {value:''}).value.trim();
+        const message = document.getElementById('reg-message').value.trim();
+        const terms   = document.getElementById('reg-terms').checked;
+        let country = document.getElementById('reg-country') ? document.getElementById('reg-country').value.trim() : '';
+        if (!country) return showErr('Please select your country of residence.');
+
+        if (!name)  return showErr('Please enter your full name.');
+        if (!email || !/\S+@\S+\.\S+/.test(email)) return showErr('Please enter a valid email address.');
+        
+        let validPhone = false;
+        let pNum = document.getElementById('reg-phone').value.trim();
+        if (pNum) {
+            validPhone = (pNum.replace(/\D/g, '').length >= 5);
+        }
+        if (!validPhone) return showErr('Please enter a valid phone number.');
+        
+        if (pan && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test(pan)) return showErr('Please enter a valid PAN number.');
+        if (!terms) return showErr('Please agree to the Terms & Privacy Policy.');
+
+        const { isConfirmed } = await Swal.fire({
+            title: 'Confirm Registration',
+            html: `✅ Registration ready!<br><br><b>Package:</b> ${planName}<br><b>Price:</b> ${planRate}<br><br>Click Cancel to go back.`,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Confirm'
+        });
+        if (!isConfirmed) {
+            btn.disabled = false;
+            btn.textContent = 'File Your Tax Now';
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/register-package', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, phone, pan, message, planName, planRate, planSlug, isNri, country })
+            });
+            const data = await res.json();
+            if (!data.success) return showErr('Registration failed: ' + (data.error || 'Unknown error'));
+            
+            if (data.redirectUrl) {
+                await Swal.fire('Success', '🎉 Registration successful! Redirecting to payment...', 'success');
+                window.location.href = data.redirectUrl;
+            } else {
+                await Swal.fire('Success', '🎉 Registration successful! You will be redirected to login.', 'success');
+                window.location.href = isNri ? '/login?type=nri' : '/login?type=resident';
+            }
+        } catch (e) {
+            return showErr('Could not connect to server. Please try again.');
+        }
+    });
+})();
+
+(function() {
+    // Restore user country if they are logged in since we missed dynamically putting `selected` in EJS
+    const savedCountry = "<%= locals.user && locals.user.residenceCountry ? user.residenceCountry : '' %>";
+    const css = document.getElementById('reg-country');
+    if (savedCountry && css && css.tagName === 'SELECT') {
+        css.value = savedCountry;
+    }
+
+    const cc = document.getElementById('reg-phone-code');
+    if (!cc) return;
+
+    function sync(n) {
+        for (var i = 0; i < cc.options.length; i++) {
+            if (cc.options[i].getAttribute('data-country') === n) {
+                cc.selectedIndex = i;
+                return;
+            }
+        }
+    }
+
+    if (css) {
+        css.addEventListener('change', function() { sync(this.value); });
+        if(css.value) sync(css.value); // Sync initial
+    }
+
+    fetch('https://ipapi.co/json/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (!d.country_name) return;
+            // set country code
+            sync(d.country_name);
+            
+            // if we have a select dropdown for country, update it too
+            if (css && (!css.value || css.value === '')) {
+                if (css.tagName === 'SELECT') {
+                    for (var i = 0; i < css.options.length; i++) {
+                        if (css.options[i].value === d.country_name) {
+                            css.value = d.country_name;
+                            break;
+                        }
+                    }
+                } else if (css.tagName === 'INPUT') {
+                    css.value = d.country_name;
+                }
+            }
+        })
+        .catch(function() {});
+})();
+</script>

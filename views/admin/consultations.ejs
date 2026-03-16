@@ -1,0 +1,381 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1>Consultations</h1>
+    <p>Manage all free & video consultation bookings.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" onclick="openModal('add-consult-modal')">
+      <i class="fa-solid fa-plus"></i> Add Consultation
+    </button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Total</span>
+      <h2 class="stat-value"><%= stats.total %></h2>
+    </div>
+    <div class="stat-icon blue"><i class="fa-solid fa-calendar-check"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Pending</span>
+      <h2 class="stat-value"><%= stats.pending %></h2>
+    </div>
+    <div class="stat-icon yellow"><i class="fa-solid fa-clock"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Confirmed</span>
+      <h2 class="stat-value"><%= stats.confirmed %></h2>
+    </div>
+    <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Completed</span>
+      <h2 class="stat-value"><%= stats.completed %></h2>
+    </div>
+    <div class="stat-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-toolbar">
+    <div class="search-box">
+      <i class="fa-solid fa-search"></i>
+      <input type="text" id="consult-search" placeholder="Search by name, email…">
+    </div>
+    <div class="filter-row">
+      <select id="type-filter" class="filter-select">
+        <option value="">All Types</option>
+        <option>Free Consultation</option>
+        <option>Video Consultation</option>
+      </select>
+      <select id="cstatus-filter" class="filter-select">
+        <option value="">All Status</option>
+        <option>Pending</option>
+        <option>Confirmed</option>
+        <option>Completed</option>
+        <option>Cancelled</option>
+      </select>
+      <select id="cpayment-filter" class="filter-select">
+        <option value="">All Payments</option>
+        <option value="Completed">Completed</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="data-table" id="consult-table">
+      <thead>
+        <tr>
+          <th>CLIENT</th>
+          <th>TYPE</th>
+          <th>DATE & TIME</th>
+          <th>DURATION</th>
+          <th>AMOUNT</th>
+          <th>PAYMENT</th>
+          <th>STATUS</th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (consultations && consultations.length > 0) { %>
+          <% consultations.forEach(c => { %>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="avatar blue"><%= (c.name || 'G').charAt(0).toUpperCase() %></div>
+                <div>
+                  <div class="name"><%= c.name || 'Guest' %></div>
+                  <div class="meta"><%= c.email || '—' %> • <%= c.country || '—' %></div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge <%= c.type === 'Video Consultation' ? 'badge-blue' : 'badge-gray' %>"><%= c.type %></span></td>
+            <td>
+              <div class="fw-600"><%= c.date %></div>
+              <div class="text-muted" style="font-size:12px"><i class="fa-regular fa-clock"></i> <%= c.time %></div>
+            </td>
+            <td><%= c.duration ? c.duration + ' min' : '—' %></td>
+            <td><%= c.amount ? (String(c.amount).startsWith('₹') ? c.amount : '₹' + c.amount) : '—' %></td>
+            <td>
+              <span class="badge <%= (c.paymentStatus || '').toLowerCase() === 'completed' ? 'badge-green' : 'badge-red' %>">
+                <span class="status-dot <%= (c.paymentStatus || '').toLowerCase() === 'completed' ? 'dot-green' : 'dot-red' %>"></span>
+                <%= c.paymentStatus %>
+              </span>
+            </td>
+            <td>
+              <%
+                const st = (c.status || '').toLowerCase();
+                const dotMap = { pending:'dot-yellow', confirmed:'dot-blue', completed:'dot-green', cancelled:'dot-red' };
+                const badgeMap = { pending:'badge-yellow', confirmed:'badge-blue', completed:'badge-green', cancelled:'badge-red' };
+              %>
+              <span class="badge <%= badgeMap[st] || 'badge-gray' %>">
+                <span class="status-dot <%= dotMap[st] || 'dot-gray' %>"></span>
+                <%= c.status %>
+              </span>
+            </td>
+            <td>
+              <div class="flex-center gap-8">
+                <button class="btn-icon" onclick="viewConsultation('<%= encodeURIComponent(JSON.stringify(c)) %>')" title="View">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <button class="btn-icon" onclick="editConsultation('<%= encodeURIComponent(JSON.stringify(c)) %>')" title="Edit">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn-icon danger" onclick="confirmDelete('/admin/consultations/<%= c._id %>', decodeURIComponent(`<%= encodeURIComponent('consultation for ' + (c.name || 'Guest')) %>`))" title="Delete">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="8">
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
+              <h4>No consultations yet</h4>
+              <p>Book the first consultation to get started.</p>
+              <button class="btn btn-primary" onclick="openModal('add-consult-modal')"><i class="fa-solid fa-plus"></i> Add Consultation</button>
+            </div>
+          </td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── ADD MODAL ── -->
+<div class="modal-overlay" id="add-consult-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-calendar-plus"></i> &nbsp;New Consultation</h3>
+      <button class="modal-close" onclick="closeModal('add-consult-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="add-consult-form" onsubmit="event.preventDefault(); submitForm('add-consult-form','POST','/admin/consultations/add','Consultation created!',()=>{closeModal('add-consult-modal');setTimeout(()=>location.reload(),800)}); return false;">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Type *</label>
+            <select class="form-control" name="type" id="consult-type-select" required onchange="handleTypeChange(this.value, 'add')">
+              <option>Free Consultation</option>
+              <option>Video Consultation</option>
+              <option>Basic Global Consultation</option>
+              <option>Premium Global Consultation</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-control" name="status">
+              <option>Pending</option><option>Confirmed</option><option>Completed</option><option>Cancelled</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Status</label>
+            <select class="form-control" name="paymentStatus">
+              <option>Pending</option><option>Completed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Date *</label>
+            <input class="form-control" type="date" name="date" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time *</label>
+            <input class="form-control" type="time" name="time" required>
+          </div>
+        </div>
+        <div id="video-fields">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Client Name</label>
+              <input class="form-control" name="name" placeholder="Full name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-control" type="email" name="email" placeholder="client@email.com">
+            </div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">Mobile</label>
+              <input class="form-control" name="mobile" placeholder="+91…">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Country</label>
+              <input class="form-control" name="country" placeholder="India">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Duration (min)</label>
+              <input class="form-control" type="number" name="duration" placeholder="30">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount (₹)</label>
+              <input class="form-control" name="amount" placeholder="0">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" type="button" onclick="closeModal('add-consult-modal')">Cancel</button>
+      <button class="btn btn-primary" type="submit" form="add-consult-form">
+        <i class="fa-solid fa-check"></i> Book Consultation
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT MODAL ── -->
+<div class="modal-overlay" id="edit-consult-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-pen-to-square"></i> &nbsp;Edit Consultation</h3>
+      <button class="modal-close" onclick="closeModal('edit-consult-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="edit-consult-form" onsubmit="event.preventDefault(); const id=document.getElementById('ec-id').value; submitForm('edit-consult-form','PUT',`/admin/consultations/${id}`,'Consultation updated!',() => { closeModal('edit-consult-modal'); setTimeout(()=>location.reload(),800); }); return false;">
+        <input type="hidden" name="_id" id="ec-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-control" name="type" id="ec-type" onchange="handleTypeChange(this.value, 'edit')">
+              <option>Free Consultation</option>
+              <option>Video Consultation</option>
+              <option>Basic Global Consultation</option>
+              <option>Premium Global Consultation</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-control" name="status" id="ec-status">
+              <option>Pending</option><option>Confirmed</option><option>Completed</option><option>Cancelled</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Status</label>
+            <select class="form-control" name="paymentStatus" id="ec-paymentStatus">
+              <option>Pending</option><option>Completed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Date</label><input class="form-control" type="date" name="date" id="ec-date"></div>
+          <div class="form-group"><label class="form-label">Time</label><input class="form-control" type="time" name="time" id="ec-time"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Name</label><input class="form-control" name="name" id="ec-name"></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-control" name="email" id="ec-email"></div>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group"><label class="form-label">Mobile</label><input class="form-control" name="mobile" id="ec-mobile"></div>
+          <div class="form-group"><label class="form-label">Country</label><input class="form-control" name="country" id="ec-country"></div>
+          <div class="form-group"><label class="form-label">Duration (min)</label><input class="form-control" type="number" name="duration" id="ec-duration"></div>
+          <div class="form-group"><label class="form-label">Amount (₹)</label><input class="form-control" name="amount" id="ec-amount"></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" type="button" onclick="closeModal('edit-consult-modal')">Cancel</button>
+      <button class="btn btn-primary" type="submit" form="edit-consult-form" id="save-consult-btn"><i class="fa-solid fa-save"></i> Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── VIEW MODAL ── -->
+<div class="modal-overlay" id="view-consult-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-calendar-check"></i> &nbsp;Consultation Details</h3>
+      <button class="modal-close" onclick="closeModal('view-consult-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="view-consult-body"></div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/confirm-dialog') %>
+
+<script>
+  filterTable('consult-search','consult-table',[0,1]);
+  filterBySelect('type-filter','consult-table',1, 'type');
+  filterBySelect('cstatus-filter','consult-table',6, 'status');
+  filterBySelect('cpayment-filter','consult-table',5, 'payment');
+
+  function handleTypeChange(val, mode) {
+    const isVideo = val !== 'Free Consultation';
+    const fields = (mode === 'add') ? document.getElementById('video-fields') : null; // edit doesn't have a separate div but let's assume it handles it
+    if (fields) fields.style.display = isVideo ? '' : 'none';
+
+    if (val === 'Basic Global Consultation') {
+      const dur = (mode === 'add') ? document.querySelector('#add-consult-form [name="duration"]') : document.getElementById('ec-duration');
+      const amt = (mode === 'add') ? document.querySelector('#add-consult-form [name="amount"]') : document.getElementById('ec-amount');
+      if (dur) dur.value = 30;
+      if (amt) amt.value = '1499';
+    } else if (val === 'Premium Global Consultation') {
+      const dur = (mode === 'add') ? document.querySelector('#add-consult-form [name="duration"]') : document.getElementById('ec-duration');
+      const amt = (mode === 'add') ? document.querySelector('#add-consult-form [name="amount"]') : document.getElementById('ec-amount');
+      if (dur) dur.value = 60;
+      if (amt) amt.value = '2999';
+    }
+  }
+
+  function toggleVideoFields(val) {
+    handleTypeChange(val, 'add');
+  }
+  handleTypeChange('Free Consultation', 'add');
+
+  function viewConsultation(raw) {
+    const c = JSON.parse(decodeURIComponent(raw));
+    const body = document.getElementById('view-consult-body');
+    body.innerHTML = `
+      <div class="detail-item"><label>Type</label><span>${c.type}</span></div>
+      <div class="detail-item"><label>Status</label><span>${c.status}</span></div>
+      <div class="detail-item"><label>Date</label><span>${c.date}</span></div>
+      <div class="detail-item"><label>Time</label><span>${c.time}</span></div>
+      <div class="detail-item"><label>Client</label><span>${c.name || '—'}</span></div>
+      <div class="detail-item"><label>Email</label><span>${c.email || '—'}</span></div>
+      <div class="detail-item"><label>Mobile</label><span>${c.mobile || '—'}</span></div>
+      <div class="detail-item"><label>Country</label><span>${c.country || '—'}</span></div>
+      <div class="detail-item"><label>Duration</label><span>${c.duration ? c.duration+' min' : '—'}</span></div>
+      <div class="detail-item"><label>Amount</label><span>${c.amount ? (String(c.amount).startsWith('₹') ? c.amount : '₹'+c.amount) : '—'}</span></div>
+      <div class="detail-item"><label>Payment</label><span>${c.paymentStatus || 'Pending'}</span></div>`;
+    openModal('view-consult-modal');
+  }
+
+  function editConsultation(raw) {
+    const c = JSON.parse(decodeURIComponent(raw));
+    document.getElementById('ec-id').value       = c._id;
+    document.getElementById('ec-type').value     = c.type;
+    document.getElementById('ec-status').value   = c.status;
+    document.getElementById('ec-paymentStatus').value = c.paymentStatus || 'Pending';
+    document.getElementById('ec-date').value     = c.date;
+    document.getElementById('ec-time').value     = c.time;
+    document.getElementById('ec-name').value     = c.name || '';
+    document.getElementById('ec-email').value    = c.email || '';
+    document.getElementById('ec-mobile').value   = c.mobile || '';
+    document.getElementById('ec-country').value  = c.country || '';
+    document.getElementById('ec-duration').value = c.duration || '';
+    document.getElementById('ec-amount').value   = c.amount || '';
+    openModal('edit-consult-modal');
+  }
+
+  // Check for auto-open parameter
+  if (window.location.search.includes('add=true')) {
+    openModal('add-consult-modal');
+    // clean up URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+</script>
+
+<%- include('partials/footer') %>

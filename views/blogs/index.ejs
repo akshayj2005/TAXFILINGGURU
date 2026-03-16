@@ -1,0 +1,112 @@
+<%- contentFor('body') %>
+
+    <!-- HERO SECTION -->
+    <section class="w-full hero-bg py-24 px-4 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10 text-center">
+            <div class="flex justify-center mb-6">
+                <span
+                    class="bg-white/20 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-white/30 animate-fadeInUp">
+                    Insights & Updates
+                </span>
+            </div>
+            <h1 class="font-heading text-5xl md:text-7xl font-black text-white mb-6 tracking-tight animate-fadeInUp"
+                style="animation-delay: 0.1s">
+                The Tax <span class="text-blue-200">Knowledge Hub</span>
+            </h1>
+            <p class="text-xl text-blue-50 max-w-2xl mx-auto font-medium leading-relaxed opacity-90 animate-fadeInUp"
+                style="animation-delay: 0.2s">
+                Master your finances with expert advice on Income Tax, GST, and Investment strategies.
+            </p>
+        </div>
+
+        <!-- Wave Divider -->
+        <div class="wave-divider">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"
+                preserveAspectRatio="none">
+                <path
+                    d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V46.35C50.62,54.91,105.48,63.07,161.16,64.74,213,66.3,266.3,62.72,321.39,56.44Z"
+                    fill="#F8FAFC" fill-opacity="1"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- BLOG LISTING -->
+    <div class="bg-[#F8FAFC] py-24 px-4">
+        <div class="max-w-7xl mx-auto">
+            <% if (blogs && blogs.length> 0) { %>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <% blogs.forEach((blog, index)=> { %>
+                        <article onclick="window.location.href='<%= blog.ctaLink || '/blogs/' + blog.slug %>'"
+                            class="group bg-white rounded-[2.5rem] overflow-hidden shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100 hover:shadow-[0_20px_60px_-15px_rgba(30,58,138,0.15)] transition-all duration-500 flex flex-col h-full animate-fadeInUp cursor-pointer"
+                            style="animation-delay: <%= index * 0.1 %>s">
+                            <!-- Image Container -->
+                            <div class="relative h-64 overflow-hidden">
+                                <img src="<%= blog.image %>" alt="<%= blog.title %>"
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                </div>
+                                <div class="absolute top-6 left-6">
+                                    <span
+                                        class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
+                                        <%= blog.category %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="p-10 flex flex-col flex-grow">
+                                <div
+                                    class="flex items-center gap-4 text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                    <span><i class="fa-solid fa-calendar-alt mr-1"></i>
+                                        <%= new Date(blog.createdAt).toLocaleDateString('en-IN', { day: '2-digit' ,
+                                            month: 'short' , year: 'numeric' }) %>
+                                    </span>
+                                    <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                    <div class="flex items-center gap-2">
+                                        <img src="<%= blog.authorImage || '/assets/images/TFG_LOGO.png' %>"
+                                            class="w-5 h-5 rounded-full object-cover border border-gray-200">
+                                        <span>
+                                            <%= blog.author.split(' ')[0] %> (<%= blog.authorRole || ' Expert' %>)
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <h3
+                                    class="text-2xl font-black text-gray-900 mb-4 tracking-tight leading-tight group-hover:text-blue-600 transition-colors">
+                                    <a href="/blogs/<%= blog.slug %>">
+                                        <%= blog.title %>
+                                    </a>
+                                </h3>
+
+                                <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">
+                                    <%= blog.shortDescription || (blog.content.replace(/<[^>]*>?/gm, '').substring(0,
+                                        120) + '...') %>
+                                </p>
+
+                                <p class="text-blue-600/60 text-[10px] font-black uppercase tracking-[0.2em] mb-2">
+                                    <%= blog.ctaDescription || 'Need expert tax filing help?' %>
+                                </p>
+                                <a href="<%= blog.ctaLink || '/blogs/' + blog.slug %>"
+                                    class="inline-flex items-center group/btn text-blue-600 font-black text-xs uppercase tracking-widest">
+                                    <%= blog.ctaText || 'Read Full Article' %>
+                                        <i
+                                            class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-2 transition-transform"></i>
+                                </a>
+                            </div>
+                        </article>
+                        <% }) %>
+                </div>
+                <% } else { %>
+                    <div class="text-center py-20 bg-white rounded-[3rem] border border-dashed border-gray-200">
+                        <div
+                            class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                            <i class="fa-solid fa-feather-pointed"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-gray-900 mb-2">Knowledge hub is getting ready!</h3>
+                        <p class="text-gray-500">We are currently drafting expert tax insights for you. Stay tuned.</p>
+                        <a href="/" class="inline-block mt-8 text-blue-600 font-bold hover:underline">Back to Home</a>
+                    </div>
+                    <% } %>
+        </div>
+    </div>

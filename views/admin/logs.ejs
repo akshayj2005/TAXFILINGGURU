@@ -1,0 +1,177 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1>Request Logs</h1>
+    <p>HTTP request activity, status codes, and response times.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-danger btn-sm" onclick="confirmDelete('/admin/logs/clear-all','ALL request logs')">
+      <i class="fa-solid fa-trash"></i> Clear Logs
+    </button>
+    <button class="btn btn-outline" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Total Requests</span><h2 class="stat-value"><%= stats.total %></h2></div>
+    <div class="stat-icon blue"><i class="fa-solid fa-server"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Success (2xx)</span><h2 class="stat-value"><%= stats.success %></h2></div>
+    <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Errors (4xx/5xx)</span><h2 class="stat-value"><%= stats.errors %></h2></div>
+    <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Avg. Response</span><h2 class="stat-value"><%= stats.avgResponse %>ms</h2></div>
+    <div class="stat-icon yellow"><i class="fa-solid fa-stopwatch"></i></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-toolbar">
+    <div class="search-box">
+      <i class="fa-solid fa-search"></i>
+      <input type="text" id="log-search" placeholder="Search by URL, IP, user…">
+    </div>
+    <div class="filter-row">
+      <select id="method-filter" class="filter-select">
+        <option value="">All Methods</option>
+        <option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option>
+      </select>
+      <select id="status-filter" class="filter-select">
+        <option value="">All Codes</option>
+        <option value="2">2xx Success</option>
+        <option value="3">3xx Redirect</option>
+        <option value="4">4xx Client Error</option>
+        <option value="5">5xx Server Error</option>
+      </select>
+    </div>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table" id="logs-table">
+      <thead>
+        <tr>
+          <th>METHOD</th>
+          <th>URL</th>
+          <th>STATUS</th>
+          <th>RESPONSE TIME</th>
+          <th>IP</th>
+          <th>LOCATION</th>
+          <th>TIMESTAMP</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (logs && logs.length > 0) { %>
+          <% logs.forEach(log => { %>
+          <tr>
+            <td>
+              <%
+                const mClass = {GET:'method-get',POST:'method-post',PUT:'method-put',DELETE:'method-delete'};
+              %>
+              <span class="log-method <%= mClass[log.method] || '' %>"><%= log.method %></span>
+            </td>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+              <code style="font-size:11px;color:var(--text-secondary)"><%= log.url %></code>
+            </td>
+            <td>
+              <%
+                const code = log.statusCode;
+                let sc = 'badge-gray';
+                if (code >= 200 && code < 300) sc = 'badge-green';
+                else if (code >= 300 && code < 400) sc = 'badge-blue';
+                else if (code >= 400 && code < 500) sc = 'badge-yellow';
+                else if (code >= 500) sc = 'badge-red';
+              %>
+              <span class="badge <%= sc %>"><%= code %></span>
+            </td>
+            <td>
+              <% const rt = log.responseTime || 0; %>
+              <span class="fw-600 <%= rt > 1000 ? 'text-danger' : rt > 300 ? 'text-blue' : 'text-success' %>">
+                <%= rt %>ms
+              </span>
+            </td>
+            <td class="text-muted" style="font-size:12px;"><%= log.ip || '—' %></td>
+            <td class="text-muted" style="font-size:12px;">
+              <%= log.geo?.city ? log.geo.city + ', ' + log.geo.country : '—' %>
+            </td>
+            <td class="text-muted" style="font-size:12px;">
+              <%= log.timestamp ? new Date(log.timestamp).toLocaleString('en-IN',{hour12:true,hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'}) : '—' %>
+            </td>
+            <td>
+              <button class="btn-icon" onclick="viewLog('<%= JSON.stringify(log).replace(/'/g,'&#39;').replace(/"/g,'&quot;') %>')" title="View payload">
+                <i class="fa-solid fa-code"></i>
+              </button>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="8">
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fa-solid fa-file-lines"></i></div>
+              <h4>No request logs recorded</h4>
+              <p>Add request logging middleware to start capturing HTTP events.</p>
+            </div>
+          </td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- VIEW LOG MODAL -->
+<div class="modal-overlay" id="view-log-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-code"></i> &nbsp;Request Payload</h3>
+      <button class="modal-close" onclick="closeModal('view-log-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="log-detail-body" class="detail-grid mb-16"></div>
+      <label class="form-label">Headers</label>
+      <pre id="log-headers" style="background:var(--bg-input);border-radius:8px;padding:12px;font-size:11px;color:var(--text-secondary);max-height:130px;overflow:auto;border:1px solid var(--border);white-space:pre-wrap;margin-bottom:12px;"></pre>
+      <label class="form-label">Body</label>
+      <pre id="log-body" style="background:var(--bg-input);border-radius:8px;padding:12px;font-size:11px;color:var(--text-secondary);max-height:130px;overflow:auto;border:1px solid var(--border);white-space:pre-wrap;"></pre>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/confirm-dialog') %>
+
+<script>
+  filterTable('log-search','logs-table',[1,4]);
+  filterBySelect('method-filter','logs-table',0, 'type');
+
+  document.getElementById('status-filter').addEventListener('change', function() {
+    const v = this.value;
+    document.querySelectorAll('#logs-table tbody tr').forEach(row => {
+      const code = (row.cells[2]?.textContent.trim() || '');
+      row.dataset.hideByStatus = (v && !code.startsWith(v)) ? 'true' : 'false';
+      updateRowVisibility(row);
+    });
+  });
+
+  function viewLog(raw) {
+    const l = JSON.parse(raw.replace(/&#39;/g,"'"));
+    document.getElementById('log-detail-body').innerHTML = `
+      <div class="detail-item"><label>Request ID</label><span style="font-family:monospace;font-size:11px">${l.requestId || '—'}</span></div>
+      <div class="detail-item"><label>Method</label><span>${l.method}</span></div>
+      <div class="detail-item"><label>URL</label><span style="font-family:monospace;font-size:11px">${l.url}</span></div>
+      <div class="detail-item"><label>Status</label><span>${l.statusCode}</span></div>
+      <div class="detail-item"><label>Response Time</label><span>${l.responseTime}ms</span></div>
+      <div class="detail-item"><label>IP</label><span>${l.ip || '—'}</span></div>
+      <div class="detail-item"><label>User Agent</label><span style="font-size:11px">${l.userAgent || '—'}</span></div>
+      <div class="detail-item"><label>Timestamp</label><span>${l.timestamp ? new Date(l.timestamp).toLocaleString() : '—'}</span></div>`;
+    document.getElementById('log-headers').textContent = JSON.stringify(l.payload?.headers || {}, null, 2);
+    document.getElementById('log-body').textContent    = JSON.stringify(l.payload?.body    || {}, null, 2);
+    openModal('view-log-modal');
+  }
+</script>
+
+<%- include('partials/footer') %>

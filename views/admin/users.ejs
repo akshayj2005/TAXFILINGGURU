@@ -1,0 +1,592 @@
+<%- include('partials/header') %>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div>
+    <h1>User Management</h1>
+    <p>Manage CRM users, roles, and permissions.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" onclick="openModal('add-user-modal')">
+      <i class="fa-solid fa-user-plus"></i> Add User
+    </button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Total Users</span>
+      <h2 class="stat-value"><%= stats.total %></h2>
+    </div>
+    <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Active</span>
+      <h2 class="stat-value"><%= stats.active %></h2>
+    </div>
+    <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Resident</span>
+      <h2 class="stat-value"><%= stats.resident %></h2>
+    </div>
+    <div class="stat-icon blue"><i class="fa-solid fa-house-user"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">NRI</span>
+      <h2 class="stat-value"><%= stats.nri %></h2>
+    </div>
+    <div class="stat-icon yellow"><i class="fa-solid fa-plane-departure"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Global</span>
+      <h2 class="stat-value"><%= stats.global %></h2>
+    </div>
+    <div class="stat-icon purple"><i class="fa-solid fa-globe"></i></div>
+  </div>
+</div>
+
+<!-- TABLE CARD -->
+<div class="card">
+  <div class="table-toolbar">
+    <div class="search-box">
+      <i class="fa-solid fa-search"></i>
+      <input type="text" id="user-search" placeholder="Search by name or email…">
+    </div>
+    <div class="filter-row">
+      <select id="type-filter" class="filter-select">
+        <option value="">All Types</option>
+        <option value="resident">Resident</option>
+        <option value="nri">NRI</option>
+        <option value="global">Global</option>
+      </select>
+      <select id="payment-filter" class="filter-select">
+        <option value="">All Payments</option>
+        <option value="Completed">Completed</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="data-table" id="users-table">
+      <thead>
+        <tr>
+          <th>USER</th>
+          <th>TYPE</th>
+          <th>PACKAGES</th>
+          <th>PAYMENT</th>
+          <th>CREATED</th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (users && users.length > 0) { %>
+          <% users.forEach(user => { %>
+          <tr data-id="<%= user._id %>">
+            <td>
+              <div class="user-cell">
+                <div class="avatar">
+                  <% if (user.profileImage) { %>
+                    <img src="<%= user.profileImage %>" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                  <% } else { %>
+                    <img src="https://ui-avatars.com/api/?name=<%= encodeURIComponent(user.name || user.fullName || 'User') %>&background=random&color=fff&bold=true" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                  <% } %>
+                </div>
+                <div>
+                  <div class="name"><%= user.name || user.fullName || 'Unnamed User' %></div>
+                  <div class="meta"><%= user.phone || user.email %></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge <%= user.type === 'nri' ? 'badge-yellow' : (user.type === 'global' ? 'badge-purple' : 'badge-blue') %>"><%= user.type ? user.type.toUpperCase() : 'RESIDENT' %></span>
+            </td>
+            <td>
+              <% if (user.packages && user.packages.length > 0) { %>
+                <div class="flex-center gap-8" style="flex-wrap: wrap;">
+                  <% user.packages.slice(0, 2).forEach(p => { %>
+                    <span class="badge badge-gray"><%= p.name %></span>
+                  <% }) %>
+                  <% if (user.packages.length > 2) { %>
+                    <span class="badge badge-gray">+<%= user.packages.length - 2 %></span>
+                  <% } %>
+                </div>
+              <% } else { %>
+                <span class="text-muted">—</span>
+              <% } %>
+            </td>
+            <td>
+              <span class="badge <%= (user.paymentStatus || '').toLowerCase() === 'completed' ? 'badge-green' : 'badge-red' %>">
+                <span class="status-dot <%= (user.paymentStatus || '').toLowerCase() === 'completed' ? 'dot-green' : 'dot-red' %>"></span>
+                <%= user.paymentStatus %>
+              </span>
+            </td>
+            <td class="text-muted"><%= new Date(user.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) %></td>
+            <td>
+              <div class="flex-center gap-8">
+                <button class="btn-icon" title="View Documents" onclick="viewUserDocuments('<%= user._id %>','<%= encodeURIComponent(user.name || user.fullName || \"User\") %>')">
+                  <i class="fa-solid fa-folder-open"></i>
+                </button>
+                <button class="btn-icon" title="Edit" onclick="editUser('<%= encodeURIComponent(JSON.stringify(user)) %>')">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn-icon" title="Mail Credentials" onclick="resendCredentials('<%= user._id %>')" style="color: var(--accent);">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </button>
+                <button class="btn-icon" title="Request Testimonial" onclick="requestTestimonial('<%= user._id %>')" style="color: var(--green);">
+                  <i class="fa-solid fa-comment-medical"></i>
+                </button>
+                <button class="btn-icon danger" title="Delete" onclick="confirmDelete('/admin/users/<%= user._id %>',decodeURIComponent('<%= encodeURIComponent(user.name || user.fullName || \"Unnamed user\") %>'))">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="6">
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fa-solid fa-users"></i></div>
+              <h4>No users found</h4>
+              <p>Add your first CRM user to get started.</p>
+              <button class="btn btn-primary" onclick="openModal('add-user-modal')"><i class="fa-solid fa-plus"></i> Add User</button>
+            </div>
+          </td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── DOCUMENTS MODAL ── -->
+<div class="modal-overlay" id="docs-modal">
+  <div class="modal" style="width: 800px; max-width: 95%;">
+    <div class="modal-header">
+      <div class="flex-column">
+        <h3 id="doc-modal-title">User Documents</h3>
+        <p id="doc-modal-subtitle" style="font-size: 11px; color: var(--text-muted); margin: 0;"></p>
+      </div>
+      <div class="flex-center gap-12">
+        <a id="download-all-zip" href="#" class="btn btn-primary btn-sm" style="font-size: 11px; padding: 6px 12px;">
+          <i class="fa-solid fa-file-zipper"></i> Download ZIP
+        </a>
+        <button class="modal-close" onclick="closeModal('docs-modal')"><i class="fa-solid fa-times"></i></button>
+      </div>
+    </div>
+    <div class="modal-body" style="padding: 20px;">
+      <div id="docs-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
+        <!-- Loaded via JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD USER MODAL ── -->
+<div class="modal-overlay" id="add-user-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-user-plus"></i> &nbsp;Add New User</h3>
+      <button class="modal-close" onclick="closeModal('add-user-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="add-user-form" onsubmit="event.preventDefault(); submitForm('add-user-form','POST','/admin/users/add','User created successfully!',()=>{closeModal('add-user-modal');setTimeout(()=>location.reload(),800)}); return false;">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input class="form-control" name="name" placeholder="e.g. Rahul Sharma" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input class="form-control" type="email" name="email" placeholder="email@example.com" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-control" name="phone" placeholder="+91 9xxxxxxxxx">
+          </div>
+          <div class="form-group">
+            <label class="form-label">PAN Number</label>
+            <input class="form-control" name="pan" placeholder="ABCDE1234F">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password *</label>
+            <div class="password-wrapper">
+              <input class="form-control" type="password" name="password" id="add-user-pass" placeholder="Min 6 characters" required style="padding-right: 40px;">
+              <button type="button" onclick="togglePasswordVisibility('add-user-pass', this)" class="password-toggle">
+                <i class="fa-solid fa-eye-slash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Residence Country (for NRI)</label>
+            <input class="form-control" name="residenceCountry" placeholder="USA, UAE, etc.">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Specifications / Special Requirements</label>
+          <textarea class="form-control" name="specifications" rows="2" placeholder="Any special notes or requirements..."></textarea>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-control" name="type" onchange="filterUserPackages(this, 'add-packages-list')">
+              <option value="resident">Resident</option>
+              <option value="nri">NRI</option>
+              <option value="global">Global</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Status</label>
+            <select class="form-control" name="paymentStatus">
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Is Admin</label>
+            <select class="form-control" name="isAdmin">
+              <option value="false">Standard User</option>
+              <option value="true">Administrator</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Packages <span style="font-size:11px;color:var(--text-muted);">(Shows packages matching user type)</span></label>
+          <select class="form-control" name="packages" id="add-packages-list" multiple style="height: 120px;">
+            <% if (packagesList && packagesList.length > 0) { %>
+              <% packagesList.filter(p => p.type !== 'global-services').forEach(p => { %>
+                <option value="<%= p.name %>" data-type="<%= p.type %>"><%= p.name %> (<%= p.type.toUpperCase() %>)</option>
+              <% }) %>
+            <% } %>
+          </select>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Hold Ctrl/Cmd to select multiple. List auto-filters by user type.</div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" type="button" onclick="closeModal('add-user-modal')">Cancel</button>
+      <button class="btn btn-primary" type="submit" form="add-user-form">
+        <i class="fa-solid fa-check"></i> Create User
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT USER MODAL ── -->
+<div class="modal-overlay" id="edit-user-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-pen-to-square"></i> &nbsp;Edit User</h3>
+      <button class="modal-close" onclick="closeModal('edit-user-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="edit-user-form" onsubmit="event.preventDefault(); const id=document.getElementById('edit-user-id').value; submitForm('edit-user-form','PUT',`/admin/users/${id}`,'User updated!',() => { closeModal('edit-user-modal'); setTimeout(()=>location.reload(),800); }); return false;">
+        <input type="hidden" name="_id" id="edit-user-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input class="form-control" name="name" id="edit-name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" name="email" id="edit-email" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-control" name="phone" id="edit-phone">
+          </div>
+          <div class="form-group">
+            <label class="form-label">PAN Number</label>
+            <input class="form-control" name="pan" id="edit-pan">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">User ID (for Login)</label>
+            <input class="form-control" name="userid" id="edit-userid" placeholder="Defaults to email if empty">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="password-wrapper">
+              <input class="form-control" type="password" name="generatedPassword" id="edit-generatedPassword" style="padding-right: 40px;">
+              <button type="button" onclick="togglePasswordVisibility('edit-generatedPassword', this)" class="password-toggle">
+                <i class="fa-solid fa-eye-slash"></i>
+              </button>
+            </div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">* Plain text password stored for user reference.</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Residence Country</label>
+            <input class="form-control" name="residenceCountry" id="edit-residenceCountry">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Specifications / Special Requirements</label>
+          <textarea class="form-control" name="specifications" id="edit-specifications" rows="2"></textarea>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-control" name="type" id="edit-type">
+              <option value="resident">Resident</option>
+              <option value="nri">NRI</option>
+              <option value="global">Global</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Status</label>
+            <select class="form-control" name="paymentStatus" id="edit-paymentStatus">
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Is Admin</label>
+            <select class="form-control" name="isAdmin" id="edit-isAdmin">
+              <option value="false">Standard User</option>
+              <option value="true">Administrator</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Packages <span style="font-size:11px;color:var(--text-muted);">(Showing only user's selected packages)</span></label>
+          <select class="form-control" name="packages" id="edit-packages" multiple style="height: 120px;">
+            <% if (packagesList && packagesList.length > 0) { %>
+              <% packagesList.filter(p => p.type !== 'global-services').forEach(p => { %>
+                <option value="<%= p.name %>" data-type="<%= p.type %>"><%= p.name %> (<%= p.type.toUpperCase() %>)</option>
+              <% }) %>
+            <% } %>
+          </select>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Hold Ctrl/Cmd to select multiple.</div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" type="button" onclick="closeModal('edit-user-modal')">Cancel</button>
+      <button class="btn btn-primary" type="submit" form="edit-user-form" id="save-edit-user-btn"><i class="fa-solid fa-save"></i> Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Dialog -->
+<%- include('partials/confirm-dialog') %>
+
+<script>
+  function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    }
+  }
+
+  filterTable('user-search', 'users-table', [0]);
+  filterBySelect('type-filter', 'users-table', 1, 'type');
+  filterBySelect('payment-filter', 'users-table', 3, 'payment');
+
+  function editUser(raw) {
+    const u = JSON.parse(decodeURIComponent(raw));
+    document.getElementById('edit-user-id').value   = u._id;
+    document.getElementById('edit-name').value      = u.name || u.fullName || '';
+    document.getElementById('edit-email').value     = u.email;
+    document.getElementById('edit-phone').value     = u.phone || '';
+    document.getElementById('edit-pan').value       = u.pan || '';
+    document.getElementById('edit-residenceCountry').value = u.residenceCountry || '';
+    document.getElementById('edit-specifications').value   = u.specifications || '';
+    document.getElementById('edit-isAdmin').value   = u.isAdmin ? 'true' : 'false';
+    document.getElementById('edit-type').value      = (u.type || 'resident').toLowerCase();
+    document.getElementById('edit-paymentStatus').value = u.paymentStatus || 'Pending';
+    document.getElementById('edit-userid').value    = u.userid || u.email || '';
+    document.getElementById('edit-generatedPassword').value = u.generatedPassword || '';
+
+    const pkgs = document.getElementById('edit-packages');
+    const userPkgNames = (u.packages || []).map(p => p.name);
+    Array.from(pkgs.options).forEach(opt => {
+      // Show ONLY packages the user already has
+      if (userPkgNames.includes(opt.value)) {
+        opt.removeAttribute('hidden');
+        opt.style.display = '';
+        opt.selected = true;
+      } else {
+        opt.setAttribute('hidden', 'true');
+        opt.style.display = 'none';
+        opt.selected = false;
+      }
+    });
+
+    openModal('edit-user-modal');
+  }
+
+  function filterUserPackages(typeSelect, targetSelectId) {
+    const val = typeSelect.value;
+    const target = document.getElementById(targetSelectId);
+    if (!target) return;
+    Array.from(target.options).forEach(opt => {
+      // Show global packages for all types; show type-specific packages for matching type
+      const isMatch = opt.dataset.type === val || opt.dataset.type === 'global';
+      if (isMatch) {
+        opt.removeAttribute('hidden');
+        opt.style.display = '';
+      } else {
+        opt.setAttribute('hidden', 'true');
+        opt.style.display = 'none';
+        opt.selected = false;
+      }
+    });
+  }
+
+  async function viewUserDocuments(id, name) {
+    const userName = decodeURIComponent(name);
+    document.getElementById('doc-modal-title').textContent = `${userName}'s Documents`;
+    document.getElementById('doc-modal-subtitle').textContent = `User ID: ${id}`;
+    document.getElementById('download-all-zip').href = `/admin/users/${id}/documents/download`;
+    
+    const container = document.getElementById('docs-container');
+    container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px;">Loading documents...</div>';
+    
+    openModal('docs-modal');
+    
+    try {
+      const resp = await fetch(`/admin/users/${id}/documents`);
+      const docs = await resp.json();
+      
+      if (!docs || docs.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
+            <i class="fa-solid fa-folder-open" style="font-size: 40px; margin-bottom: 10px; display: block;"></i>
+            No documents found for this user.
+          </div>
+        `;
+        document.getElementById('download-all-zip').style.display = 'none';
+        return;
+      }
+      
+      document.getElementById('download-all-zip').style.display = 'inline-block';
+      container.innerHTML = docs.map(doc => {
+        const icon = doc.docType.includes('aadhaar') ? 'fa-id-card' : 
+                     doc.docType === 'pan' ? 'fa-address-card' : 
+                     doc.docType === 'form16' ? 'fa-file-invoice' : 'fa-file';
+        const color = doc.docType.includes('aadhaar') ? '#f59e0b' : 
+                      doc.docType === 'pan' ? '#3b82f6' : '#10b981';
+                      
+        return `
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; transition: all 0.2s; position: relative;" class="group">
+            <!-- Delete Button for Admin -->
+            <button onclick="deleteUserDoc('${id}', '${doc._id}')" style="position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; background: #fee2e2; border: none; border-radius: 4px; color: #ef4444; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+              <i class="fa-solid fa-xmark" style="font-size: 10px;"></i>
+            </button>
+
+            <div style="width: 40px; height: 40px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 1px solid #edf2f7;">
+              <i class="fa-solid ${icon}" style="color: ${color}; font-size: 18px;"></i>
+            </div>
+            <div style="font-weight: 800; font-size: 11px; color: #1e293b; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              ${doc.label || doc.docType.toUpperCase()}
+            </div>
+            <div style="font-size: 9px; color: #64748b;">
+              ${(doc.size / 1024).toFixed(1)} KB • ${new Date(doc.uploadedAt).toLocaleDateString()}
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+    } catch (err) {
+      container.innerHTML = `<div style="grid-column: 1/-1; color: var(--danger); text-align: center;">Error: ${err.message}</div>`;
+    }
+  }
+
+  async function deleteUserDoc(userId, docId) {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Delete Document?',
+      text: 'Are you sure you want to delete this document from the user record? This will also delete the physical file.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+    if (!isConfirmed) return;
+
+    try {
+      const resp = await fetch(`/admin/users/${userId}/documents/${docId}`, {
+        method: 'DELETE'
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        Swal.fire('Deleted!', 'Document deleted successfully', 'success');
+        // Refresh the documents list for this user
+        viewUserDocuments(userId, document.getElementById('doc-modal-title').textContent.split("'s")[0].replace(/'/g, "\\'"));
+      } else {
+        Swal.fire('Error', data.error || 'Failed to delete', 'error');
+      }
+    } catch (err) {
+        console.error('Admin Delete Doc Error:', err);
+        Swal.fire('Error', 'System error.', 'error');
+    }
+  }
+
+  // Initialize add modal package filter on load
+  document.addEventListener('DOMContentLoaded', () => {
+    const addType = document.querySelector('#add-user-modal select[name="type"]');
+    if (addType) filterUserPackages(addType, 'add-packages-list');
+  });
+
+  async function resendCredentials(id) {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Resend Credentials?',
+      text: 'Resend login credentials to this user?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, send them!'
+    });
+    if (!isConfirmed) return;
+
+    try {
+      const resp = await fetch(`/admin/users/${id}/send-credentials`, { method: 'POST' });
+      const data = await resp.json();
+      if(resp.ok) Swal.fire('Sent!', data.message || 'Sent!', 'success'); 
+      else Swal.fire('Error', data.error || 'Failed to send.', 'error');
+    } catch(err) {
+      Swal.fire('Error', 'System error. Check console.', 'error');
+    }
+  }
+
+  async function requestTestimonial(id) {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Request Testimonial?',
+      text: 'Send a testimonial request popup to this user on their next login?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, request it!'
+    });
+    if(!isConfirmed) return;
+
+    try {
+      const resp = await fetch(`/admin/users/${id}/request-testimonial`, { method: 'POST' });
+      const data = await resp.json();
+      if(resp.ok) Swal.fire('Scheduled!', data.message || 'Request scheduled!', 'success'); 
+      else Swal.fire('Error', data.error || 'Failed to schedule.', 'error');
+    } catch(err) {
+      Swal.fire('Error', 'System error. Check console.', 'error');
+    }
+  }
+</script>
+
+<%- include('partials/footer') %>

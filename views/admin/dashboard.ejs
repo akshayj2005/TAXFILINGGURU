@@ -1,0 +1,146 @@
+<%- include('partials/header') %>
+
+    <!-- Dashboard View -->
+    <div class="view-section active">
+        <div class="page-header">
+            <div>
+                <h1>Dashboard Overview</h1>
+                <p>Real-time insights and performance metrics based on CRM Models.</p>
+            </div>
+            
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns: repeat(5, 1fr);">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-title">TOTAL USERS</span>
+                    <h2 class="stat-value">
+                        <%= stats.users %>
+                    </h2>
+                    <span class="stat-desc">Registered accounts</span>
+                </div>
+                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-title">NEW CONSULTATIONS</span>
+                    <h2 class="stat-value">
+                        <%= stats.consultations %>
+                    </h2>
+                    <span class="stat-desc">Total records</span>
+                </div>
+                <div class="stat-icon blue"><i class="fa-solid fa-calendar-plus"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-title">ACTIVE VISITORS</span>
+                    <h2 class="stat-value">
+                        <%= stats.visitors %>
+                    </h2>
+                    <span class="stat-desc">Currently online</span>
+                </div>
+                <div class="stat-icon green"><i class="fa-solid fa-globe"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-title">TOTAL INTERACTIONS</span>
+                    <h2 class="stat-value">
+                        <%= stats.interactions %>
+                    </h2>
+                    <span class="stat-desc">Logged events</span>
+                </div>
+                <div class="stat-icon yellow"><i class="fa-solid fa-bolt"></i></div>
+            </div>
+            <!-- Combined System Report Block -->
+            <div class="stat-card" style="padding: 16px 20px;">
+                <div class="stat-info" style="width: 100%;">
+                    <span class="stat-title" style="margin-bottom: 12px; font-weight: 700; color: var(--text-muted); font-size: 11px;">SYSTEM REPORT</span>
+                    <ul class="report-list" style="margin: 0; padding: 0; list-style: none;">
+                        <li style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+                            <span><i class="fa-solid fa-server" style="width: 18px; color: var(--text-muted);"></i> Server</span>
+                            <span class="text-success" style="font-weight: 700;">Online</span>
+                        </li>
+                        <li style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+                            <span><i class="fa-solid fa-database" style="width: 18px; color: var(--text-muted);"></i> Database</span>
+                            <span class="text-accent" style="font-weight: 700;">Live</span>
+                        </li>
+                        <li style="display: flex; justify-content: space-between; font-size: 13px;">
+                            <span><i class="fa-solid fa-shield-halved" style="width: 18px; color: var(--text-muted);"></i> Sessions</span>
+                            <span class="text-blue" style="font-weight: 700;"><%= stats.visitors %></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-row" style="grid-template-columns: 1fr; margin-top: 20px;">
+            <div class="card recent-activity">
+                <div class="card-header">
+                    <h3>Recent System Activity</h3>
+                    <span class="text-muted" style="font-size: 12px;">Real-time updates across Users, Packages & Consultancies</span>
+                </div>
+                <div class="card-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>EVENT / ACTIVITY</th>
+                                <th>CATEGORY</th>
+                                <th>STATUS</th>
+                                <th>TIME / DATE</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (activities && activities.length > 0) { %>
+                                <% activities.forEach(act => { %>
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar <%= act.type === 'User' ? 'green' : (act.type === 'Package' ? 'blue' : 'yellow') %>">
+                                                    <%= act.name.charAt(0).toUpperCase() %>
+                                                </div>
+                                                <div>
+                                                    <div class="name">
+                                                        <%= act.name %>
+                                                    </div>
+                                                    <div class="meta">
+                                                        <%= act.desc %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge <%= act.type === 'User' ? 'badge-green' : (act.type === 'Package' ? 'badge-purple' : 'badge-blue') %>">
+                                                <%= act.type %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-gray">
+                                                <%= act.status %>
+                                            </span>
+                                        </td>
+                                        <td class="text-muted">
+                                            <%= new Date(act.date).toLocaleString('en-IN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' }) %>
+                                        </td>
+                                        <td>
+                                            <a href="<%= act.link %>" class="btn btn-dark-outline btn-sm">
+                                                Manage <i class="fa-solid fa-chevron-right"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                                        No recent activities found in the system.
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div> 
+    </div>
+    </div>
+
+    <%- include('partials/footer') %>

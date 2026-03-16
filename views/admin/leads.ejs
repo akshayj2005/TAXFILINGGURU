@@ -1,0 +1,283 @@
+<%- include('partials/header') %>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div>
+    <h1>Lead Management</h1>
+    <p>View and manage inquiries from contact forms and other sources.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" onclick="openModal('add-lead-modal')">
+      <i class="fa-solid fa-plus"></i> Add Lead
+    </button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Total Leads</span>
+      <h2 class="stat-value"><%= stats.total %></h2>
+    </div>
+    <div class="stat-icon"><i class="fa-solid fa-address-book"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">New</span>
+      <h2 class="stat-value text-blue"><%= stats.new %></h2>
+    </div>
+    <div class="stat-icon blue"><i class="fa-solid fa-star"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Contacted</span>
+      <h2 class="stat-value text-purple"><%= stats.contacted %></h2>
+    </div>
+    <div class="stat-icon purple"><i class="fa-solid fa-phone"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Closed</span>
+      <h2 class="stat-value text-green"><%= stats.closed %></h2>
+    </div>
+    <div class="stat-icon green"><i class="fa-solid fa-check-double"></i></div>
+  </div>
+</div>
+
+<!-- TABLE CARD -->
+<div class="card">
+  <div class="table-toolbar">
+    <div class="search-box">
+      <i class="fa-solid fa-search"></i>
+      <input type="text" id="lead-search" placeholder="Search by name, email, or subject…">
+    </div>
+    <div class="filter-row">
+      <select id="status-filter" class="filter-select">
+        <option value="">All Statuses</option>
+        <option value="New">New</option>
+        <option value="Contacted">Contacted</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Closed">Closed</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="data-table" id="leads-table">
+      <thead>
+        <tr>
+          <th>LEAD</th>
+          <th>SUBJECT</th>
+          <th>SOURCE</th>
+          <th>STATUS</th>
+          <th>DATE</th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (leads && leads.length > 0) { %>
+          <% leads.forEach(lead => { %>
+          <tr data-id="<%= lead._id %>">
+            <td>
+              <div class="user-cell">
+                <div class="avatar"><%= (lead.name || 'L').charAt(0).toUpperCase() %></div>
+                <div>
+                  <div class="name"><%= lead.name %></div>
+                  <div class="meta"><%= lead.email %></div>
+                  <div class="meta" style="font-size: 11px;"><%= lead.phone || 'No phone' %> • <%= lead.country || 'No Country' %></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="text-truncate" style="max-width: 200px;" title="<%= lead.message %>">
+                <strong><%= lead.subject %></strong>
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-gray"><%= lead.source %></span>
+            </td>
+            <td>
+              <% 
+                let statusClass = 'badge-gray';
+                if(lead.status === 'New') statusClass = 'badge-blue';
+                if(lead.status === 'Contacted') statusClass = 'badge-purple';
+                if(lead.status === 'In Progress') statusClass = 'badge-yellow';
+                if(lead.status === 'Closed') statusClass = 'badge-green';
+              %>
+              <span class="badge <%= statusClass %>"><%= lead.status %></span>
+            </td>
+            <td class="text-muted"><%= new Date(lead.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) %></td>
+            <td>
+              <div class="flex-center gap-8">
+                <button class="btn-icon" title="View/Edit" onclick="editLead('<%= encodeURIComponent(JSON.stringify(lead)) %>')">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <button class="btn-icon danger" title="Delete" onclick="confirmDelete('/admin/leads/<%= lead._id %>', '<%= lead.name %>')">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="6">
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fa-solid fa-address-card"></i></div>
+              <h4>No leads found</h4>
+              <p>Form submissions will appear here automatically.</p>
+            </div>
+          </td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── ADD LEAD MODAL ── -->
+<div class="modal-overlay" id="add-lead-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-plus"></i> &nbsp;Add New Lead</h3>
+      <button class="modal-close" onclick="closeModal('add-lead-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="add-lead-form" onsubmit="event.preventDefault(); submitForm('add-lead-form','POST','/admin/leads/add','Lead added!',()=>{closeModal('add-lead-modal');location.reload()});">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input class="form-control" name="name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input class="form-control" type="email" name="email" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-control" name="phone">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <input class="form-control" name="country">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-control" name="status">
+              <option value="New">New</option>
+              <option value="Contacted">Contacted</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <input class="form-control" name="subject">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message *</label>
+          <textarea class="form-control" name="message" rows="4" required></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" type="button" onclick="closeModal('add-lead-modal')">Cancel</button>
+      <button class="btn btn-primary" type="submit" form="add-lead-form">Create Lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT LEAD MODAL ── -->
+<div class="modal-overlay" id="edit-lead-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-eye"></i> &nbsp;Lead Details</h3>
+      <button class="modal-close" onclick="closeModal('edit-lead-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="edit-lead-form" onsubmit="event.preventDefault(); const id=document.getElementById('edit-lead-id').value; submitForm('edit-lead-form','PUT',`/admin/leads/${id}`,'Updated!',()=>location.reload());">
+        <input type="hidden" id="edit-lead-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input class="form-control" name="name" id="edit-lead-name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" name="email" id="edit-lead-email" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-control" name="phone" id="edit-lead-phone">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <input class="form-control" name="country" id="edit-lead-country">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-control" name="status" id="edit-lead-status">
+              <option value="New">New</option>
+              <option value="Contacted">Contacted</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <input class="form-control" name="subject" id="edit-lead-subject">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-control" name="message" id="edit-lead-message" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Internal Notes</label>
+          <textarea class="form-control" name="notes" id="edit-lead-notes" rows="2" placeholder="Admin notes about this lead..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" type="button" onclick="closeModal('edit-lead-modal')">Close</button>
+      <button class="btn btn-primary" type="submit" form="edit-lead-form">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/confirm-dialog') %>
+
+<script>
+  filterTable('lead-search', 'leads-table', [0, 1]);
+  
+  // Custom filter for Status
+  document.getElementById('status-filter')?.addEventListener('change', function() {
+    const val = this.value.toUpperCase();
+    const rows = document.querySelectorAll('#leads-table tbody tr');
+    rows.forEach(row => {
+      if (!val) { row.style.display = ''; return; }
+      const status = row.querySelector('td:nth-child(4)').innerText.toUpperCase();
+      row.style.display = (status === val) ? '' : 'none';
+    });
+  });
+
+  function editLead(raw) {
+    const l = JSON.parse(decodeURIComponent(raw));
+    document.getElementById('edit-lead-id').value = l._id;
+    document.getElementById('edit-lead-name').value = l.name;
+    document.getElementById('edit-lead-email').value = l.email;
+    document.getElementById('edit-lead-phone').value = l.phone || '';
+    document.getElementById('edit-lead-country').value = l.country || '';
+    document.getElementById('edit-lead-subject').value = l.subject || '';
+    document.getElementById('edit-lead-message').value = l.message;
+    document.getElementById('edit-lead-status').value = l.status;
+    document.getElementById('edit-lead-notes').value = l.notes || '';
+    openModal('edit-lead-modal');
+  }
+</script>
+
+<%- include('partials/footer') %>

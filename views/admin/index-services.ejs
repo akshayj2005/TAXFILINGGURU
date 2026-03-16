@@ -1,0 +1,149 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1>Index & Specialized Services</h1>
+    <p>Manage the 4 home page services and 3 consultation services directly from the database.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" onclick="saveAllServices()">
+      <i class="fa-solid fa-save"></i> Save All Changes
+    </button>
+  </div>
+</div>
+
+<div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Total Services</span><h2 class="stat-value"><%= packages.length %></h2></div>
+    <div class="stat-icon blue"><i class="fa-solid fa-list-check"></i></div>
+  </div>
+</div>
+
+<div id="pkg-grid" class="package-grid">
+  <% if (packages && packages.length > 0) { %>
+    <% packages.forEach(pkg => { %>
+      <div class="pkg-card" style="display:flex; flex-direction:column;" data-id="<%= pkg._id %>">
+        <div class="pkg-type" style="margin-bottom: 8px;">Slug: <%= pkg.slug %></div>
+        <div class="form-group">
+          <label class="form-label" style="font-size:12px">Service Name</label>
+          <input class="form-control" type="text" id="name_<%= pkg._id %>" value="<%= pkg.name %>">
+        </div>
+        <div class="form-group" style="margin-top:8px">
+          <label class="form-label" style="font-size:12px">Price (without suffix)</label>
+          <input class="form-control" type="text" id="price_<%= pkg._id %>" value="<%= pkg.price %>">
+        </div>
+        <div class="form-group" style="margin-top:8px">
+          <label class="form-label" style="font-size:12px">Price Suffix (e.g. / Month, Free)</label>
+          <input class="form-control" type="text" id="suffix_<%= pkg._id %>" value="<%= pkg.priceSuffix || '' %>">
+        </div>
+        <div class="form-group" style="margin-top:8px">
+          <label class="form-label" style="font-size:12px">Short Description</label>
+          <textarea class="form-control" id="desc_<%= pkg._id %>" rows="2"><%= pkg.shortDescription || pkg.subheading %></textarea>
+        </div>
+        <div class="form-group" style="margin-top:8px">
+          <label class="form-label" style="font-size:12px">Features (one per line)</label>
+          <textarea class="form-control" id="feat_<%= pkg._id %>" rows="4"><%= pkg.features.join('\n') %></textarea>
+        </div>
+        <div class="form-group" style="margin-top:8px;">
+          <label class="form-label" style="font-size:12px">Icon SVG (Optional)</label>
+          <textarea class="form-control" id="icon_<%= pkg._id %>" rows="2"><%= pkg.icon || '' %></textarea>
+        </div>
+
+        <div class="faq-mini-editor" style="margin-top:12px; border-top:1px solid #eee; padding-top:8px;">
+          <label class="form-label" style="font-size:11px; font-weight:600; display:flex; justify-content:space-between;">
+             FAQs 
+             <button type="button" class="btn btn-xs btn-outline" onclick="addFaqTableRow('<%= pkg._id %>')" style="font-size:9px; padding:2px 6px;">+ Add</button>
+          </label>
+          <div id="faq-container-<%= pkg._id %>" class="faq-container">
+            <% (pkg.faqs || []).forEach((f, i) => { %>
+              <div class="faq-row-item" style="margin-bottom:6px; background:#f9fbff; padding:5px; border-radius:4px; position:relative; border:1px solid #eef2ff;">
+                <input type="text" class="form-control form-control-xs faq-q-<%= pkg._id %>" placeholder="Q" value="<%= f.question.replace(/"/g, '&quot;') %>" style="font-size:10px; margin-bottom:2px; height:24px;">
+                <textarea class="form-control form-control-xs faq-a-<%= pkg._id %>" placeholder="A" rows="2" style="font-size:10px;"><%= f.answer %></textarea>
+                <button type="button" onclick="this.parentElement.remove()" style="position:absolute; top:-4px; right:-4px; background:#ffeded; color:#ff4d4d; border:none; border-radius:50%; width:16px; height:16px; cursor:pointer; font-size:10px;">&times;</button>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <div class="empty-state" style="grid-column: 1 / -1; padding: 40px; text-align: center; background: white; border-radius: 12px; border: 2px dashed #eee;">
+      <i class="fa-solid fa-database" style="font-size: 40px; color: #ccc; margin-bottom: 20px; display: block;"></i>
+      <h3 style="color: #666;">No Specialized Services Found</h3>
+      <p style="color: #999; margin-bottom: 20px;">The database is currently empty. Please run the seed script to populate master data.</p>
+      <code style="background: #f4f4f4; padding: 8px 12px; border-radius: 4px; font-size: 14px;">node scripts/seed-db.js</code>
+    </div>
+  <% } %>
+</div>
+
+<script>
+  function addFaqTableRow(pkgId) {
+    const container = document.getElementById('faq-container-' + pkgId);
+    const div = document.createElement('div');
+    div.className = 'faq-row-item';
+    div.style = 'margin-bottom:6px; background:#f9fbff; padding:5px; border-radius:4px; position:relative; border:1px solid #eef2ff;';
+    div.innerHTML = `
+      <input type="text" class="form-control form-control-xs faq-q-${pkgId}" placeholder="Q" style="font-size:10px; margin-bottom:2px; height:24px;">
+      <textarea class="form-control form-control-xs faq-a-${pkgId}" placeholder="A" rows="2" style="font-size:10px;"></textarea>
+      <button type="button" onclick="this.parentElement.remove()" style="position:absolute; top:-4px; right:-4px; background:#ffeded; color:#ff4d4d; border:none; border-radius:50%; width:16px; height:16px; cursor:pointer; font-size:10px;">&times;</button>
+    `;
+    container.appendChild(div);
+  }
+
+  async function saveAllServices() {
+    const cards = document.querySelectorAll('.pkg-card');
+    const btn = document.querySelector('.btn-primary');
+    const oldHtml = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+    btn.disabled = true;
+
+    let successCount = 0;
+    
+    for (const card of cards) {
+      const id = card.getAttribute('data-id');
+      
+      // Get FAQs
+      const faqsList = [];
+      const qInputs = document.querySelectorAll('.faq-q-' + id);
+      const aInputs = document.querySelectorAll('.faq-a-' + id);
+      qInputs.forEach((qIn, idx) => {
+        const q = qIn.value.trim();
+        const a = aInputs[idx].value.trim();
+        if (q && a) faqsList.push({ question: q, answer: a });
+      });
+
+      const data = {
+        name: document.getElementById('name_' + id).value,
+        price: document.getElementById('price_' + id).value,
+        priceSuffix: document.getElementById('suffix_' + id).value,
+        shortDescription: document.getElementById('desc_' + id).value,
+        featuresRaw: document.getElementById('feat_' + id).value,
+        icon: document.getElementById('icon_' + id).value,
+        faqsRaw: JSON.stringify(faqsList)
+      };
+
+      try {
+        const res = await fetch('/admin/packages/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (res.ok) successCount++;
+      } catch (err) {
+        console.error('Failed to update package', id, err);
+      }
+    }
+
+    if (successCount === cards.length) {
+      Swal.fire('Success', 'All ' + successCount + ' services updated successfully!', 'success');
+    } else {
+      Swal.fire('Warning', 'Updated ' + successCount + ' of ' + cards.length + ' services. Check console for errors.', 'warning');
+    }
+    
+    btn.innerHTML = oldHtml;
+    btn.disabled = false;
+  }
+</script>
+
+<%- include('partials/footer') %>

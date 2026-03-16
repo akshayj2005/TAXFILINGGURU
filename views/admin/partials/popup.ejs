@@ -1,0 +1,18 @@
+<div class="modal-overlay" id="app-popup">
+  <div class="modal popup-modal">
+    <div class="modal-body popup-body">
+      <div class="popup-icon info" id="app-popup-icon">
+        <i class="fa-solid fa-circle-info"></i>
+      </div>
+      <h4 id="app-popup-title">Notice</h4>
+      <p id="app-popup-message"></p>
+      <div class="popup-input-wrap hidden" id="app-popup-input-wrap">
+        <input id="app-popup-input" type="text" class="form-control" autocomplete="off">
+      </div>
+    </div>
+    <div class="modal-footer popup-footer">
+      <button class="btn btn-outline" id="app-popup-cancel" onclick="closePopup()">Cancel</button>
+      <button class="btn btn-primary" id="app-popup-confirm" onclick="handlePopupConfirm()">OK</button>
+    </div>
+  </div>
+</div>

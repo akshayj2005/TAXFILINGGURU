@@ -1,0 +1,224 @@
+<%- include('partials/header') %>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div>
+    <h1>Testimonials</h1>
+    <p>Manage and moderate user-submitted testimonials for the website.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" onclick="approveAllPendingTestimonials()">
+        <i class="fa-solid fa-check-double"></i> Accept All Pending
+    </button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Total</span>
+      <h2 class="stat-value"><%= stats.total %></h2>
+    </div>
+    <div class="stat-icon"><i class="fa-solid fa-comments"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Published</span>
+      <h2 class="stat-value"><%= stats.approved %></h2>
+    </div>
+    <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Pending</span>
+      <h2 class="stat-value"><%= stats.pending %></h2>
+    </div>
+    <div class="stat-icon yellow"><i class="fa-solid fa-clock"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">5-Star</span>
+      <h2 class="stat-value"><%= stats.fiveStar %></h2>
+    </div>
+    <div class="stat-icon blue"><i class="fa-solid fa-award"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info">
+      <span class="stat-title">Avg Rating</span>
+      <h2 class="stat-value"><%= stats.avgRating %></h2>
+    </div>
+    <div class="stat-icon purple"><i class="fa-solid fa-star"></i></div>
+  </div>
+</div>
+
+<!-- TABLE CARD -->
+<div class="card">
+  <div class="table-toolbar">
+    <div class="search-box">
+      <i class="fa-solid fa-search"></i>
+      <input type="text" id="testimonial-search" placeholder="Search by name or content...">
+    </div>
+    <div class="filter-row">
+        <select id="status-filter" class="filter-select">
+            <option value="">All Status</option>
+            <option value="Approved">Approved</option>
+            <option value="Pending">Pending</option>
+        </select>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="data-table" id="testimonials-table">
+        <thead>
+            <tr>
+                <th style="width: 250px;">CLIENT IDENTITY</th>
+                <th>RATING</th>
+                <th>REVIEW CONTENT</th>
+                <th>STATUS</th>
+                <th>JOINED</th>
+                <th style="text-align:right;">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (testimonials && testimonials.length > 0) { %>
+                <% testimonials.forEach(t => { %>
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="avatar">
+                                    <%= t.name ? t.name.charAt(0).toUpperCase() : 'U' %>
+                                </div>
+                                <div>
+                                    <div class="name"><%= t.name || 'Unnamed User' %></div>
+                                    <div class="meta uppercase"><%= t.role || 'Verified User' %></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex-center gap-8" style="color: var(--yellow);">
+                                <span class="font-bold"><%= t.rating %></span>
+                                <i class="fa-solid fa-star" style="font-size: 10px;"></i>
+                            </div>
+                        </td>
+                        <td style="max-width: 350px;">
+                            <div class="text-secondary" style="font-size: 13px; line-height: 1.6; white-space: normal; padding: 5px 0;">
+                                <%= t.content %>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge <%= t.isApproved ? 'badge-green' : 'badge-yellow' %>">
+                                <span class="status-dot <%= t.isApproved ? 'dot-green' : 'dot-yellow' %>"></span>
+                                <%= t.isApproved ? 'Approved' : 'Pending' %>
+                            </span>
+                        </td>
+                        <td class="text-muted">
+                            <%= new Date(t.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) %>
+                        </td>
+                        <td style="text-align:right;">
+                            <div class="flex-center gap-8" style="justify-content: flex-end;">
+                                <% if (!t.isApproved) { %>
+                                    <button class="btn-icon" title="Approve" onclick="toggleApproval('<%= t._id %>', true)" style="color: var(--green);">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                <% } else { %>
+                                    <button class="btn-icon" title="Hide" onclick="toggleApproval('<%= t._id %>', false)" style="color: var(--yellow);">
+                                        <i class="fa-solid fa-eye-slash"></i>
+                                    </button>
+                                <% } %>
+                                <button class="btn-icon danger" title="Delete" data-id="<%= t._id %>" data-name="<%= t.name || 'this review' %>" onclick="confirmDeleteBtn(this)">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <div class="empty-icon"><i class="fa-solid fa-comments"></i></div>
+                            <h4>No testimonials yet</h4>
+                            <p>Customer submissions will appear here for review.</p>
+                        </div>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('partials/confirm-dialog') %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Exact mapping used in Users.ejs for search and filter logic
+    if (typeof filterTable === 'function') {
+        filterTable('testimonial-search', 'testimonials-table', [0, 2]); // Search name (index 0) and content (index 2)
+    }
+    if (typeof filterBySelect === 'function') {
+        filterBySelect('status-filter', 'testimonials-table', 3, 'status'); // Filter status (index 3)
+    }
+  });
+
+  function confirmDeleteBtn(btn) {
+      const { id, name } = btn.dataset;
+      confirmDelete(`/admin/testimonials/${id}`, name);
+  }
+
+  async function toggleApproval(id, status) {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to ${status ? 'approve' : 'hide'} this testimonial?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, do it!'
+    });
+    if (!isConfirmed) return;
+
+    try {
+        const resp = await fetch(`/admin/testimonials/${id}/approve`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+        });
+        const data = await resp.json();
+        if (data.success) {
+            if (typeof showToast === 'function') showToast(data.message, 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            if (typeof showToast === 'function') showToast(data.error || 'Operation failed', 'error');
+        }
+    } catch (err) { if (typeof showToast === 'function') showToast('Network error', 'error'); }
+  }
+
+  async function approveAllPendingTestimonials() {
+      const { isConfirmed } = await Swal.fire({
+        title: 'Approve All?',
+        text: 'Are you sure you want to approve all pending testimonials?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, approve all!'
+      });
+      if (!isConfirmed) return;
+
+      try {
+          const resp = await fetch('/admin/testimonials/approve-all', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+          });
+          const data = await resp.json();
+          if (data.success) {
+              if (typeof showToast === 'function') showToast(data.message, 'success');
+              setTimeout(() => location.reload(), 800);
+          } else {
+              if (typeof showToast === 'function') showToast(data.error || 'Operation failed', 'error');
+          }
+      } catch (err) { 
+          if (typeof showToast === 'function') showToast('Network error', 'error'); 
+      }
+  }
+</script>
+
+<%- include('partials/footer') %>

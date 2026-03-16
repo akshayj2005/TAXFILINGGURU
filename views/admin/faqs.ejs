@@ -1,0 +1,300 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1>FAQ Manager</h1>
+    <p>Manage page-level FAQs for Resident, NRI, and Home pages. Package FAQs are managed within each package's edit modal.</p>
+  </div>
+  <div class="header-actions">
+    <select id="faq-filter" class="filter-select" onchange="filterFaqs(this.value)">
+      <option value="">All Page FAQs</option>
+      <option value="resident">Resident Page</option>
+      <option value="nri">NRI Page</option>
+      <option value="home">Home Page</option>
+      <option value="about">About Page</option>
+      <option value="contact">Contact Page</option>
+      <option value="privacy">Privacy Page</option>
+      <option value="terms">Terms Page</option>
+      <option value="global">Global Page</option>
+    </select>
+    <button class="btn btn-primary" onclick="openModal('add-faq-modal')">
+      <i class="fa-solid fa-plus"></i> Add FAQ
+    </button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Total FAQs</span><h2 class="stat-value"><%= stats.total %></h2></div>
+    <div class="stat-icon blue"><i class="fa-solid fa-circle-question"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Active</span><h2 class="stat-value"><%= stats.active %></h2></div>
+    <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-info"><span class="stat-title">Inactive</span><h2 class="stat-value"><%= stats.inactive %></h2></div>
+    <div class="stat-icon red"><i class="fa-solid fa-circle-xmark"></i></div>
+  </div>
+</div>
+
+<!-- FAQ Table -->
+<div style="width:100%;">
+  <table class="data-table" id="faq-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Page</th>
+        <th>Question</th>
+        <th>Answer</th>
+        <th>Pos</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% const pageFaqsOnly = faqs.filter(f => f.page !== 'package'); %>
+      <% if (pageFaqsOnly && pageFaqsOnly.length > 0) { %>
+        <% pageFaqsOnly.forEach((faq, i) => { %>
+        <tr data-page="<%= faq.page %>">
+          <td><%= i + 1 %></td>
+          <td>
+            <%
+              const badgeColorMap = { resident: 'blue', nri: 'yellow', home: 'green', about: 'purple', contact: 'orange', privacy: 'gray', terms: 'gray', global: 'teal' };
+              const badgeCol = badgeColorMap[faq.page] || 'gray';
+            %>
+            <span class="badge badge-<%= badgeCol %>" style="font-size:11px;text-transform:capitalize;"><%= faq.page %></span>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Page FAQ</div>
+          </td>
+          <td style="max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><%= faq.question %></td>
+          <td style="max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-secondary);font-size:12px;"><%= faq.answer %></td>
+          <td><%= faq.position %></td>
+          <td>
+            <span class="badge <%= faq.isActive ? 'badge-green' : 'badge-red' %>">
+              <%= faq.isActive ? 'Active' : 'Inactive' %>
+            </span>
+          </td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-outline btn-sm" onclick="editFaq('<%= faq._id %>')">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);" onclick="deleteFaq('<%= faq._id %>')">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <% }) %>
+      <% } else { %>
+        <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px;">No page FAQs yet. Add your first FAQ above.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════ ADD MODAL ═══════════════════════ -->
+<div id="add-faq-modal" class="modal-overlay">
+  <div class="modal-box" style="max-width:600px;">
+    <div class="modal-header">
+      <h2><i class="fa-solid fa-plus"></i> Add Page FAQ</h2>
+      <button class="modal-close" onclick="closeModal('add-faq-modal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="add-faq-form">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+
+        <div class="form-group">
+          <label>Page</label>
+          <select name="page" id="af-page" class="form-control">
+            <option value="resident">Resident Page</option>
+            <option value="nri">NRI Page</option>
+            <option value="home">Home Page</option>
+            <option value="about">About Page</option>
+            <option value="contact">Contact Page</option>
+            <option value="privacy">Privacy Page</option>
+            <option value="terms">Terms Page</option>
+            <option value="global">Global Page</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Question <span style="color:#ef4444;">*</span></label>
+          <input type="text" name="question" class="form-control" placeholder="Enter the FAQ question" required>
+        </div>
+
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Answer <span style="color:#ef4444;">*</span></label>
+          <textarea name="answer" class="form-control" rows="4" placeholder="Enter the detailed answer" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Position (sort order)</label>
+          <input type="number" name="position" class="form-control" value="0" min="0">
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select name="isActive" class="form-control">
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('add-faq-modal')">Cancel</button>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save FAQ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════════ EDIT MODAL ═══════════════════════ -->
+<div id="edit-faq-modal" class="modal-overlay">
+  <div class="modal-box" style="max-width:600px;">
+    <div class="modal-header">
+      <h2><i class="fa-solid fa-pen-to-square"></i> Edit Page FAQ</h2>
+      <button class="modal-close" onclick="closeModal('edit-faq-modal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="edit-faq-form">
+      <input type="hidden" id="ef-id">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+
+        <div class="form-group">
+          <label>Page</label>
+          <select name="page" id="ef-page" class="form-control">
+            <option value="resident">Resident Page</option>
+            <option value="nri">NRI Page</option>
+            <option value="home">Home Page</option>
+            <option value="about">About Page</option>
+            <option value="contact">Contact Page</option>
+            <option value="privacy">Privacy Page</option>
+            <option value="terms">Terms Page</option>
+            <option value="global">Global Page</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Question <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="ef-question" name="question" class="form-control" required>
+        </div>
+
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Answer <span style="color:#ef4444;">*</span></label>
+          <textarea id="ef-answer" name="answer" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Position</label>
+          <input type="number" id="ef-position" name="position" class="form-control" min="0">
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select id="ef-isActive" name="isActive" class="form-control">
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('edit-faq-modal')">Cancel</button>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Update FAQ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// ─ All FAQs as JS lookup (page-level only) ──────────────────────────────────────
+const ALL_FAQS = <%- JSON.stringify(faqs.filter(f => f.page !== 'package')) %>;
+
+// ─ Filter ─────────────────────────────────────────────
+function filterFaqs(val) {
+  document.querySelectorAll('#faq-table tbody tr[data-page]').forEach(row => {
+    row.style.display = (!val || row.dataset.page === val) ? '' : 'none';
+  });
+}
+
+// ─ Add FAQ ─────────────────────────────────────────
+document.getElementById('add-faq-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const fd = new FormData(this);
+  const body = Object.fromEntries(fd.entries());
+  try {
+    const r = await fetch('/admin/faqs/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (r.ok) { showToast(d.message, 'success'); closeModal('add-faq-modal'); location.reload(); }
+    else showToast(d.error || 'Error adding FAQ', 'error');
+  } catch { showToast('Network error', 'error'); }
+});
+
+// ─ Edit FAQ ─────────────────────────────────────────────
+function editFaq(id) {
+  const faq = ALL_FAQS.find(f => f._id === id);
+  if (!faq) { showToast('FAQ not found', 'error'); return; }
+  document.getElementById('ef-id').value           = faq._id;
+  document.getElementById('ef-page').value         = faq.page;
+  document.getElementById('ef-question').value     = faq.question;
+  document.getElementById('ef-answer').value       = faq.answer;
+  document.getElementById('ef-position').value     = faq.position || 0;
+  document.getElementById('ef-isActive').value     = faq.isActive ? 'true' : 'false';
+  togglePkgSelect('ef');
+  if (faq.packageSlug) {
+    document.getElementById('ef-pkg').value = faq.packageSlug;
+  }
+  openModal('edit-faq-modal');
+}
+
+document.getElementById('edit-faq-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('ef-id').value;
+  const fd = new FormData(this);
+  const body = Object.fromEntries(fd.entries());
+  try {
+    const r = await fetch('/admin/faqs/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (r.ok) { showToast(d.message, 'success'); closeModal('edit-faq-modal'); location.reload(); }
+    else showToast(d.error || 'Error updating FAQ', 'error');
+  } catch { showToast('Network error', 'error'); }
+});
+
+// ─ Delete FAQ ────────────────────────────────────────
+async function deleteFaq(id) {
+  const { isConfirmed } = await Swal.fire({
+    title: 'Delete FAQ?',
+    text: 'This cannot be undone.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!'
+  });
+  if (!isConfirmed) return;
+
+  try {
+    const r = await fetch('/admin/faqs/' + id, { method: 'DELETE' });
+    const d = await r.json();
+    if (r.ok) { showToast(d.message, 'success'); location.reload(); }
+    else showToast(d.error || 'Error deleting FAQ', 'error');
+  } catch { showToast('Network error', 'error'); }
+}
+
+// ─ Modal helpers ─────────────────────────────────────────────
+// (Using global openModal/closeModal from script.js)
+
+// ─ Toast ──────────────────────────────────────────────
+// (Using global showToast from script.js)
+</script>
+
+<%- include('partials/footer') %>

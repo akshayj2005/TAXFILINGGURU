@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Invoice - <%= invoiceNumber %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; padding: 0 !important; }
+            .invoice-container { box-shadow: none !important; border: none !important; width: 100% !important; max-width: none !important; margin: 0 !important; }
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-4xl mx-auto no-print mb-6 flex justify-between items-center">
+        <a href="/dashboard" class="text-blue-600 font-bold flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition flex items-center gap-2 shadow-lg shadow-blue-100">
+            <i class="fa-solid fa-print"></i> Print Invoice
+        </button>
+    </div>
+
+    <div class="invoice-container max-w-4xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden border border-gray-100 p-12">
+        <!-- Header -->
+        <div class="flex justify-between items-start mb-12 border-b border-gray-100 pb-10">
+            <div>
+                <img src="/assets/images/TFG_LOGO.png" alt="Tax Filing Guru" class="h-20 w-auto mb-4">
+                <h1 class="text-2xl font-black text-gray-900 tracking-tighter mb-1">TAX FILING GURU</h1>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-widest">Smart Taxes Need a Guru.</p>
+                <div class="mt-6 text-sm text-gray-600 space-y-1">
+                    <p class="font-bold text-gray-900">Tax Filing Guru Services Pvt. Ltd.</p>
+                    <p>123, Financial Center, District Centre,</p>
+                    <p>Janakpuri, New Delhi - 110058</p>
+                    <p><span class="font-bold">GSTIN:</span> 07AAAAA0000A1Z5</p>
+                    <p><span class="font-bold">Email:</span> <%= locals.contactEmail || 'support@taxfilingguru.com' %></p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="text-2xl font-black text-gray-900 uppercase tracking-widest mb-4">Tax Invoice</h2>
+                <div class="space-y-1 text-sm">
+                    <p><span class="text-gray-500">Invoice No:</span> <span class="font-bold text-gray-900"><%= invoiceNumber %></span></p>
+                    <p><span class="text-gray-500">Date:</span> <span class="font-bold text-gray-900"><%= invoiceDate %></span></p>
+                    <p><span class="text-gray-500">Status:</span> <span class="inline-flex px-2 py-0.5 rounded bg-green-100 text-green-700 font-bold text-[10px] uppercase">Paid</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bill To -->
+        <div class="grid grid-cols-2 gap-12 mb-12">
+            <div>
+                <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Billed To</h3>
+                <div class="text-sm space-y-1">
+                    <p class="text-lg font-bold text-gray-900"><%= user.name %></p>
+                    <p class="text-gray-600"><%= user.email %></p>
+                    <p class="text-gray-600"><%= user.phone %></p>
+                    <% if (user.pan) { %>
+                        <p class="text-gray-600 uppercase"><span class="font-bold text-gray-900">PAN:</span> <%= user.pan %></p>
+                    <% } %>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-2xl p-6 text-right">
+                <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Place of Supply</h3>
+                <p class="text-lg font-bold text-gray-900"><%= user.residenceCountry || 'India' %></p>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table class="w-full mb-12">
+            <thead>
+                <tr class="border-b-2 border-gray-900">
+                    <th class="py-4 text-left text-xs font-black text-gray-900 uppercase tracking-widest">Description</th>
+                    <th class="py-4 text-center text-xs font-black text-gray-900 uppercase tracking-widest">SAC Code</th>
+                    <th class="py-4 text-right text-xs font-black text-gray-900 uppercase tracking-widest">Amount</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <% 
+                    let subtotal = 0;
+                    user.packages.forEach(pkg => {
+                        const price = parseFloat(pkg.price.replace(/[^0-9.]/g, '')) || 0;
+                        subtotal += price;
+                %>
+                <tr>
+                    <td class="py-6">
+                        <p class="font-bold text-gray-900"><%= pkg.name %></p>
+                        <p class="text-xs text-gray-500 mt-1">Professional Tax Consultation & Filing Service</p>
+                    </td>
+                    <td class="py-6 text-center text-sm font-medium text-gray-600">998231</td>
+                    <td class="py-6 text-right font-bold text-gray-900">₹<%= price.toLocaleString('en-IN') %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <!-- Summary -->
+        <div class="flex justify-end">
+            <div class="w-full max-w-xs space-y-3">
+                <% 
+                    const totalAmount = subtotal;
+                    const taxableValue = totalAmount / 1.18;
+                    const totalGst = totalAmount - taxableValue;
+                    const cgst = totalGst / 2;
+                    const sgst = totalGst / 2;
+                %>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500">Taxable Value</span>
+                    <span class="font-bold text-gray-900">₹<%= taxableValue.toLocaleString('en-IN', {maximumFractionDigits: 2}) %></span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500">CGST (9%)</span>
+                    <span class="font-bold text-gray-900">₹<%= cgst.toLocaleString('en-IN', {maximumFractionDigits: 2}) %></span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500">SGST (9%)</span>
+                    <span class="font-bold text-gray-900">₹<%= sgst.toLocaleString('en-IN', {maximumFractionDigits: 2}) %></span>
+                </div>
+                <div class="border-t border-gray-900 pt-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-black text-gray-900 uppercase tracking-widest">Total</span>
+                        <span class="text-2xl font-black text-blue-600">₹<%= totalAmount.toLocaleString('en-IN') %></span>
+                    </div>
+                    <p class="text-[9px] text-right text-gray-400 mt-1 uppercase font-bold tracking-tighter">Gross Amount (GST Inclusive)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-20 pt-10 border-t border-gray-100 grid grid-cols-2 items-end">
+            <div>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-4">Terms & Conditions</p>
+                <ul class="text-[9px] text-gray-500 space-y-1 list-disc pl-4">
+                    <li>This is a computer-generated invoice and does not require a physical signature.</li>
+                    <li>Payment is non-refundable once the service processing has initiated.</li>
+                    <li>Subject to Delhi Jurisdiction.</li>
+                </ul>
+            </div>
+            <div class="text-right">
+                <div class="inline-block text-center border-t border-gray-900 pt-2 px-8">
+                    <p class="text-xs font-bold text-gray-900">Authorized Signatory</p>
+                    <p class="text-[10px] text-gray-400 mt-1">Tax Filing Guru Services</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Watermark/Security -->
+        <div class="mt-12 text-center">
+            <p class="text-[10px] font-black text-gray-300 uppercase tracking-[0.5em]">Digitally Verified • Secure Billing</p>
+        </div>
+    </div>
+
+</body>
+</html>

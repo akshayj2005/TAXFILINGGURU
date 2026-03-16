@@ -1,0 +1,173 @@
+<!-- TESTIMONIAL MODAL -->
+<div id="testimonialModal" class="fixed inset-0 z-[300] hidden items-center justify-center p-4">
+  <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-md" onclick="closeTestimonialModal()"></div>
+  <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-lg p-10 z-10 animate-fadeInUp">
+    <button onclick="closeTestimonialModal()" class="absolute top-8 right-8 text-gray-400 hover:text-gray-900 transition-colors">
+      <i class="fa-solid fa-times text-2xl"></i>
+    </button>
+    
+    <div class="text-center mb-10">
+        <div class="w-16 h-16 bg-blue-600/10 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner">
+            <i class="fa-solid fa-quote-left scale-75"></i>
+        </div>
+        <h3 class="text-3xl font-black text-gray-900 tracking-tight">Share Your Story</h3>
+        <p class="text-gray-500 font-medium mt-2">Your feedback helps us serve you better.</p>
+    </div>
+
+    <% 
+        let defaultName = user ? user.name : '';
+        let defaultRole = user ? (user.type.toUpperCase() + ' Client') : '';
+        if (user && user.packages && user.packages.length > 0) {
+            defaultRole += ' | ' + user.packages[0].name;
+        }
+    %>
+
+    <form id="testimonialForm" onsubmit="handleTestimonialSubmit(event)" class="space-y-6">
+        <input type="hidden" name="id" id="testimonialEditId">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="form-group">
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Your Name</label>
+                <div class="relative group">
+                    <i class="fa-solid fa-user absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" name="name" value="<%= defaultName %>" <%= user ? 'readonly' : 'required' %> 
+                        class="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl pl-12 pr-6 py-4 transition-all font-bold text-gray-800 <%= user ? 'cursor-not-allowed opacity-80' : 'focus:bg-white focus:border-blue-500' %>" 
+                        placeholder="e.g Rahul M.">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Current Role</label>
+                <div class="relative group">
+                    <i class="fa-solid fa-briefcase absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" name="role" value="<%= defaultRole %>" <%= user ? 'readonly' : 'required' %> 
+                        class="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl pl-12 pr-6 py-4 transition-all font-bold text-gray-800 <%= user ? 'cursor-not-allowed opacity-80' : 'focus:bg-white focus:border-blue-500' %>" 
+                        placeholder="e.g NRI Professional">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Rate Your Experience</label>
+            <div class="flex flex-row-reverse gap-3 bg-gray-50 rounded-2xl p-4 justify-center border-2 border-gray-50 star-rating">
+                <% [5,4,3,2,1].forEach(num => { %>
+                    <input type="radio" id="star-<%= num %>" name="rating" value="<%= num %>" <%= num===5 ? 'checked' : '' %> class="hidden peer">
+                    <label for="star-<%= num %>" class="cursor-pointer star-label transition-all hover:scale-125 active:scale-95">
+                        <i class="fa-solid fa-star text-3xl text-gray-200 transition-colors duration-200"></i>
+                    </label>
+                <% }) %>
+            </div>
+        </div>
+
+        <style>
+            /* Progressive Star Fill Logic */
+            /* 1. When an input is checked, fill ALL labels that follow it in the DOM (which are stars 1-N because of row-reverse) */
+            .star-rating input:checked ~ .star-label i {
+                color: #fbbf24; /* yellow-400 */
+                filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.3));
+            }
+            .star-rating input:checked + .star-label i {
+                color: #fbbf24;
+                transform: scale(1.1);
+            }
+
+            /* 2. Hover logic for interactive preview */
+            .star-rating .star-label:hover i,
+            .star-rating .star-label:hover ~ .star-label i {
+                color: #fbbf24 !important;
+                opacity: 0.8;
+            }
+        </style>
+
+        <div class="form-group">
+            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Write Your Review</label>
+            <textarea id="testimonialContent" name="content" required rows="4" 
+                class="w-full bg-gray-50 border-2 border-gray-50 rounded-3xl px-6 py-5 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all font-medium text-gray-700 resize-none" 
+                placeholder="How was your experience with our team? We'd love to hear your thoughts..."></textarea>
+        </div>
+
+        <button type="submit" id="testimonialSubmitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-[2rem] shadow-xl shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
+            <span id="testimonialBtnText">Publish Story</span> <i class="fa-solid fa-paper-plane"></i>
+        </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openTestimonialModal(editData = null) {
+    const modal = document.getElementById('testimonialModal');
+    const form = document.getElementById('testimonialForm');
+    const idInput = document.getElementById('testimonialEditId');
+    const contentArea = document.getElementById('testimonialContent');
+    const btnText = document.getElementById('testimonialBtnText');
+    const title = modal.querySelector('h3');
+
+    if (editData) {
+        idInput.value = editData.id;
+        contentArea.value = editData.content;
+        btnText.textContent = 'Update Story';
+        title.textContent = 'Edit Your Story';
+        // Set rating
+        const star = document.getElementById(`star-${editData.rating}`);
+        if (star) star.checked = true;
+    } else {
+        idInput.value = '';
+        form.reset();
+        btnText.textContent = 'Publish Story';
+        title.textContent = 'Share Your Story';
+    }
+
+    if(modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeTestimonialModal() {
+    const modal = document.getElementById('testimonialModal');
+    if(modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    }
+  }
+
+  async function handleTestimonialSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+    const originalContent = btn.innerHTML;
+    
+    const id = document.getElementById('testimonialEditId').value;
+    const url = id ? `/api/testimonials/${id}` : '/api/testimonials';
+    const method = id ? 'PUT' : 'POST';
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+      const resp = await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const res = await resp.json();
+      
+      if (res.success) {
+        Swal.fire('Success', res.message, 'success');
+        closeTestimonialModal();
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        Swal.fire('Error', res.error || 'Something went wrong', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', 'Failed to submit. Please check your connection.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalContent;
+    }
+  }
+</script>

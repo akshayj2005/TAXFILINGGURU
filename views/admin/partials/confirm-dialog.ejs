@@ -1,0 +1,14 @@
+<!-- Confirm Delete Dialog (shared partial) -->
+<div class="modal-overlay" id="confirm-dialog">
+  <div class="modal confirm-modal">
+    <div class="modal-body" style="padding:28px 24px 20px;">
+      <div class="confirm-icon"><i class="fa-solid fa-trash"></i></div>
+      <h4>Delete Confirmation</h4>
+      <p>Are you sure you want to delete <strong class="confirm-label">this record</strong>? This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('confirm-dialog')">Cancel</button>
+      <button class="btn btn-danger" onclick="executeDelete()"><i class="fa-solid fa-trash"></i> Delete</button>
+    </div>
+  </div>
+</div>

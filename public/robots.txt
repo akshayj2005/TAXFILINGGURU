@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin/login
+Disallow: /admin/dashboard
+Disallow: /admin/users
+Disallow: /admin/packages
+Disallow: /admin/leads
+Disallow: /admin/consultations
+Disallow: /admin/faqs
+Disallow: /admin/visitors
+Disallow: /admin/interactions
+Disallow: /admin/logs
+
+Sitemap: https://taxfilingguru.com/sitemap.xml
